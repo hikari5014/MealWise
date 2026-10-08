@@ -47,6 +47,11 @@ export default defineConfig({
       registerType: 'prompt',
       includeAssets: ['favicon.svg', 'apple-touch-icon.png'],
       workbox: {
+        // 新版下載好就直接接手。舊版（v0.3 以前）的頁面只會等新版自己接手，
+        // 不這樣做的話新版會一直卡在「等待中」，使用者永遠看到舊版。
+        skipWaiting: true,
+        clientsClaim: true,
+        cleanupOutdatedCaches: true,
         globPatterns: ['**/*.{js,css,html,svg,png,webp}'],
         // 食譜照片比較大，看過才存進快取，不在安裝時全部下載
         globIgnores: ['photos/**'],

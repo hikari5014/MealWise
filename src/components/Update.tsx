@@ -16,7 +16,7 @@ export interface ChangelogEntry {
   notes: string[]
 }
 
-type Status = 'idle' | 'checking' | 'latest' | 'available' | 'updating' | 'offline'
+type Status = 'idle' | 'checking' | 'latest' | 'available' | 'ready' | 'updating' | 'offline'
 
 interface UpdateCtx {
   status: Status
@@ -41,42 +41,50 @@ export function UpdateProvider({ children }: { children: ReactNode }) {
   const toast = useToast()
   const [status, setStatus] = useState<Status>('idle')
   const [remote, setRemote] = useState<ChangelogEntry[]>([])
-  const wantUpdate = useRef(false)
   const reg = useRef<ServiceWorkerRegistration>()
+  const wantUpdate = useRef(false)
+  const hadController = useRef(typeof navigator !== 'undefined' && !!navigator.serviceWorker?.controller)
 
-  const {
-    needRefresh: [needRefresh],
-    updateServiceWorker,
-  } = useRegisterSW({
+  useRegisterSW({
     onRegisteredSW(_url, r) {
       reg.current = r
     },
   })
 
+  // 新版的離線程式接手了：使用者按過更新就直接重新整理，不然提示一下
+  useEffect(() => {
+    const sw = navigator.serviceWorker
+    if (!sw) return
+    const onChange = () => {
+      // 第一次安裝（原本沒有離線程式）不用提示
+      if (!hadController.current) {
+        hadController.current = true
+        return
+      }
+      if (wantUpdate.current) {
+        window.location.reload()
+        return
+      }
+      setStatus('ready')
+      toast('新版本已經下載好了', () => window.location.reload(), '重新整理', 8000)
+    }
+    sw.addEventListener('controllerchange', onChange)
+    return () => sw.removeEventListener('controllerchange', onChange)
+  }, [toast])
+
   const update = useCallback(() => {
     haptic([10, 30, 10])
     setStatus('updating')
     wantUpdate.current = true
-    if (needRefresh) {
-      updateServiceWorker(true)
-    } else {
-      // 新版還沒下載好：叫瀏覽器去抓，抓好會觸發 needRefresh
-      reg.current?.update().catch(() => {})
-      // 保險：沒有離線功能（例如開發模式）或等太久，就直接重新整理
-      window.setTimeout(() => window.location.reload(), reg.current ? 8000 : 300)
-    }
-  }, [needRefresh, updateServiceWorker])
-
-  // 新版下載好了
-  useEffect(() => {
-    if (!needRefresh) return
-    if (wantUpdate.current) {
-      updateServiceWorker(true)
+    if (status === 'ready' || !reg.current) {
+      window.location.reload()
       return
     }
-    setStatus('available')
-    toast('好食光有新版本了', update, '更新', 8000)
-  }, [needRefresh, updateServiceWorker, toast, update])
+    // 叫瀏覽器去抓新版，新版接手時會觸發上面的 controllerchange 而重新整理
+    reg.current.update().catch(() => {})
+    // 保險：等太久就直接重新整理
+    window.setTimeout(() => window.location.reload(), 6000)
+  }, [status])
 
   const check = useCallback(
     async (silent = false) => {
@@ -124,6 +132,7 @@ const STATUS_VIEW: Record<Status, { icon: Parameters<typeof Icon>[0]['name']; te
   checking: { icon: 'sync', text: '檢查中…', color: 'text-muted' },
   latest: { icon: 'check_circle', text: '已經是最新版本', color: 'text-leaf-dark' },
   available: { icon: 'new_releases', text: '有新版本可以更新！', color: 'text-tomato' },
+  ready: { icon: 'new_releases', text: '新版本已經下載好，重新整理就能使用', color: 'text-tomato' },
   updating: { icon: 'system_update', text: '更新中，馬上好…', color: 'text-leaf-dark' },
   offline: { icon: 'error', text: '目前沒有網路，晚點再試', color: 'text-tomato' },
 }
@@ -164,7 +173,7 @@ export function AboutCard() {
                 name={view.icon}
                 size={20}
                 fill={status !== 'checking'}
-                motion={status === 'checking' || status === 'updating' ? 'spin' : status === 'available' ? 'wiggle' : 'pop'}
+                motion={status === 'checking' || status === 'updating' ? 'spin' : status === 'available' || status === 'ready' ? 'wiggle' : 'pop'}
               />
               {view.text}
             </div>
@@ -186,7 +195,7 @@ export function AboutCard() {
       </AnimatePresence>
 
       <div className="mt-3">
-        {status === 'available' ? (
+        {status === 'available' || status === 'ready' ? (
           <Button className="flex w-full items-center justify-center gap-2" onClick={update}>
             <Icon name="system_update" size={20} fill motion="bounce" />
             立即更新
