@@ -307,7 +307,7 @@ function PlanRow({ plan, onRemove }: { plan: PlanEntry; onRemove: () => void }) 
 function Library({ profile }: { profile: Profile }) {
   const [meal, setMeal] = useState<MealSlot | 'all'>('all')
   const [query, setQuery] = useState('')
-  const [group, setGroup] = useState<'all' | 'fav' | 'mine' | Cuisine>('all')
+  const [group, setGroup] = useState<'all' | 'fav' | 'mine' | 'shake' | Cuisine>('all')
   const openDetail = useRecipeDetail()
   const openEditor = useRecipeEditor()
   const taste = getTaste(profile)
@@ -316,13 +316,22 @@ function Library({ profile }: { profile: Profile }) {
   const list = recipesFor(meal === 'all' ? null : meal, profile)
     .filter((r) => !q || r.name.includes(q) || r.tags.some((t) => t.includes(q)))
     .filter((r) =>
-      group === 'all' ? true : group === 'fav' ? taste.favorites.includes(r.id) : group === 'mine' ? r.custom : r.cuisine === group,
+      group === 'all'
+        ? true
+        : group === 'fav'
+          ? taste.favorites.includes(r.id)
+          : group === 'mine'
+            ? r.custom
+            : group === 'shake'
+              ? r.tags.includes('蛋白飲')
+              : r.cuisine === group,
     )
     .sort((a, b) => tasteScore(b, profile) - tasteScore(a, profile))
   const groups: { id: typeof group; label: string; icon?: IconName }[] = [
     { id: 'all', label: '全部料理' },
     { id: 'fav', label: '我的最愛', icon: 'favorite' },
     { id: 'mine', label: '我的食譜', icon: 'edit' },
+    { id: 'shake', label: '蛋白飲', icon: 'water_drop' },
     ...CUISINES.map((c) => ({ id: c.id, label: c.label })),
   ]
   return (

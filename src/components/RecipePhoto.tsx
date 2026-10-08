@@ -37,7 +37,8 @@ export function RecipePhoto({
   /** 慢慢放大的 Ken Burns 效果 */
   zoom?: boolean
 }) {
-  const src = recipe.photoUrl ?? (credits[recipe.id] ? photoSrc(recipe.id, size) : undefined)
+  const photoId = recipe.photoOf ?? recipe.id
+  const src = recipe.photoUrl ?? (credits[photoId] ? photoSrc(photoId, size) : undefined)
   const [failedSrc, setFailedSrc] = useState<string>()
   const [loaded, setLoaded] = useState(false)
   const failed = !src || failedSrc === src

@@ -89,6 +89,10 @@ export interface Recipe {
   custom?: boolean
   /** 自訂食譜的圖片網址（不上傳，只存網址） */
   photoUrl?: string
+  /** 借用另一道食譜的照片（例如品牌蛋白飲用同口味的奶昔照片） */
+  photoOf?: string
+  /** 品牌產品的營養資料來源網址 */
+  sourceUrl?: string
   createdAt?: number
 }
 

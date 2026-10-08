@@ -64,6 +64,7 @@ export const AVOID_GROUPS: AvoidGroup[] = [
     image: 'beans',
     items: [
       { id: 'tofu', label: '豆腐', image: 'oden' },
+      { id: 'soyprotein', label: '大豆蛋白粉', image: 'cup-straw' },
       { id: 'soymilk', label: '豆漿', image: 'cup-straw' },
       { id: 'soysauce', label: '醬油・豆瓣醬', image: 'salt' },
       { id: 'miso', label: '味噌', image: 'oats' },
@@ -216,6 +217,10 @@ const INGREDIENT_TAGS: Record<string, string[]> = {
  */
 const KEYWORDS: [string, string[]][] = [
   ['鮮奶油', ['milk']],
+  ['大豆蛋白', ['soyprotein']],
+  ['黃豆蛋白', ['soyprotein']],
+  ['乳清', ['milk']],
+  ['酪蛋白', ['milk']],
   ['奶油乳酪', ['cheese']],
   ['花生醬', ['peanut']],
   ['雞蛋', ['egg']],
@@ -320,7 +325,7 @@ export const LEGACY_AVOID: Record<string, string[]> = {
   egg: ['egg'],
   peanut: ['peanut'],
   gluten: ['wheat', 'oats'],
-  soy: ['tofu', 'soymilk', 'soysauce', 'miso', 'edamame', 'tempeh'],
+  soy: ['tofu', 'soyprotein', 'soymilk', 'soysauce', 'miso', 'edamame', 'tempeh'],
   nuts: ['treenuts'],
 }
 

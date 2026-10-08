@@ -295,7 +295,16 @@ function Detail({ recipe, layoutId, onClose }: Opened & { onClose: () => void })
             )}
           </div>
           <p className="text-xs text-muted">營養數值為估算，僅供參考。{recipe.custom ? '這是你自己新增的食譜。' : ''}</p>
-          <PhotoCreditLine id={recipe.id} />
+          {recipe.sourceUrl && (
+            <p className="flex flex-wrap items-center gap-1 text-[11px] text-muted">
+              <Icon name="info" size={14} />
+              營養依品牌標示（1 份），口味或配方更新可能略有不同・
+              <a href={recipe.sourceUrl} target="_blank" rel="noreferrer" className="underline">
+                資料來源
+              </a>
+            </p>
+          )}
+          <PhotoCreditLine id={recipe.photoOf ?? recipe.id} illustrative={!!recipe.photoOf} />
         </motion.div>
       </motion.div>
     </div>
@@ -304,13 +313,13 @@ function Detail({ recipe, layoutId, onClose }: Opened & { onClose: () => void })
 
 const LICENSE_LABEL = { cc0: 'CC0 公眾領域', pdm: '公眾領域', by: 'CC BY' } as const
 
-function PhotoCreditLine({ id }: { id: string }) {
+function PhotoCreditLine({ id, illustrative = false }: { id: string; illustrative?: boolean }) {
   const c = photoCredit(id)
   if (!c) return null
   return (
     <p className="flex flex-wrap items-center gap-1 text-[11px] text-muted">
       <Icon name="image" size={14} />
-      照片：
+      {illustrative ? '示意照片（非品牌產品）：' : '照片：'}
       <a href={c.landingUrl} target="_blank" rel="noreferrer" className="underline">
         {c.creator || c.title || '來源'}
       </a>
