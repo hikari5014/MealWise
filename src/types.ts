@@ -1,3 +1,6 @@
+import type { FoodImage } from './data/foodImages'
+import type { IconName } from './lib/icons'
+
 export type MealSlot = 'breakfast' | 'lunch' | 'dinner' | 'snack'
 
 export const MEAL_SLOTS: MealSlot[] = ['breakfast', 'lunch', 'dinner', 'snack']
@@ -9,21 +12,36 @@ export const MEAL_LABEL: Record<MealSlot, string> = {
   snack: '點心',
 }
 
-export const MEAL_EMOJI: Record<MealSlot, string> = {
-  breakfast: '🌅',
-  lunch: '☀️',
-  dinner: '🌙',
-  snack: '🍪',
+export const MEAL_ICON: Record<MealSlot, IconName> = {
+  breakfast: 'wb_twilight',
+  lunch: 'wb_sunny',
+  dinner: 'dark_mode',
+  snack: 'cookie',
+}
+
+export const MEAL_COLOR: Record<MealSlot, string> = {
+  breakfast: '#e9b44c',
+  lunch: '#e07a5f',
+  dinner: '#5f6fd3',
+  snack: '#b07d4f',
 }
 
 export type Section = 'produce' | 'protein' | 'dairyEgg' | 'grain' | 'pantry'
 
 export const SECTION_LABEL: Record<Section, string> = {
-  produce: '🥬 蔬菜水果',
-  protein: '🍗 肉類海鮮',
-  dairyEgg: '🥚 蛋豆乳製品',
-  grain: '🍚 米麵主食',
-  pantry: '🧂 調味乾貨',
+  produce: '蔬菜水果',
+  protein: '肉類海鮮',
+  dairyEgg: '蛋豆乳製品',
+  grain: '米麵主食',
+  pantry: '調味乾貨',
+}
+
+export const SECTION_IMAGE: Record<Section, FoodImage> = {
+  produce: 'leafy-green',
+  protein: 'meat',
+  dairyEgg: 'egg',
+  grain: 'rice',
+  pantry: 'salt',
 }
 
 export const SECTION_ORDER: Section[] = ['produce', 'protein', 'dairyEgg', 'grain', 'pantry']
@@ -51,7 +69,7 @@ export interface PrepTask {
 export interface Recipe {
   id: string
   name: string
-  emoji: string
+  image: FoodImage
   color: string
   meals: MealSlot[]
   minutes: number

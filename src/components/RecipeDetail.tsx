@@ -1,6 +1,8 @@
 import { AnimatePresence, motion } from 'framer-motion'
 import { createContext, useCallback, useContext, useEffect, useState, type ReactNode } from 'react'
 import { RECIPE_MAP } from '../data/recipes'
+import { Food } from './Food'
+import { Icon } from './Icon'
 import { formatQty } from '../lib/meal'
 import { haptic, softSpring } from '../lib/feedback'
 import { AVOID_ITEM_MAP, recipeAvoidTags } from '../data/avoid'
@@ -22,9 +24,11 @@ export function RecipeThumb({ recipe, layoutId, size = 48 }: { recipe: Recipe; l
       layoutId={layoutId}
       transition={softSpring}
       className="grid shrink-0 place-items-center rounded-2xl"
-      style={{ width: size, height: size, backgroundColor: recipe.color, fontSize: size * 0.52 }}
+      style={{ width: size, height: size, backgroundColor: recipe.color }}
     >
-      <motion.span layout="position">{recipe.emoji}</motion.span>
+      <motion.span layout="position" className="grid place-items-center">
+        <Food id={recipe.image} size={Math.round(size * 0.72)} alt={recipe.name} />
+      </motion.span>
     </motion.div>
   )
 }
@@ -80,16 +84,18 @@ function Detail({ recipe, layoutId, onClose }: Opened & { onClose: () => void })
           layoutId={layoutId}
           transition={softSpring}
           className="relative grid h-64 place-items-center rounded-b-[40px] pt-[env(safe-area-inset-top)]"
-          style={{ backgroundColor: recipe.color, fontSize: 112 }}
+          style={{ backgroundColor: recipe.color }}
         >
-          <motion.span layout="position">{recipe.emoji}</motion.span>
+          <motion.span layout="position" className="grid place-items-center">
+            <Food id={recipe.image} size={150} float alt={recipe.name} />
+          </motion.span>
           <motion.button
             whileTap={{ scale: 0.9 }}
             aria-label="關閉"
             onClick={onClose}
-            className="absolute left-4 top-[calc(16px+env(safe-area-inset-top))] grid h-10 w-10 place-items-center rounded-full bg-white/80 text-lg shadow-card"
+            className="absolute left-4 top-[calc(16px+env(safe-area-inset-top))] grid h-10 w-10 place-items-center rounded-full bg-white/80 shadow-card"
           >
-            ←
+            <Icon name="arrow_back" size={22} weight={500} />
           </motion.button>
         </motion.div>
 
@@ -102,7 +108,9 @@ function Detail({ recipe, layoutId, onClose }: Opened & { onClose: () => void })
           <div>
             <h1 className="text-2xl font-bold">{recipe.name}</h1>
             <div className="mt-2 flex flex-wrap gap-2 text-xs">
-              <span className="rounded-full bg-white px-3 py-1">⏱ {recipe.minutes} 分鐘</span>
+              <span className="flex items-center gap-1 rounded-full bg-white px-3 py-1">
+                <Icon name="timer" size={14} /> {recipe.minutes} 分鐘
+              </span>
               <span className="rounded-full bg-white px-3 py-1">{recipe.meals.map((m) => MEAL_LABEL[m]).join('・')}</span>
               {recipe.tags.map((t) => (
                 <span key={t} className="rounded-full bg-leaf-soft px-3 py-1 text-leaf-dark">
@@ -162,9 +170,12 @@ function Detail({ recipe, layoutId, onClose }: Opened & { onClose: () => void })
               <h2 className="mb-2 font-bold">可以先準備</h2>
               <ul className="space-y-2">
                 {recipe.prep.map((p) => (
-                  <li key={p.task} className="rounded-2xl bg-honey-soft px-4 py-3 text-sm">
-                    🔪 {p.task}
-                    <span className="ml-2 text-xs text-muted">{p.keep}</span>
+                  <li key={p.task} className="flex items-center gap-2 rounded-2xl bg-honey-soft px-4 py-3 text-sm">
+                    <Icon name="skillet" size={18} className="text-honey" fill />
+                    <span>
+                      {p.task}
+                      <span className="ml-2 text-xs text-muted">{p.keep}</span>
+                    </span>
                   </li>
                 ))}
               </ul>

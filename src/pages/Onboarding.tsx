@@ -1,16 +1,19 @@
 import { AnimatePresence, motion } from 'framer-motion'
 import { useState } from 'react'
 import { AvoidPicker } from '../components/AvoidPicker'
+import { Food } from '../components/Food'
+import { Icon } from '../components/Icon'
 import { Button } from '../components/ui'
 import { db } from '../db'
 import { haptic, spring } from '../lib/feedback'
 import { suggestKcal } from '../lib/meal'
+import type { IconName } from '../lib/icons'
 import { GOAL_LABEL, type Goal, type Profile } from '../types'
 
-const GOALS: { value: Goal; emoji: string; hint: string }[] = [
-  { value: 'lose', emoji: '🌿', hint: '少一點熱量、多一點蛋白質' },
-  { value: 'maintain', emoji: '⚖️', hint: '營養均衡、吃得開心' },
-  { value: 'gain', emoji: '💪', hint: '多一點熱量與蛋白質' },
+const GOALS: { value: Goal; icon: IconName; hint: string }[] = [
+  { value: 'lose', icon: 'spa', hint: '少一點熱量、多一點蛋白質' },
+  { value: 'maintain', icon: 'balance', hint: '營養均衡、吃得開心' },
+  { value: 'gain', icon: 'fitness_center', hint: '多一點熱量與蛋白質' },
 ]
 
 const DEFAULT: Profile = {
@@ -65,7 +68,9 @@ export default function Onboarding({ initial, onDone }: { initial?: Profile; onD
               active ? 'bg-leaf text-white' : 'bg-white'
             }`}
           >
-            <span className="text-3xl">{g.emoji}</span>
+            <span className={`grid h-12 w-12 place-items-center rounded-2xl ${active ? 'bg-white/20' : 'bg-leaf-soft text-leaf-dark'}`}>
+              <Icon name={g.icon} size={28} fill={active} weight={active ? 600 : 400} motion={active ? 'pop' : 'none'} />
+            </span>
             <span>
               <span className="block font-bold">{GOAL_LABEL[g.value]}</span>
               <span className={`text-sm ${active ? 'text-white/80' : 'text-muted'}`}>{g.hint}</span>
@@ -87,7 +92,10 @@ export default function Onboarding({ initial, onDone }: { initial?: Profile; onD
           p.vegetarian ? 'bg-leaf text-white' : 'bg-white'
         }`}
       >
-        <span className="font-bold">🥬 我吃素（蛋奶素）</span>
+        <span className="flex items-center gap-2 font-bold">
+          <Icon name="eco" size={24} fill={p.vegetarian} motion={p.vegetarian ? 'pop' : 'none'} />
+          我吃素（蛋奶素）
+        </span>
         <span>{p.vegetarian ? '是' : '否'}</span>
       </motion.button>
       <div>
@@ -98,9 +106,9 @@ export default function Onboarding({ initial, onDone }: { initial?: Profile; onD
 
     <div key="amount" className="space-y-4">
       <h2 className="text-xl font-bold">每天的目標</h2>
-      <Stepper label="🔥 熱量" unit="kcal" value={p.kcal} step={100} min={1000} max={4000} onChange={(kcal) => set({ kcal })} />
-      <Stepper label="💧 喝水" unit="ml" value={p.waterMl} step={250} min={1000} max={5000} onChange={(waterMl) => set({ waterMl })} />
-      <Stepper label="🍽 幾人份" unit="人" value={p.servings} step={1} min={1} max={8} onChange={(servings) => set({ servings })} />
+      <Stepper icon="local_fire_department" label="熱量" unit="kcal" value={p.kcal} step={100} min={1000} max={4000} onChange={(kcal) => set({ kcal })} />
+      <Stepper icon="water_drop" label="喝水" unit="ml" value={p.waterMl} step={250} min={1000} max={5000} onChange={(waterMl) => set({ waterMl })} />
+      <Stepper icon="groups" label="幾人份" unit="人" value={p.servings} step={1} min={1} max={8} onChange={(servings) => set({ servings })} />
       <p className="px-1 text-xs text-muted">「幾人份」會用來計算採購清單的份量。之後都可以在「我的」裡修改。</p>
     </div>,
   ]
@@ -113,7 +121,7 @@ export default function Onboarding({ initial, onDone }: { initial?: Profile; onD
     >
       {!initial && (
         <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="mb-6">
-          <div className="text-4xl">🍱</div>
+          <Food id="bento" size={64} float />
           <h1 className="mt-2 text-2xl font-bold">歡迎來到好食光</h1>
           <p className="text-sm text-muted">花 30 秒告訴我你的需求，之後就交給我。</p>
         </motion.div>
@@ -148,7 +156,7 @@ export default function Onboarding({ initial, onDone }: { initial?: Profile; onD
           </Button>
         )}
         <Button className="flex-1" onClick={() => (step < steps.length - 1 ? go(step + 1) : finish())}>
-          {step < steps.length - 1 ? '下一步' : initial ? '儲存' : '開始使用 🎉'}
+          {step < steps.length - 1 ? '下一步' : initial ? '儲存' : '開始使用'}
         </Button>
       </div>
     </div>
@@ -156,6 +164,7 @@ export default function Onboarding({ initial, onDone }: { initial?: Profile; onD
 }
 
 function Stepper({
+  icon,
   label,
   unit,
   value,
@@ -164,6 +173,7 @@ function Stepper({
   max,
   onChange,
 }: {
+  icon: IconName
   label: string
   unit: string
   value: number
@@ -181,15 +191,18 @@ function Stepper({
   }
   return (
     <div className="flex items-center justify-between rounded-3xl bg-white p-4 shadow-card">
-      <span className="font-medium">{label}</span>
+      <span className="flex items-center gap-2 font-medium">
+        <Icon name={icon} size={22} fill className="text-leaf" />
+        {label}
+      </span>
       <div className="flex items-center gap-3">
         <motion.button
           whileTap={{ scale: 0.85 }}
           onClick={() => change(-step)}
           aria-label={`減少${label}`}
-          className="grid h-9 w-9 place-items-center rounded-full bg-ink/5 text-lg"
+          className="grid h-9 w-9 place-items-center rounded-full bg-ink/5"
         >
-          −
+          <Icon name="remove" size={20} weight={600} />
         </motion.button>
         <div className="w-20 overflow-hidden text-center">
           <AnimatePresence mode="popLayout" initial={false}>
@@ -210,9 +223,9 @@ function Stepper({
           whileTap={{ scale: 0.85 }}
           onClick={() => change(step)}
           aria-label={`增加${label}`}
-          className="grid h-9 w-9 place-items-center rounded-full bg-ink/5 text-lg"
+          className="grid h-9 w-9 place-items-center rounded-full bg-ink/5"
         >
-          ＋
+          <Icon name="add" size={20} weight={600} />
         </motion.button>
       </div>
     </div>

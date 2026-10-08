@@ -1,3 +1,4 @@
+import type { FoodImage } from './foodImages'
 import type { Ingredient, MealSlot, Nutrition, PrepTask, Recipe, Section } from '../types'
 
 // 營養數值為 1 人份的估算值，僅供參考
@@ -15,7 +16,7 @@ const p = (task: string, keep: string): PrepTask => ({ task, keep })
 interface Draft {
   id: string
   name: string
-  emoji: string
+  image: FoodImage
   color: string
   meals: MealSlot[]
   minutes: number
@@ -39,7 +40,7 @@ export const RECIPES: Recipe[] = [
   r({
     id: 'overnight-oats',
     name: '隔夜燕麥杯',
-    emoji: '🥣',
+    image: 'oats',
     color: '#fbf0d9',
     meals: ['breakfast'],
     minutes: 5,
@@ -58,7 +59,7 @@ export const RECIPES: Recipe[] = [
   r({
     id: 'egg-toast',
     name: '酪梨蛋吐司',
-    emoji: '🥑',
+    image: 'avocado',
     color: '#e3eedf',
     meals: ['breakfast'],
     minutes: 10,
@@ -76,7 +77,7 @@ export const RECIPES: Recipe[] = [
   r({
     id: 'yogurt-bowl',
     name: '優格水果碗',
-    emoji: '🍓',
+    image: 'strawberry',
     color: '#fbe5de',
     meals: ['breakfast', 'snack'],
     minutes: 3,
@@ -93,7 +94,7 @@ export const RECIPES: Recipe[] = [
   r({
     id: 'egg-pancake',
     name: '蔬菜蛋餅',
-    emoji: '🫓',
+    image: 'flatbread',
     color: '#fbf0d9',
     meals: ['breakfast'],
     minutes: 10,
@@ -112,7 +113,7 @@ export const RECIPES: Recipe[] = [
   r({
     id: 'soy-milk-set',
     name: '豆漿飯糰',
-    emoji: '🍙',
+    image: 'rice-ball',
     color: '#f1ece2',
     meals: ['breakfast'],
     minutes: 10,
@@ -131,7 +132,7 @@ export const RECIPES: Recipe[] = [
   r({
     id: 'banana-pb-toast',
     name: '香蕉花生吐司',
-    emoji: '🍌',
+    image: 'banana',
     color: '#fbf0d9',
     meals: ['breakfast', 'snack'],
     minutes: 5,
@@ -150,7 +151,7 @@ export const RECIPES: Recipe[] = [
   r({
     id: 'chicken-bento',
     name: '舒肥雞胸便當',
-    emoji: '🍱',
+    image: 'bento',
     color: '#e3eedf',
     meals: ['lunch', 'dinner'],
     minutes: 25,
@@ -169,7 +170,7 @@ export const RECIPES: Recipe[] = [
   r({
     id: 'salmon-rice',
     name: '香煎鮭魚飯',
-    emoji: '🐟',
+    image: 'fish',
     color: '#fbe5de',
     meals: ['lunch', 'dinner'],
     minutes: 20,
@@ -186,7 +187,7 @@ export const RECIPES: Recipe[] = [
   r({
     id: 'tomato-egg-noodle',
     name: '番茄炒蛋麵',
-    emoji: '🍅',
+    image: 'tomato',
     color: '#fbe5de',
     meals: ['lunch', 'dinner'],
     minutes: 15,
@@ -204,7 +205,7 @@ export const RECIPES: Recipe[] = [
   r({
     id: 'tofu-veg-stirfry',
     name: '板豆腐炒時蔬',
-    emoji: '🥦',
+    image: 'broccoli',
     color: '#e3eedf',
     meals: ['lunch', 'dinner'],
     minutes: 15,
@@ -224,7 +225,7 @@ export const RECIPES: Recipe[] = [
   r({
     id: 'beef-stew',
     name: '番茄燉牛肉',
-    emoji: '🥘',
+    image: 'stew',
     color: '#fbe5de',
     meals: ['lunch', 'dinner'],
     minutes: 60,
@@ -243,7 +244,7 @@ export const RECIPES: Recipe[] = [
   r({
     id: 'shrimp-fried-rice',
     name: '蝦仁蛋炒飯',
-    emoji: '🍤',
+    image: 'fried-shrimp',
     color: '#fbf0d9',
     meals: ['lunch', 'dinner'],
     minutes: 15,
@@ -261,7 +262,7 @@ export const RECIPES: Recipe[] = [
   r({
     id: 'chicken-salad',
     name: '雞肉藜麥沙拉',
-    emoji: '🥗',
+    image: 'salad',
     color: '#e3eedf',
     meals: ['lunch', 'dinner'],
     minutes: 20,
@@ -280,7 +281,7 @@ export const RECIPES: Recipe[] = [
   r({
     id: 'mapo-tofu',
     name: '麻婆豆腐飯',
-    emoji: '🌶️',
+    image: 'hot-pepper',
     color: '#fbe5de',
     meals: ['lunch', 'dinner'],
     minutes: 20,
@@ -298,7 +299,7 @@ export const RECIPES: Recipe[] = [
   r({
     id: 'veg-curry',
     name: '蔬菜咖哩',
-    emoji: '🍛',
+    image: 'curry',
     color: '#fbf0d9',
     meals: ['lunch', 'dinner'],
     minutes: 35,
@@ -318,7 +319,7 @@ export const RECIPES: Recipe[] = [
   r({
     id: 'pork-ginger',
     name: '薑燒豬肉丼',
-    emoji: '🍚',
+    image: 'rice',
     color: '#f1ece2',
     meals: ['lunch', 'dinner'],
     minutes: 15,
@@ -338,7 +339,7 @@ export const RECIPES: Recipe[] = [
   r({
     id: 'cod-steam',
     name: '清蒸鱈魚',
-    emoji: '🐠',
+    image: 'tropical-fish',
     color: '#e0f0f9',
     meals: ['dinner'],
     minutes: 20,
@@ -356,7 +357,7 @@ export const RECIPES: Recipe[] = [
   r({
     id: 'chicken-soup-noodle',
     name: '雞湯蔬菜麵',
-    emoji: '🍜',
+    image: 'noodle-bowl',
     color: '#fbf0d9',
     meals: ['lunch', 'dinner'],
     minutes: 20,
@@ -373,7 +374,7 @@ export const RECIPES: Recipe[] = [
   r({
     id: 'tempeh-bowl',
     name: '天貝能量碗',
-    emoji: '🥙',
+    image: 'pita',
     color: '#e3eedf',
     meals: ['lunch', 'dinner'],
     minutes: 20,
@@ -393,7 +394,7 @@ export const RECIPES: Recipe[] = [
   r({
     id: 'braised-pork-rice',
     name: '香菇滷肉飯',
-    emoji: '🍲',
+    image: 'pot',
     color: '#f1ece2',
     meals: ['lunch', 'dinner'],
     minutes: 50,
@@ -413,7 +414,7 @@ export const RECIPES: Recipe[] = [
   r({
     id: 'pesto-pasta',
     name: '青醬蘑菇義大利麵',
-    emoji: '🍝',
+    image: 'spaghetti',
     color: '#e3eedf',
     meals: ['lunch', 'dinner'],
     minutes: 20,
@@ -431,7 +432,7 @@ export const RECIPES: Recipe[] = [
   r({
     id: 'miso-salmon',
     name: '味噌烤鮭魚',
-    emoji: '🍣',
+    image: 'sushi',
     color: '#fbe5de',
     meals: ['dinner'],
     minutes: 25,
@@ -449,7 +450,7 @@ export const RECIPES: Recipe[] = [
   r({
     id: 'egg-tofu-soup',
     name: '雞蛋豆腐蔬菜湯',
-    emoji: '🥣',
+    image: 'oden',
     color: '#fbf0d9',
     meals: ['dinner'],
     minutes: 15,
@@ -467,7 +468,7 @@ export const RECIPES: Recipe[] = [
   r({
     id: 'beef-stirfry',
     name: '黑胡椒牛肉炒飯',
-    emoji: '🥩',
+    image: 'meat',
     color: '#f1ece2',
     meals: ['lunch', 'dinner'],
     minutes: 15,
@@ -485,7 +486,7 @@ export const RECIPES: Recipe[] = [
   r({
     id: 'veg-dumpling',
     name: '高麗菜水餃',
-    emoji: '🥟',
+    image: 'dumpling',
     color: '#f1ece2',
     meals: ['lunch', 'dinner'],
     minutes: 10,
@@ -499,7 +500,7 @@ export const RECIPES: Recipe[] = [
   r({
     id: 'boiled-egg',
     name: '水煮蛋',
-    emoji: '🥚',
+    image: 'egg',
     color: '#fbf0d9',
     meals: ['snack', 'breakfast'],
     minutes: 10,
@@ -513,7 +514,7 @@ export const RECIPES: Recipe[] = [
   r({
     id: 'fruit-nuts',
     name: '水果＋堅果',
-    emoji: '🍎',
+    image: 'apple',
     color: '#fbe5de',
     meals: ['snack'],
     minutes: 2,
@@ -526,7 +527,7 @@ export const RECIPES: Recipe[] = [
   r({
     id: 'sweet-potato',
     name: '烤地瓜',
-    emoji: '🍠',
+    image: 'sweet-potato',
     color: '#fbf0d9',
     meals: ['snack', 'breakfast'],
     minutes: 40,
@@ -540,7 +541,7 @@ export const RECIPES: Recipe[] = [
   r({
     id: 'soy-latte',
     name: '無糖豆漿',
-    emoji: '🥛',
+    image: 'milk',
     color: '#f1ece2',
     meals: ['snack', 'breakfast'],
     minutes: 1,
@@ -553,7 +554,7 @@ export const RECIPES: Recipe[] = [
   r({
     id: 'edamame',
     name: '鹽味毛豆',
-    emoji: '🫛',
+    image: 'pea-pod',
     color: '#e3eedf',
     meals: ['snack'],
     minutes: 8,

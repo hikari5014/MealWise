@@ -1,6 +1,8 @@
 import { motion } from 'framer-motion'
 import { useMemo, useState } from 'react'
 import { BodyCard } from '../components/BodyCard'
+import { Icon } from '../components/Icon'
+import { AboutCard } from '../components/Update'
 import { Button, Card, Sheet, useToast } from '../components/ui'
 import { db } from '../db'
 import { addDays, todayKey, weekdayLabel } from '../lib/date'
@@ -9,6 +11,7 @@ import { useLogs } from '../lib/hooks'
 import { macroTargets, sumNutrition } from '../lib/meal'
 import { summarizeAvoid } from '../data/avoid'
 import { GOAL_LABEL, type Profile } from '../types'
+import type { IconName } from '../lib/icons'
 import Onboarding from './Onboarding'
 
 export default function Me({ profile }: { profile: Profile }) {
@@ -31,11 +34,11 @@ export default function Me({ profile }: { profile: Profile }) {
     list.length ? Math.round(list.reduce((s, d) => s + fn(d), 0) / list.length) : 0
   const maxKcal = Math.max(profile.kcal * 1.2, ...daily.map((d) => d.n.kcal))
 
-  const tips: string[] = []
+  const tips: { icon: IconName; text: string }[] = []
   if (logged.length >= 2) {
-    if (avg((d) => d.n.protein) < targets.protein * 0.8) tips.push('蛋白質常常不太夠，可以多加一顆蛋或一杯豆漿 🥚')
-    if (avg((d) => d.n.fiber) < 20) tips.push('纖維偏少，多一份蔬菜或水果吧 🥦')
-    if (avg((d) => d.water, daily) < profile.waterMl * 0.7) tips.push('最近喝水比較少，記得補水 💧')
+    if (avg((d) => d.n.protein) < targets.protein * 0.8) tips.push({ icon: 'egg', text: '蛋白質常常不太夠，可以多加一顆蛋或一杯豆漿' })
+    if (avg((d) => d.n.fiber) < 20) tips.push({ icon: 'nutrition', text: '纖維偏少，多一份蔬菜或水果吧' })
+    if (avg((d) => d.water, daily) < profile.waterMl * 0.7) tips.push({ icon: 'water_drop', text: '最近喝水比較少，記得補水' })
   }
 
   return (
@@ -113,17 +116,26 @@ export default function Me({ profile }: { profile: Profile }) {
 
       {tips.length > 0 && (
         <Card className="space-y-2 bg-honey-soft">
-          <h2 className="font-bold">小提醒</h2>
+          <h2 className="flex items-center gap-1.5 font-bold">
+            <Icon name="lightbulb" size={20} fill className="text-honey" />
+            小提醒
+          </h2>
           {tips.map((t) => (
-            <p key={t} className="text-sm">
-              {t}
+            <p key={t.text} className="flex items-center gap-2 text-sm">
+              <Icon name={t.icon} size={20} fill className="text-honey" motion="float" />
+              {t.text}
             </p>
           ))}
         </Card>
       )}
 
-      <div className="space-y-2 pt-4 text-center text-xs text-muted">
-        <p>資料只存在這台裝置上，不會上傳。</p>
+      <AboutCard />
+
+      <div className="space-y-2 pt-2 text-center text-xs text-muted">
+        <p className="flex items-center justify-center gap-1">
+          <Icon name="lock" size={14} />
+          資料只存在這台裝置上，不會上傳。
+        </p>
         <button className="underline" onClick={() => setConfirmReset(true)}>
           清除所有資料
         </button>

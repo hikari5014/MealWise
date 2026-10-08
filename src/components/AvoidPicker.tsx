@@ -5,6 +5,8 @@ import { RECIPES } from '../data/recipes'
 import { haptic } from '../lib/feedback'
 import { fitsProfile } from '../lib/meal'
 import type { Profile } from '../types'
+import { Food } from './Food'
+import { Icon } from './Icon'
 import { CountUp } from './Ring'
 
 const COLS = 3
@@ -109,7 +111,7 @@ function GroupTile({ group, count, open, onTap }: { group: AvoidGroup; count: nu
   const all = count === group.items.length
   const some = count > 0 && !all
 
-  // 數量改變時，emoji 跳一下
+  // 數量改變時，圖片跳一下
   const [prev, setPrev] = useState(count)
   useEffect(() => {
     if (count !== prev) {
@@ -131,8 +133,8 @@ function GroupTile({ group, count, open, onTap }: { group: AvoidGroup; count: nu
         all ? 'bg-tomato text-white' : some ? 'bg-tomato-soft' : 'bg-white'
       } ${open ? 'ring-2 ring-tomato/60' : ''}`}
     >
-      <motion.span animate={controls} className="text-3xl">
-        {group.emoji}
+      <motion.span animate={controls} className="grid place-items-center">
+        <Food id={group.image} size={40} />
       </motion.span>
       <span className="text-sm font-medium">{group.label}</span>
       <AnimatePresence>
@@ -147,7 +149,7 @@ function GroupTile({ group, count, open, onTap }: { group: AvoidGroup; count: nu
               all ? 'bg-white text-tomato' : 'bg-tomato text-white'
             }`}
           >
-            {all ? (group.items.length === 1 ? '✕' : '全') : count}
+            {all ? group.items.length === 1 ? <Icon name="close" size={14} weight={700} /> : '全' : count}
           </motion.span>
         )}
       </AnimatePresence>
@@ -183,12 +185,12 @@ function DetailPanel({
       <div className="relative rounded-3xl bg-tomato-soft p-3">
         <div className="mb-3 flex items-center gap-2">
           <motion.span
-            className="text-2xl"
+            className="grid place-items-center"
             initial={{ scale: 0, rotate: -90 }}
             animate={{ scale: 1, rotate: 0 }}
             transition={{ ...bouncy, delay: 0.05 }}
           >
-            {group.emoji}
+            <Food id={group.image} size={30} />
           </motion.span>
           <span className="font-bold">哪些{group.label}不吃？</span>
           <motion.button
@@ -243,8 +245,8 @@ function ItemChip({ item, on, onToggle }: { item: AvoidItem; on: boolean; onTogg
         on ? 'bg-tomato text-white' : 'bg-white'
       }`}
     >
-      <motion.span animate={controls} className="inline-block text-lg leading-none">
-        {item.emoji}
+      <motion.span animate={controls} className="grid place-items-center">
+        <Food id={item.image} size={26} />
       </motion.span>
       <span>{item.label}</span>
       <AnimatePresence initial={false}>
@@ -255,9 +257,9 @@ function ItemChip({ item, on, onToggle }: { item: AvoidItem; on: boolean; onTogg
             animate={{ width: 'auto', opacity: 1, scale: 1 }}
             exit={{ width: 0, opacity: 0, scale: 0 }}
             transition={bouncy}
-            className="overflow-hidden text-xs font-bold"
+            className="grid overflow-hidden"
           >
-            ✕
+            <Icon name="close" size={16} weight={700} />
           </motion.span>
         )}
       </AnimatePresence>

@@ -1,15 +1,16 @@
 import type { Recipe } from '../types'
+import type { FoodImage } from './foodImages'
 
 export interface AvoidItem {
   id: string
   label: string
-  emoji: string
+  image: FoodImage
 }
 
 export interface AvoidGroup {
   id: string
   label: string
-  emoji: string
+  image: FoodImage
   items: AvoidItem[]
 }
 
@@ -18,102 +19,102 @@ export const AVOID_GROUPS: AvoidGroup[] = [
   {
     id: 'seafood',
     label: '海鮮',
-    emoji: '🦐',
+    image: 'shrimp',
     items: [
-      { id: 'fish', label: '魚類', emoji: '🐟' },
-      { id: 'shrimp', label: '蝦子', emoji: '🦐' },
-      { id: 'crab', label: '螃蟹', emoji: '🦀' },
-      { id: 'shellfish', label: '貝類・牡蠣', emoji: '🦪' },
-      { id: 'squid', label: '花枝・魷魚・章魚', emoji: '🦑' },
+      { id: 'fish', label: '魚類', image: 'fish' },
+      { id: 'shrimp', label: '蝦子', image: 'shrimp' },
+      { id: 'crab', label: '螃蟹', image: 'crab' },
+      { id: 'shellfish', label: '貝類・牡蠣', image: 'oyster' },
+      { id: 'squid', label: '花枝・魷魚・章魚', image: 'squid' },
     ],
   },
   {
     id: 'meat',
     label: '肉類',
-    emoji: '🥩',
+    image: 'meat',
     items: [
-      { id: 'beef', label: '牛肉', emoji: '🐄' },
-      { id: 'pork', label: '豬肉', emoji: '🐖' },
-      { id: 'chicken', label: '雞肉', emoji: '🐔' },
-      { id: 'lamb', label: '羊肉', emoji: '🐑' },
-      { id: 'duck', label: '鴨・鵝', emoji: '🦆' },
-      { id: 'offal', label: '內臟', emoji: '🫀' },
+      { id: 'beef', label: '牛肉', image: 'cow' },
+      { id: 'pork', label: '豬肉', image: 'pig' },
+      { id: 'chicken', label: '雞肉', image: 'poultry' },
+      { id: 'lamb', label: '羊肉', image: 'ewe' },
+      { id: 'duck', label: '鴨・鵝', image: 'duck' },
+      { id: 'offal', label: '內臟', image: 'heart' },
     ],
   },
   {
     id: 'egg',
     label: '蛋',
-    emoji: '🥚',
-    items: [{ id: 'egg', label: '蛋', emoji: '🥚' }],
+    image: 'egg',
+    items: [{ id: 'egg', label: '蛋', image: 'egg' }],
   },
   {
     id: 'dairy',
     label: '乳製品',
-    emoji: '🥛',
+    image: 'milk',
     items: [
-      { id: 'milk', label: '鮮奶', emoji: '🥛' },
-      { id: 'cheese', label: '起司', emoji: '🧀' },
-      { id: 'yogurt', label: '優格', emoji: '🍶' },
-      { id: 'butter', label: '奶油', emoji: '🧈' },
+      { id: 'milk', label: '鮮奶', image: 'milk' },
+      { id: 'cheese', label: '起司', image: 'cheese' },
+      { id: 'yogurt', label: '優格', image: 'jar' },
+      { id: 'butter', label: '奶油', image: 'butter' },
     ],
   },
   {
     id: 'soy',
     label: '黃豆製品',
-    emoji: '🫘',
+    image: 'beans',
     items: [
-      { id: 'tofu', label: '豆腐', emoji: '⬜' },
-      { id: 'soymilk', label: '豆漿', emoji: '🥛' },
-      { id: 'soysauce', label: '醬油・豆瓣醬', emoji: '🍶' },
-      { id: 'miso', label: '味噌', emoji: '🥣' },
-      { id: 'edamame', label: '毛豆', emoji: '🫛' },
-      { id: 'tempeh', label: '天貝', emoji: '🟫' },
+      { id: 'tofu', label: '豆腐', image: 'oden' },
+      { id: 'soymilk', label: '豆漿', image: 'cup-straw' },
+      { id: 'soysauce', label: '醬油・豆瓣醬', image: 'salt' },
+      { id: 'miso', label: '味噌', image: 'oats' },
+      { id: 'edamame', label: '毛豆', image: 'pea-pod' },
+      { id: 'tempeh', label: '天貝', image: 'beans' },
     ],
   },
   {
     id: 'gluten',
     label: '麩質',
-    emoji: '🌾',
+    image: 'grain',
     items: [
-      { id: 'wheat', label: '小麥（麵、麵包、醬油）', emoji: '🍞' },
-      { id: 'oats', label: '燕麥', emoji: '🥣' },
+      { id: 'wheat', label: '小麥（麵、麵包、醬油）', image: 'bread' },
+      { id: 'oats', label: '燕麥', image: 'oats' },
     ],
   },
   {
     id: 'nuts',
     label: '堅果種子',
-    emoji: '🥜',
+    image: 'peanuts',
     items: [
-      { id: 'peanut', label: '花生', emoji: '🥜' },
-      { id: 'treenuts', label: '杏仁・核桃・腰果', emoji: '🌰' },
-      { id: 'sesame', label: '芝麻', emoji: '⚪' },
+      { id: 'peanut', label: '花生', image: 'peanuts' },
+      { id: 'treenuts', label: '杏仁・核桃・腰果', image: 'chestnut' },
+      { id: 'sesame', label: '芝麻', image: 'rice-cracker' },
     ],
   },
   {
     id: 'aromatics',
     label: '辛香料',
-    emoji: '🧄',
+    image: 'garlic',
     items: [
-      { id: 'cilantro', label: '香菜', emoji: '🌿' },
-      { id: 'scallion', label: '蔥', emoji: '🌱' },
-      { id: 'onion', label: '洋蔥', emoji: '🧅' },
-      { id: 'garlic', label: '蒜頭', emoji: '🧄' },
-      { id: 'ginger', label: '薑', emoji: '🫚' },
-      { id: 'chili', label: '辣', emoji: '🌶️' },
+      { id: 'cilantro', label: '香菜', image: 'herb' },
+      { id: 'scallion', label: '蔥', image: 'seedling' },
+      { id: 'onion', label: '洋蔥', image: 'onion' },
+      { id: 'garlic', label: '蒜頭', image: 'garlic' },
+      { id: 'ginger', label: '薑', image: 'ginger' },
+      { id: 'chili', label: '辣', image: 'hot-pepper' },
     ],
   },
   {
     id: 'veggies',
     label: '蔬菜',
-    emoji: '🥬',
+    image: 'leafy-green',
     items: [
-      { id: 'mushroom', label: '菇類', emoji: '🍄' },
-      { id: 'bellpepper', label: '青椒・甜椒', emoji: '🫑' },
-      { id: 'eggplant', label: '茄子', emoji: '🍆' },
-      { id: 'bittergourd', label: '苦瓜', emoji: '🥒' },
-      { id: 'carrot', label: '紅蘿蔔', emoji: '🥕' },
-      { id: 'celery', label: '芹菜', emoji: '🥬' },
-      { id: 'tomato', label: '番茄', emoji: '🍅' },
+      { id: 'mushroom', label: '菇類', image: 'mushroom' },
+      { id: 'bellpepper', label: '青椒・甜椒', image: 'bell-pepper' },
+      { id: 'eggplant', label: '茄子', image: 'eggplant' },
+      { id: 'bittergourd', label: '苦瓜', image: 'cucumber' },
+      { id: 'carrot', label: '紅蘿蔔', image: 'carrot' },
+      { id: 'celery', label: '芹菜', image: 'herb' },
+      { id: 'tomato', label: '番茄', image: 'tomato' },
     ],
   },
 ]

@@ -1,10 +1,14 @@
 import { motion, MotionConfig } from 'framer-motion'
 import { useState } from 'react'
+import { Food } from './components/Food'
 import { HealthSyncProvider } from './components/HealthSync'
+import { Icon } from './components/Icon'
 import { RecipeDetailProvider } from './components/RecipeDetail'
+import { UpdateProvider } from './components/Update'
 import { ToastProvider } from './components/ui'
 import { haptic, spring } from './lib/feedback'
 import { useProfile } from './lib/hooks'
+import type { IconName } from './lib/icons'
 import Lists from './pages/Lists'
 import Me from './pages/Me'
 import Onboarding from './pages/Onboarding'
@@ -12,11 +16,11 @@ import Plan from './pages/Plan'
 import Today from './pages/Today'
 
 const TABS = [
-  { id: 'today', label: '今天', icon: '🍽' },
-  { id: 'plan', label: '菜單', icon: '📅' },
-  { id: 'lists', label: '清單', icon: '🛒' },
-  { id: 'me', label: '我的', icon: '🙂' },
-] as const
+  { id: 'today', label: '今天', icon: 'restaurant' },
+  { id: 'plan', label: '菜單', icon: 'calendar_month' },
+  { id: 'lists', label: '清單', icon: 'shopping_cart' },
+  { id: 'me', label: '我的', icon: 'person' },
+] as const satisfies readonly { id: string; label: string; icon: IconName }[]
 
 type TabId = (typeof TABS)[number]['id']
 
@@ -39,33 +43,35 @@ export default function App() {
   return (
     <MotionConfig reducedMotion="user">
       <ToastProvider>
-        <HealthSyncProvider>
-          <RecipeDetailProvider>
-            {profile === undefined ? (
-              <Splash />
-            ) : profile === null ? (
-              <Onboarding />
-            ) : (
-              <>
-                <main className="mx-auto max-w-lg px-4 pb-[calc(96px+env(safe-area-inset-bottom))] pt-[calc(12px+env(safe-area-inset-top))]">
-                  {/* 只做「進場」動畫：換頁不必等舊頁離場，切換更跟手也更穩定 */}
-                  <motion.div
-                    key={tab}
-                    initial={{ opacity: 0, x: dir * 28 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.24, ease: [0.22, 1, 0.36, 1] }}
-                  >
-                    {tab === 'today' && <Today profile={profile} onGoPlan={() => go('plan')} />}
-                    {tab === 'plan' && <Plan profile={profile} />}
-                    {tab === 'lists' && <Lists profile={profile} />}
-                    {tab === 'me' && <Me profile={profile} />}
-                  </motion.div>
-                </main>
-                <BottomNav tab={tab} onChange={go} />
-              </>
-            )}
-          </RecipeDetailProvider>
-        </HealthSyncProvider>
+        <UpdateProvider>
+          <HealthSyncProvider>
+            <RecipeDetailProvider>
+              {profile === undefined ? (
+                <Splash />
+              ) : profile === null ? (
+                <Onboarding />
+              ) : (
+                <>
+                  <main className="mx-auto max-w-lg px-4 pb-[calc(96px+env(safe-area-inset-bottom))] pt-[calc(12px+env(safe-area-inset-top))]">
+                    {/* 只做「進場」動畫：換頁不必等舊頁離場，切換更跟手也更穩定 */}
+                    <motion.div
+                      key={tab}
+                      initial={{ opacity: 0, x: dir * 28 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ duration: 0.24, ease: [0.22, 1, 0.36, 1] }}
+                    >
+                      {tab === 'today' && <Today profile={profile} onGoPlan={() => go('plan')} />}
+                      {tab === 'plan' && <Plan profile={profile} />}
+                      {tab === 'lists' && <Lists profile={profile} />}
+                      {tab === 'me' && <Me profile={profile} />}
+                    </motion.div>
+                  </main>
+                  <BottomNav tab={tab} onChange={go} />
+                </>
+              )}
+            </RecipeDetailProvider>
+          </HealthSyncProvider>
+        </UpdateProvider>
       </ToastProvider>
     </MotionConfig>
   )
@@ -88,11 +94,11 @@ function BottomNav({ tab, onChange }: { tab: TabId; onChange: (t: TabId) => void
                 <motion.span layoutId="nav-pill" transition={spring} className="absolute inset-x-3 inset-y-1.5 rounded-2xl bg-leaf-soft" />
               )}
               <motion.span
-                className="relative text-xl"
-                animate={{ scale: active ? 1.12 : 1, y: active ? -1 : 0 }}
-                transition={spring}
+                className={`relative grid place-items-center ${active ? 'text-leaf-dark' : 'text-muted'}`}
+                animate={active ? { scale: [1, 1.25, 1.08], y: [0, -4, -1], rotate: [0, -8, 0] } : { scale: 1, y: 0, rotate: 0 }}
+                transition={{ duration: 0.45, ease: 'easeOut' }}
               >
-                {t.icon}
+                <Icon name={t.icon} size={24} fill={active} weight={active ? 600 : 400} />
               </motion.span>
               <span className={`relative text-[11px] font-medium ${active ? 'text-leaf-dark' : 'text-muted'}`}>{t.label}</span>
             </button>
@@ -106,12 +112,8 @@ function BottomNav({ tab, onChange }: { tab: TabId; onChange: (t: TabId) => void
 function Splash() {
   return (
     <div className="grid min-h-dvh place-items-center">
-      <motion.div
-        className="text-5xl"
-        animate={{ scale: [1, 1.08, 1] }}
-        transition={{ duration: 1.2, repeat: Infinity, ease: 'easeInOut' }}
-      >
-        🍱
+      <motion.div animate={{ scale: [1, 1.08, 1] }} transition={{ duration: 1.2, repeat: Infinity, ease: 'easeInOut' }}>
+        <Food id="bento" size={72} />
       </motion.div>
     </div>
   )

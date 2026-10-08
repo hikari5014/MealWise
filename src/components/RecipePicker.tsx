@@ -3,6 +3,8 @@ import { useMemo, useState } from 'react'
 import { RECIPE_MAP } from '../data/recipes'
 import { recipesFor } from '../lib/meal'
 import { MEAL_LABEL, type MealSlot, type Profile, type Recipe } from '../types'
+import { Food } from './Food'
+import { Icon } from './Icon'
 import { RecipeThumb, useRecipeDetail } from './RecipeDetail'
 import { listContainer, listItem, Sheet } from './ui'
 
@@ -55,8 +57,8 @@ export function RecipePicker({
                 }}
                 className="flex shrink-0 items-center gap-2 rounded-2xl bg-white py-2 pl-2 pr-3 text-sm shadow-card"
               >
-                <span className="grid h-8 w-8 place-items-center rounded-xl text-lg" style={{ backgroundColor: r.color }}>
-                  {r.emoji}
+                <span className="grid h-8 w-8 place-items-center rounded-xl" style={{ backgroundColor: r.color }}>
+                  <Food id={r.image} size={24} />
                 </span>
                 {r.name}
               </motion.button>
@@ -91,7 +93,7 @@ export function RecipePicker({
             }}
           />
         ))}
-        {list.length === 0 && <li className="py-10 text-center text-sm text-muted">找不到符合的食譜 🥲</li>}
+        {list.length === 0 && <li className="py-10 text-center text-sm text-muted">找不到符合的食譜</li>}
       </motion.ul>
     </Sheet>
   )
@@ -115,9 +117,9 @@ function PickerRow({ recipe, onPick }: { recipe: Recipe; onPick: () => void }) {
         whileTap={{ scale: 0.85 }}
         onClick={onPick}
         aria-label={`加入${recipe.name}`}
-        className="grid h-9 w-9 place-items-center rounded-full bg-leaf-soft text-xl text-leaf-dark"
+        className="grid h-9 w-9 place-items-center rounded-full bg-leaf-soft text-leaf-dark"
       >
-        +
+        <Icon name="add" size={22} weight={600} />
       </motion.button>
     </motion.li>
   )

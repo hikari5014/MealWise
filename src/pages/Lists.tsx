@@ -1,12 +1,14 @@
 import { AnimatePresence, motion } from 'framer-motion'
 import { useMemo, useState } from 'react'
 import { CheckButton, Segmented } from '../components/ui'
+import { Food } from '../components/Food'
+import { Icon } from '../components/Icon'
 import { RECIPE_MAP } from '../data/recipes'
 import { todayKey, weekDays, weekStart } from '../lib/date'
 import { spring } from '../lib/feedback'
 import { actions, useChecks, usePlans } from '../lib/hooks'
 import { buildShopping, formatQty } from '../lib/meal'
-import { SECTION_LABEL, SECTION_ORDER, type PlanEntry, type Profile } from '../types'
+import { SECTION_IMAGE, SECTION_LABEL, SECTION_ORDER, type PlanEntry, type Profile } from '../types'
 import { WeekSwitcher } from './Plan'
 
 export default function Lists({ profile }: { profile: Profile }) {
@@ -26,14 +28,16 @@ export default function Lists({ profile }: { profile: Profile }) {
         value={view}
         onChange={setView}
         options={[
-          { value: 'shop', label: '🛒 採購清單' },
-          { value: 'prep', label: '🔪 備料清單' },
+          { value: 'shop', label: '採購清單', icon: 'shopping_cart' },
+          { value: 'prep', label: '備料清單', icon: 'skillet' },
         ]}
       />
       <WeekSwitcher start={start} onChange={setStart} />
       {plans.length === 0 ? (
         <div className="py-16 text-center text-sm text-muted">
-          <div className="mb-2 text-5xl">🧺</div>
+          <div className="mb-2 flex justify-center">
+            <Food id="basket" size={80} float />
+          </div>
           這週還沒有菜單，排好菜單後清單會自動出現
         </div>
       ) : (
@@ -62,7 +66,14 @@ function Progress({ done, total, doneText }: { done: number; total: number; done
             exit={{ opacity: 0, y: -6 }}
             className="font-medium"
           >
-            {all ? doneText : '進度'}
+            {all ? (
+              <span className="flex items-center gap-1.5 text-leaf-dark">
+                <Icon name="celebration" size={20} fill motion="wiggle" />
+                {doneText}
+              </span>
+            ) : (
+              '進度'
+            )}
           </motion.span>
         </AnimatePresence>
         <span className="tabular-nums text-muted">
@@ -88,7 +99,7 @@ function Shopping({ weekKey, plans, servings }: { weekKey: string; plans: PlanEn
 
   return (
     <div className="space-y-4">
-      <Progress done={done} total={items.length} doneText="🎉 全部買齊了！" />
+      <Progress done={done} total={items.length} doneText="全部買齊了！" />
       {SECTION_ORDER.map((section) => {
         const group = items
           .filter((i) => i.section === section)
@@ -96,7 +107,10 @@ function Shopping({ weekKey, plans, servings }: { weekKey: string; plans: PlanEn
         if (!group.length) return null
         return (
           <section key={section}>
-            <h2 className="mb-2 px-1 text-sm font-bold">{SECTION_LABEL[section]}</h2>
+            <h2 className="mb-2 flex items-center gap-1.5 px-1 text-sm font-bold">
+              <Food id={SECTION_IMAGE[section]} size={22} />
+              {SECTION_LABEL[section]}
+            </h2>
             <ul className="space-y-2">
               {group.map((item) => {
                 const key = prefix + item.key
@@ -148,18 +162,18 @@ function Prep({ weekKey, plans }: { weekKey: string; plans: PlanEntry[] }) {
   const done = tasks.filter((k) => checks.has(k)).length
 
   if (!recipes.length) {
-    return <div className="py-12 text-center text-sm text-muted">這週的菜色都是現煮現吃，不用先備料 😊</div>
+    return <div className="py-12 text-center text-sm text-muted">這週的菜色都是現煮現吃，不用先備料</div>
   }
 
   return (
     <div className="space-y-4">
-      <Progress done={done} total={tasks.length} doneText="🙌 備料完成！" />
+      <Progress done={done} total={tasks.length} doneText="備料完成！" />
       <p className="px-1 text-xs text-muted">週末花一點時間先準備好，平日煮飯會快很多</p>
       {recipes.map((r) => (
         <section key={r.id} className="rounded-3xl bg-white p-4 shadow-card">
           <div className="mb-2 flex items-center gap-2">
-            <span className="grid h-8 w-8 place-items-center rounded-xl text-lg" style={{ backgroundColor: r.color }}>
-              {r.emoji}
+            <span className="grid h-8 w-8 place-items-center rounded-xl" style={{ backgroundColor: r.color }}>
+              <Food id={r.image} size={24} />
             </span>
             <span className="font-medium">{r.name}</span>
             <span className="ml-auto rounded-full bg-honey-soft px-2 py-0.5 text-xs">本週 {counts.get(r.id)} 次</span>

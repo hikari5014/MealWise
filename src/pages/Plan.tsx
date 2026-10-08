@@ -1,6 +1,8 @@
 import { AnimatePresence, motion } from 'framer-motion'
 import { useMemo, useState } from 'react'
 import { RecipePicker } from '../components/RecipePicker'
+import { Food } from '../components/Food'
+import { Icon } from '../components/Icon'
 import { RecipeThumb, useRecipeDetail } from '../components/RecipeDetail'
 import { Button, listContainer, listItem, Segmented, useToast } from '../components/ui'
 import { RECIPE_MAP } from '../data/recipes'
@@ -9,7 +11,8 @@ import { addDays, monthDay, todayKey, weekDays, weekdayLabel, weekStart } from '
 import { haptic, spring } from '../lib/feedback'
 import { usePlans } from '../lib/hooks'
 import { autoPlan, recipesFor } from '../lib/meal'
-import { MEAL_EMOJI, MEAL_LABEL, MEAL_SLOTS, type MealSlot, type PlanEntry, type Profile } from '../types'
+import { MealTitle } from './Today'
+import { MEAL_LABEL, MEAL_SLOTS, type MealSlot, type PlanEntry, type Profile } from '../types'
 
 export default function Plan({ profile }: { profile: Profile }) {
   const [view, setView] = useState<'week' | 'library'>('week')
@@ -23,8 +26,8 @@ export default function Plan({ profile }: { profile: Profile }) {
         value={view}
         onChange={setView}
         options={[
-          { value: 'week', label: '📅 一週菜單' },
-          { value: 'library', label: '📖 食譜庫' },
+          { value: 'week', label: '一週菜單', icon: 'calendar_month' },
+          { value: 'library', label: '食譜庫', icon: 'menu_book' },
         ]}
       />
       <motion.div
@@ -49,7 +52,7 @@ export function WeekSwitcher({ start, onChange }: { start: string; onChange: (s:
         onClick={() => onChange(addDays(start, -7))}
         className="grid h-9 w-9 place-items-center rounded-full bg-white shadow-card"
       >
-        ‹
+        <Icon name="chevron_left" size={22} />
       </motion.button>
       <button className="text-sm font-medium" onClick={() => onChange(weekStart(todayKey()))}>
         {monthDay(start)} – {monthDay(addDays(start, 6))}
@@ -61,7 +64,7 @@ export function WeekSwitcher({ start, onChange }: { start: string; onChange: (s:
         onClick={() => onChange(addDays(start, 7))}
         className="grid h-9 w-9 place-items-center rounded-full bg-white shadow-card"
       >
-        ›
+        <Icon name="chevron_right" size={22} />
       </motion.button>
     </div>
   )
@@ -90,7 +93,7 @@ function Week({ profile }: { profile: Profile }) {
     const targetDays = days.filter((d) => d >= today)
     const added = autoPlan(targetDays.length ? targetDays : days, plans, profile)
     if (!added.length) {
-      toast('這週都排好了 👍')
+      toast('這週都排好了')
       return
     }
     haptic([10, 40, 10, 40, 16])
@@ -137,7 +140,10 @@ function Week({ profile }: { profile: Profile }) {
 
       <div className="flex gap-2">
         <Button className="flex-1" onClick={fillWeek}>
-          ✨ 一鍵排滿這週
+          <span className="flex items-center justify-center gap-2">
+            <Icon name="auto_awesome" size={20} fill motion="pulse" />
+            一鍵排滿這週
+          </span>
         </Button>
       </div>
 
@@ -157,7 +163,7 @@ function Week({ profile }: { profile: Profile }) {
           {MEAL_SLOTS.map((meal) => (
             <section key={meal}>
               <h2 className="mb-2 px-1 font-bold">
-                {MEAL_EMOJI[meal]} {MEAL_LABEL[meal]}
+                <MealTitle meal={meal} />
               </h2>
               <div className="space-y-2">
                 <AnimatePresence initial={false}>
@@ -172,7 +178,10 @@ function Week({ profile }: { profile: Profile }) {
                   onClick={() => setPicking(meal)}
                   className="w-full rounded-2xl border-2 border-dashed border-ink/10 py-2.5 text-sm text-muted"
                 >
-                  ＋ 加入{MEAL_LABEL[meal]}
+                  <span className="flex items-center justify-center gap-1">
+                    <Icon name="add" size={18} />
+                    加入{MEAL_LABEL[meal]}
+                  </span>
                 </motion.button>
               </div>
             </section>
@@ -233,7 +242,7 @@ function PlanRow({ plan, onRemove }: { plan: PlanEntry; onRemove: () => void }) 
         aria-label={`移除${recipe.name}`}
         className="grid h-9 w-9 place-items-center rounded-full text-muted hover:bg-ink/5"
       >
-        ✕
+        <Icon name="close" size={20} />
       </motion.button>
     </motion.div>
   )
@@ -282,10 +291,12 @@ function Library({ profile }: { profile: Profile }) {
             >
               <motion.div
                 layoutId={layoutId}
-                className="grid h-24 place-items-center text-5xl"
+                className="grid h-24 place-items-center"
                 style={{ backgroundColor: r.color }}
               >
-                <motion.span layout="position">{r.emoji}</motion.span>
+                <motion.span layout="position" className="grid place-items-center">
+                  <Food id={r.image} size={68} alt={r.name} />
+                </motion.span>
               </motion.div>
               <div className="p-3">
                 <div className="truncate text-sm font-medium">{r.name}</div>

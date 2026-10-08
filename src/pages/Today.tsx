@@ -2,6 +2,7 @@ import { AnimatePresence, motion } from 'framer-motion'
 import { useMemo, useState } from 'react'
 import { HealthTip } from '../components/BodyCard'
 import { RecipePicker } from '../components/RecipePicker'
+import { Icon } from '../components/Icon'
 import { RecipeThumb, useRecipeDetail } from '../components/RecipeDetail'
 import { CountUp, MacroBar, Ring } from '../components/Ring'
 import { Card, CheckButton, useToast } from '../components/ui'
@@ -12,7 +13,7 @@ import { greeting, monthDay, todayKey, weekdayLabel } from '../lib/date'
 import { haptic, spring } from '../lib/feedback'
 import { actions, useLogs, usePlans, useRecent, useWater } from '../lib/hooks'
 import { macroTargets, PORTIONS, sumNutrition } from '../lib/meal'
-import { MEAL_EMOJI, MEAL_LABEL, MEAL_SLOTS, type LogEntry, type MealSlot, type PlanEntry, type Profile } from '../types'
+import { MEAL_COLOR, MEAL_ICON, MEAL_LABEL, MEAL_SLOTS, type LogEntry, type MealSlot, type PlanEntry, type Profile } from '../types'
 
 export default function Today({ profile, onGoPlan }: { profile: Profile; onGoPlan: () => void }) {
   const date = todayKey()
@@ -58,7 +59,8 @@ export default function Today({ profile, onGoPlan }: { profile: Profile; onGoPla
         </div>
         <h1 className="text-2xl font-bold">
           {greeting()}
-          {profile.name ? `，${profile.name}` : ''} 👋
+          {profile.name ? `，${profile.name}` : ''}
+          <Icon name="waving_hand" size={28} fill className="ml-1 align-[-4px] text-honey" motion="wiggle" />
         </h1>
       </header>
 
@@ -91,7 +93,11 @@ export default function Today({ profile, onGoPlan }: { profile: Profile; onGoPla
           onClick={onGoPlan}
           className="w-full rounded-3xl border-2 border-dashed border-leaf/40 p-4 text-left text-sm text-leaf-dark"
         >
-          📅 今天還沒排菜單，先去排一下，之後吃飯只要打勾就好 →
+          <span className="flex items-center gap-2">
+            <Icon name="event_available" size={22} motion="bounce" />
+            <span className="flex-1">今天還沒排菜單，先去排一下，之後吃飯只要打勾就好</span>
+            <Icon name="arrow_forward" size={20} />
+          </span>
         </motion.button>
       )}
 
@@ -103,7 +109,7 @@ export default function Today({ profile, onGoPlan }: { profile: Profile; onGoPla
           <section key={meal}>
             <div className="mb-2 flex items-center justify-between px-1">
               <h2 className="font-bold">
-                {MEAL_EMOJI[meal]} {MEAL_LABEL[meal]}
+                <MealTitle meal={meal} />
               </h2>
               <span className="text-xs tabular-nums text-muted">{Math.round(mealKcal)} kcal</span>
             </div>
@@ -140,7 +146,10 @@ export default function Today({ profile, onGoPlan }: { profile: Profile; onGoPla
                 onClick={() => setPicking(meal)}
                 className="w-full rounded-2xl py-2.5 text-sm text-muted transition-colors hover:bg-ink/5"
               >
-                ＋ {mealPlans.length ? '吃了別的' : '快速記錄'}
+                <span className="flex items-center justify-center gap-1">
+                  <Icon name="add" size={18} />
+                  {mealPlans.length ? '吃了別的' : '快速記錄'}
+                </span>
               </motion.button>
             </div>
           </section>
@@ -216,7 +225,8 @@ function MealRow({
                   transition={{ duration: 0.12 }}
                   className="inline-block"
                 >
-                  {portionLabel} ⇅
+                  {portionLabel}
+                  <Icon name="swap_vert" size={13} className="ml-0.5 align-[-2px]" />
                 </motion.span>
               </AnimatePresence>
             </motion.button>
@@ -225,5 +235,19 @@ function MealRow({
       </div>
       <CheckButton checked={done} onToggle={onToggle} />
     </motion.div>
+  )
+}
+
+export function MealTitle({ meal }: { meal: MealSlot }) {
+  return (
+    <span className="flex items-center gap-1.5">
+      <span
+        className="grid h-7 w-7 place-items-center rounded-lg"
+        style={{ backgroundColor: `${MEAL_COLOR[meal]}22`, color: MEAL_COLOR[meal] }}
+      >
+        <Icon name={MEAL_ICON[meal]} size={18} fill />
+      </span>
+      {MEAL_LABEL[meal]}
+    </span>
   )
 }

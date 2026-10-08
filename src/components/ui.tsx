@@ -1,6 +1,8 @@
 import { AnimatePresence, motion, useDragControls, type HTMLMotionProps } from 'framer-motion'
 import { createContext, useCallback, useContext, useEffect, useRef, useState, type ReactNode } from 'react'
 import { haptic, spring } from '../lib/feedback'
+import type { IconName } from '../lib/icons'
+import { Icon } from './Icon'
 
 /* ── 按鈕：按下微縮、放開回彈 ── */
 type BtnProps = HTMLMotionProps<'button'> & { variant?: 'primary' | 'soft' | 'ghost' }
@@ -128,19 +130,22 @@ interface ToastItem {
   id: number
   text: string
   undo?: () => void
+  actionLabel?: string
 }
 
-const ToastCtx = createContext<(text: string, undo?: () => void) => void>(() => {})
+type ShowToast = (text: string, action?: () => void, actionLabel?: string, duration?: number) => void
+
+const ToastCtx = createContext<ShowToast>(() => {})
 
 export const useToast = () => useContext(ToastCtx)
 
 export function ToastProvider({ children }: { children: ReactNode }) {
   const [toast, setToast] = useState<ToastItem | null>(null)
   const timer = useRef<number>()
-  const show = useCallback((text: string, undo?: () => void) => {
+  const show = useCallback<ShowToast>((text, undo, actionLabel, duration = 3200) => {
     window.clearTimeout(timer.current)
-    setToast({ id: Date.now(), text, undo })
-    timer.current = window.setTimeout(() => setToast(null), 3200)
+    setToast({ id: Date.now(), text, undo, actionLabel })
+    timer.current = window.setTimeout(() => setToast(null), duration)
   }, [])
   return (
     <ToastCtx.Provider value={show}>
@@ -166,7 +171,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
                     setToast(null)
                   }}
                 >
-                  復原
+                  {toast.actionLabel ?? '復原'}
                 </button>
               )}
             </motion.div>
@@ -185,7 +190,7 @@ export function Segmented<T extends string>({
   id,
 }: {
   value: T
-  options: { value: T; label: string }[]
+  options: { value: T; label: string; icon?: IconName }[]
   onChange: (v: T) => void
   id: string
 }) {
@@ -205,7 +210,10 @@ export function Segmented<T extends string>({
           {value === o.value && (
             <motion.span layoutId={`seg-${id}`} transition={spring} className="absolute inset-0 rounded-xl bg-white shadow-card" />
           )}
-          <span className="relative">{o.label}</span>
+          <span className="relative flex items-center justify-center gap-1.5">
+            {o.icon && <Icon name={o.icon} size={18} fill={value === o.value} weight={value === o.value ? 600 : 400} />}
+            {o.label}
+          </span>
         </button>
       ))}
     </div>

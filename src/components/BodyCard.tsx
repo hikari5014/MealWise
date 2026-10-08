@@ -6,7 +6,9 @@ import { haptic, spring } from '../lib/feedback'
 import { isIOS, weightChange } from '../lib/health'
 import { useBody } from '../lib/hooks'
 import type { BodyRecord } from '../types'
+import { Food } from './Food'
 import { PREF_SETUP, PREF_TIP_DISMISSED, useHealth } from './HealthSync'
+import { Icon } from './Icon'
 import { CountUp } from './Ring'
 import { Button, Card } from './ui'
 
@@ -63,7 +65,10 @@ export function BodyCard() {
   return (
     <Card>
       <div className="mb-3 flex items-center justify-between">
-        <h2 className="font-bold">⚖️ 身體數據</h2>
+        <h2 className="flex items-center gap-1.5 font-bold">
+          <Food id="scale" size={24} />
+          身體數據
+        </h2>
         {ios && (
           <button type="button" onClick={() => health.openGuide(0)} className="text-xs text-leaf-dark underline">
             {setup ? '捷徑教學' : '連結 Apple 健康'}
@@ -101,7 +106,10 @@ export function BodyCard() {
                   change <= 0 ? 'bg-leaf-soft text-leaf-dark' : 'bg-honey-soft text-ink'
                 }`}
               >
-                {change > 0 ? '▲' : change < 0 ? '▼' : '＝'} {Math.abs(change)} kg
+                <span className="flex items-center gap-1">
+                  <Icon name={change > 0 ? 'trending_up' : change < 0 ? 'trending_down' : 'trending_flat'} size={16} weight={600} />
+                  {Math.abs(change)} kg
+                </span>
               </motion.div>
             )}
           </div>
@@ -113,12 +121,17 @@ export function BodyCard() {
 
       <div className="mt-3 flex gap-2">
         {ios && (
-          <Button className="flex-1 py-2.5 text-sm" onClick={setup ? health.sync : () => health.openGuide(0)}>
-            ⚡ 從健康同步
+          <Button
+            className="flex flex-1 items-center justify-center gap-1.5 py-2.5 text-sm"
+            onClick={setup ? health.sync : () => health.openGuide(0)}
+          >
+            <Icon name="sync" size={18} />
+            從健康同步
           </Button>
         )}
-        <Button variant="soft" className="flex-1 py-2.5 text-sm" onClick={health.openManual}>
-          ✏️ 手動記錄
+        <Button variant="soft" className="flex flex-1 items-center justify-center gap-1.5 py-2.5 text-sm" onClick={health.openManual}>
+          <Icon name="edit" size={18} />
+          手動記錄
         </Button>
       </div>
     </Card>
@@ -145,24 +158,29 @@ export function HealthTip() {
           initial={{ rotate: -30, scale: 0 }}
           animate={{ rotate: 0, scale: 1 }}
           transition={{ type: 'spring', stiffness: 500, damping: 12 }}
-          className="text-2xl"
+          className="grid place-items-center text-leaf"
         >
-          💚
+          <Icon name="favorite" size={26} fill motion="pulse" />
         </motion.span>
         <div className="flex flex-1 flex-wrap gap-x-4 text-sm">
           {today.weight !== undefined && (
-            <span>
-              ⚖️ <b className="tabular-nums">{today.weight}</b> kg
+            <span className="flex items-center gap-1">
+              <Icon name="monitor_weight" size={18} className="text-leaf" /> <b className="tabular-nums">{today.weight}</b> kg
             </span>
           )}
           {today.steps !== undefined && (
-            <span>
-              👟 <b className="tabular-nums"><CountUp value={today.steps} /></b> 步
+            <span className="flex items-center gap-1">
+              <Icon name="directions_walk" size={18} className="text-sky" />
+              <b className="tabular-nums">
+                <CountUp value={today.steps} />
+              </b>
+              步
             </span>
           )}
           {today.activeKcal !== undefined && (
-            <span>
-              🔥 <b className="tabular-nums">{today.activeKcal}</b> kcal
+            <span className="flex items-center gap-1">
+              <Icon name="local_fire_department" size={18} className="text-tomato" fill />
+              <b className="tabular-nums">{today.activeKcal}</b> kcal
             </span>
           )}
         </div>
@@ -174,7 +192,7 @@ export function HealthTip() {
             aria-label="重新同步"
             className="grid h-8 w-8 place-items-center rounded-full bg-leaf-soft text-leaf-dark"
           >
-            ↻
+            <Icon name="sync" size={18} />
           </motion.button>
         ) : null}
       </motion.div>
@@ -185,9 +203,9 @@ export function HealthTip() {
         <motion.span
           animate={{ rotate: [0, -12, 12, -6, 0] }}
           transition={{ repeat: Infinity, repeatDelay: 2.5, duration: 0.6 }}
-          className="text-2xl"
+          className="grid place-items-center"
         >
-          ⚖️
+          <Food id="scale" size={30} />
         </motion.span>
         <div className="flex-1 text-sm text-leaf-dark">今天還沒同步體重</div>
         <button type="button" onClick={health.openPaste} className="text-xs text-leaf-dark underline">
@@ -202,14 +220,17 @@ export function HealthTip() {
     content = (
       <motion.div key="tip" className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-sky-soft to-leaf-soft p-4">
         <motion.span
-          className="absolute -right-2 -top-2 text-6xl opacity-20"
+          className="absolute -right-3 -top-3 opacity-25"
           animate={{ rotate: [0, 8, 0] }}
           transition={{ repeat: Infinity, duration: 3 }}
         >
-          ❤️
+          <Food id="scale" size={90} />
         </motion.span>
         <div className="relative">
-          <div className="font-bold">{ios ? '讓體重自己跑進來 ✨' : '記錄一下體重吧 ⚖️'}</div>
+          <div className="flex items-center gap-1.5 font-bold">
+            <Icon name={ios ? 'auto_awesome' : 'monitor_weight'} size={20} fill className="text-honey" motion="pulse" />
+            {ios ? '讓體重自己跑進來' : '記錄一下體重吧'}
+          </div>
           <p className="mt-1 text-sm text-ink/70">
             {ios
               ? '用 iPhone 的「捷徑」把「健康」裡的體重、體脂帶進好食光，Omron 體重計的數據也能一起來。'

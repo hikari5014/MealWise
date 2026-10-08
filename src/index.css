@@ -32,3 +32,20 @@ button {
     animation: none;
   }
 }
+
+/* Material Symbols：粗細／填滿改變時平滑過渡 */
+.material-symbols-rounded {
+  font-family: 'Material Symbols Rounded';
+  font-weight: normal;
+  font-style: normal;
+  letter-spacing: normal;
+  text-transform: none;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  -webkit-font-feature-settings: 'liga';
+  font-feature-settings: 'liga';
+  -webkit-font-smoothing: antialiased;
+  overflow: hidden;
+  transition: font-variation-settings 0.3s ease;
+}

@@ -12,6 +12,9 @@ import {
   SHORTCUT_TEMPLATE,
   type HealthData,
 } from '../lib/health'
+import type { IconName } from '../lib/icons'
+import { Food } from './Food'
+import { Icon } from './Icon'
 import { CountUp } from './Ring'
 import { Button, Sheet, useToast } from './ui'
 
@@ -132,22 +135,25 @@ function CopyChip({ text, label }: { text: string; label?: string }) {
         animate={{ scale: 1, opacity: 1 }}
         transition={spring}
       >
-        {done ? '✓ 已複製' : `📋 ${label ?? '複製'}`}
+        <span className="flex items-center gap-1">
+          <Icon name={done ? 'check' : 'content_copy'} size={14} weight={600} />
+          {done ? '已複製' : (label ?? '複製')}
+        </span>
       </motion.span>
     </motion.button>
   )
 }
 
 /** 仿「捷徑」App 的動作方塊 */
-function ActionBlock({ icon, color, title, lines }: { icon: string; color: string; title: string; lines?: ReactNode[] }) {
+function ActionBlock({ icon, color, title, lines }: { icon: IconName; color: string; title: string; lines?: ReactNode[] }) {
   return (
     <motion.div
       variants={{ hidden: { opacity: 0, y: 14, scale: 0.95 }, show: { opacity: 1, y: 0, scale: 1, transition: spring } }}
       className="rounded-2xl bg-white p-3 shadow-card"
     >
       <div className="flex items-center gap-2 text-sm font-bold">
-        <span className="grid h-7 w-7 place-items-center rounded-lg text-sm text-white" style={{ backgroundColor: color }}>
-          {icon}
+        <span className="grid h-7 w-7 place-items-center rounded-lg text-white" style={{ backgroundColor: color }}>
+          <Icon name={icon} size={18} fill />
         </span>
         {title}
       </div>
@@ -178,14 +184,14 @@ const Blocks = ({ children }: { children: ReactNode }) => (
 )
 
 interface Step {
-  emoji: string
+  icon: IconName
   title: string
   body: ReactNode
 }
 
 const STEPS = (onSync: () => void): Step[] => [
   {
-    emoji: '🔐',
+    icon: 'lock',
     title: '為什麼要用「捷徑」？',
     body: (
       <div className="space-y-3 text-sm leading-relaxed">
@@ -195,29 +201,33 @@ const STEPS = (onSync: () => void): Step[] => [
         <p>
           iPhone 內建的<b>「捷徑」</b>有鑰匙，我們請它當小幫手：每次把最新體重<b>抄一份</b>給好食光。
         </p>
-        <div className="flex items-center justify-center gap-3 py-2 text-4xl">
-          <motion.span animate={{ y: [0, -6, 0] }} transition={{ repeat: Infinity, duration: 1.6 }}>
-            ❤️
+        <div className="flex items-center justify-center gap-3 py-2">
+          <motion.span
+            animate={{ y: [0, -6, 0] }}
+            transition={{ repeat: Infinity, duration: 1.6 }}
+            className="grid h-14 w-14 place-items-center rounded-2xl bg-white text-[#ff375f] shadow-card"
+          >
+            <Icon name="favorite" size={32} fill />
+          </motion.span>
+          <motion.span animate={{ x: [-4, 4, -4] }} transition={{ repeat: Infinity, duration: 1.2 }} className="text-muted">
+            <Icon name="arrow_forward" size={24} />
           </motion.span>
           <motion.span
-            animate={{ x: [-4, 4, -4] }}
-            transition={{ repeat: Infinity, duration: 1.2 }}
-            className="text-2xl text-muted"
+            animate={{ rotate: [0, -10, 10, 0] }}
+            transition={{ repeat: Infinity, duration: 2 }}
+            className="grid h-14 w-14 place-items-center rounded-2xl bg-white text-[#5f6fd3] shadow-card"
           >
-            →
-          </motion.span>
-          <motion.span animate={{ rotate: [0, -10, 10, 0] }} transition={{ repeat: Infinity, duration: 2 }}>
-            🪄
+            <Icon name="auto_awesome" size={32} fill />
           </motion.span>
           <motion.span
             animate={{ x: [-4, 4, -4] }}
             transition={{ repeat: Infinity, duration: 1.2, delay: 0.2 }}
-            className="text-2xl text-muted"
+            className="text-muted"
           >
-            →
+            <Icon name="arrow_forward" size={24} />
           </motion.span>
           <motion.span animate={{ y: [0, -6, 0] }} transition={{ repeat: Infinity, duration: 1.6, delay: 0.4 }}>
-            🍱
+            <Food id="bento" size={56} />
           </motion.span>
         </div>
         <p className="rounded-2xl bg-honey-soft p-3 text-xs">
@@ -227,7 +237,7 @@ const STEPS = (onSync: () => void): Step[] => [
     ),
   },
   {
-    emoji: '➕',
+    icon: 'add',
     title: '新增一個捷徑',
     body: (
       <div className="space-y-3 text-sm leading-relaxed">
@@ -242,7 +252,10 @@ const STEPS = (onSync: () => void): Step[] => [
             </div>
           </li>
         </ol>
-        <p className="text-xs text-muted">⚠️ 名字要一模一樣，好食光才叫得到它。</p>
+        <p className="flex items-center gap-1 text-xs text-muted">
+          <Icon name="warning" size={16} fill className="text-honey" />
+          名字要一模一樣，好食光才叫得到它。
+        </p>
         <Button variant="soft" className="w-full" onClick={() => (window.location.href = 'shortcuts://')}>
           打開「捷徑」App
         </Button>
@@ -250,14 +263,14 @@ const STEPS = (onSync: () => void): Step[] => [
     ),
   },
   {
-    emoji: '❤️',
+    icon: 'favorite',
     title: '請它去「健康」拿體重',
     body: (
       <div className="space-y-3 text-sm leading-relaxed">
         <p>點「加入動作」，搜尋「尋找健康樣本」，照下面設定：</p>
         <Blocks>
           <ActionBlock
-            icon="❤️"
+            icon="favorite"
             color="#ff375f"
             title="尋找健康樣本"
             lines={['類型：體重', '排序方式：開始日期・最新到最舊', '限制：開啟，1 個樣本']}
@@ -270,7 +283,7 @@ const STEPS = (onSync: () => void): Step[] => [
     ),
   },
   {
-    emoji: '✏️',
+    icon: 'edit',
     title: '把數字寫成一張小紙條',
     body: (
       <div className="space-y-3 text-sm leading-relaxed">
@@ -286,7 +299,7 @@ const STEPS = (onSync: () => void): Step[] => [
         </p>
         <Blocks>
           <ActionBlock
-            icon="📝"
+            icon="edit"
             color="#e9b44c"
             title="文字"
             lines={[
@@ -301,15 +314,15 @@ const STEPS = (onSync: () => void): Step[] => [
     ),
   },
   {
-    emoji: '📋',
+    icon: 'content_paste',
     title: '複製起來，完成！',
     body: (
       <div className="space-y-3 text-sm leading-relaxed">
         <p>最後加入「拷貝到剪貼簿」，然後點右上角「完成」。整個捷徑長這樣：</p>
         <Blocks>
-          <ActionBlock icon="❤️" color="#ff375f" title="尋找健康樣本" lines={['體重・最新 1 個']} />
+          <ActionBlock icon="favorite" color="#ff375f" title="尋找健康樣本" lines={['體重・最新 1 個']} />
           <ActionBlock
-            icon="📝"
+            icon="edit"
             color="#e9b44c"
             title="文字"
             lines={[
@@ -318,32 +331,35 @@ const STEPS = (onSync: () => void): Step[] => [
               </span>,
             ]}
           />
-          <ActionBlock icon="📋" color="#5fa8d3" title="拷貝到剪貼簿" />
+          <ActionBlock icon="content_paste" color="#5fa8d3" title="拷貝到剪貼簿" />
         </Blocks>
       </div>
     ),
   },
   {
-    emoji: '🎉',
+    icon: 'celebration',
     title: '試試看！',
     body: (
       <div className="space-y-3 text-sm leading-relaxed">
         <ol className="list-decimal space-y-2 pl-5">
           <li>按下面的「立即同步」，會跳到捷徑跑一下</li>
           <li>
-            跑完點左上角的 <b>◀ 返回</b> 回到好食光
+            跑完點左上角的 <b>「返回」</b> 回到好食光
           </li>
           <li>好食光會跳出「貼上」按鈕，點一下就完成</li>
         </ol>
         <Button className="w-full" onClick={onSync}>
-          ⚡ 立即同步
+          <span className="flex items-center justify-center gap-2">
+            <Icon name="bolt" size={20} fill motion="pulse" />
+            立即同步
+          </span>
         </Button>
         <p className="text-xs text-muted">第一次執行時，iPhone 會問能不能讀取健康資料，請選「允許」。</p>
       </div>
     ),
   },
   {
-    emoji: '⏰',
+    icon: 'schedule',
     title: '每天自動跑（選用）',
     body: (
       <div className="space-y-3 text-sm leading-relaxed">
@@ -354,7 +370,7 @@ const STEPS = (onSync: () => void): Step[] => [
           <li>選「立即執行」，動作選「執行捷徑」→「{SHORTCUT_NAME}」</li>
         </ol>
         <p className="rounded-2xl bg-leaf-soft p-3 text-xs text-leaf-dark">
-          建議早上起床量完體重後再同步，數字最準 ⚖️
+          建議早上起床量完體重後再同步，數字最準
         </p>
       </div>
     ),
@@ -403,13 +419,13 @@ function GuideSheet({ step, setStep, onSync }: { step: number | null; setStep: (
           >
             <div className="mb-3 flex items-center gap-3">
               <motion.span
-                key={s.emoji}
+                key={s.icon}
                 initial={{ scale: 0, rotate: -40 }}
                 animate={{ scale: 1, rotate: 0 }}
                 transition={{ type: 'spring', stiffness: 500, damping: 13, delay: 0.05 }}
                 className="grid h-12 w-12 place-items-center rounded-2xl bg-white text-2xl shadow-card"
               >
-                {s.emoji}
+                <Icon name={s.icon} size={26} fill className="text-leaf" />
               </motion.span>
               <div>
                 <div className="text-xs text-muted">
@@ -439,15 +455,24 @@ function GuideSheet({ step, setStep, onSync }: { step: number | null; setStep: (
 
 /* ───────────── 貼上 ───────────── */
 
-const METRICS: { key: keyof HealthData; label: string; emoji: string; unit: string }[] = [
-  { key: 'weight', label: '體重', emoji: '⚖️', unit: 'kg' },
-  { key: 'bodyFat', label: '體脂', emoji: '💪', unit: '%' },
-  { key: 'steps', label: '步數', emoji: '👟', unit: '步' },
-  { key: 'activeKcal', label: '活動', emoji: '🔥', unit: 'kcal' },
+const METRICS: { key: keyof HealthData; label: string; icon: IconName; color: string; unit: string }[] = [
+  { key: 'weight', label: '體重', icon: 'monitor_weight', color: '#5b8c5a', unit: 'kg' },
+  { key: 'bodyFat', label: '體脂', icon: 'fitness_center', color: '#e9b44c', unit: '%' },
+  { key: 'steps', label: '步數', icon: 'directions_walk', color: '#5fa8d3', unit: '步' },
+  { key: 'activeKcal', label: '活動', icon: 'local_fire_department', color: '#e07a5f', unit: 'kcal' },
 ]
 
 function Burst() {
-  const pieces = ['✨', '🎉', '💚', '⭐', '✨', '🍀', '💫', '🎊']
+  const pieces: { icon: IconName; color: string }[] = [
+    { icon: 'auto_awesome', color: '#e9b44c' },
+    { icon: 'celebration', color: '#e07a5f' },
+    { icon: 'favorite', color: '#5b8c5a' },
+    { icon: 'star', color: '#e9b44c' },
+    { icon: 'auto_awesome', color: '#5fa8d3' },
+    { icon: 'eco', color: '#5b8c5a' },
+    { icon: 'star', color: '#e07a5f' },
+    { icon: 'celebration', color: '#5fa8d3' },
+  ]
   return (
     <div className="pointer-events-none absolute inset-0 grid place-items-center">
       {pieces.map((p, i) => {
@@ -460,7 +485,7 @@ function Burst() {
             animate={{ x: Math.cos(angle) * 110, y: Math.sin(angle) * 80, scale: [0, 1.2, 0.8], opacity: [1, 1, 0] }}
             transition={{ duration: 0.9, ease: 'easeOut' }}
           >
-            {p}
+            <Icon name={p.icon} size={22} fill style={{ color: p.color }} />
           </motion.span>
         )
       })}
@@ -500,7 +525,7 @@ function PasteSheet({ open, onClose, onHelp }: { open: boolean; onClose: () => v
     setResult(data)
     closeTimer.current = window.setTimeout(() => {
       onClose()
-      toast('已同步健康數據 ✓')
+      toast('已同步健康數據')
     }, 2200)
   }
 
@@ -515,7 +540,7 @@ function PasteSheet({ open, onClose, onHelp }: { open: boolean; onClose: () => v
   }
 
   return (
-    <Sheet open={open} onClose={onClose} title={result ? '同步完成！' : '歡迎回來 👋'}>
+    <Sheet open={open} onClose={onClose} title={result ? '同步完成！' : '歡迎回來'}>
       <AnimatePresence mode="wait" initial={false}>
         {result ? (
           <motion.div
@@ -534,7 +559,9 @@ function PasteSheet({ open, onClose, onHelp }: { open: boolean; onClose: () => v
                 transition={{ type: 'spring', stiffness: 500, damping: 15, delay: 0.1 + i * 0.08 }}
                 className="rounded-3xl bg-white p-4 text-center shadow-card"
               >
-                <div className="text-2xl">{m.emoji}</div>
+                <div className="flex justify-center" style={{ color: m.color }}>
+                  <Icon name={m.icon} size={30} fill motion="pop" />
+                </div>
                 <div className="mt-1 text-2xl font-bold tabular-nums">
                   {m.key === 'weight' || m.key === 'bodyFat' ? result[m.key] : <CountUp value={result[m.key]!} />}
                   <span className="ml-1 text-xs font-normal text-muted">{m.unit}</span>
@@ -554,7 +581,10 @@ function PasteSheet({ open, onClose, onHelp }: { open: boolean; onClose: () => v
               transition={{ scale: { repeat: Infinity, duration: 1.6, ease: 'easeInOut' } }}
               className="w-full rounded-3xl bg-leaf py-5 text-lg font-bold text-white shadow-card"
             >
-              📋 貼上健康數據
+              <span className="flex items-center justify-center gap-2">
+                <Icon name="content_paste" size={24} fill />
+                貼上健康數據
+              </span>
             </motion.button>
             <AnimatePresence>
               {error && (
@@ -574,7 +604,7 @@ function PasteSheet({ open, onClose, onHelp }: { open: boolean; onClose: () => v
                 <textarea
                   value={manualText}
                   onChange={(e) => setManualText(e.target.value)}
-                  placeholder="在這裡長按 → 貼上"
+                  placeholder="在這裡長按，選「貼上」"
                   rows={2}
                   className="w-full rounded-2xl bg-white p-3 text-sm shadow-card outline-none ring-leaf/40 focus:ring-2"
                 />
@@ -617,11 +647,14 @@ function ManualSheet({ open, onClose }: { open: boolean; onClose: () => void }) 
     <Sheet open={open} onClose={onClose} title="記錄體重">
       <div className="space-y-3">
         {[
-          { label: '⚖️ 體重', unit: 'kg', value: weight, set: setWeight, placeholder: '例如 62.5' },
-          { label: '💪 體脂（選填）', unit: '%', value: fat, set: setFat, placeholder: '例如 25' },
+          { icon: 'monitor_weight' as const, label: '體重', unit: 'kg', value: weight, set: setWeight, placeholder: '例如 62.5' },
+          { icon: 'fitness_center' as const, label: '體脂（選填）', unit: '%', value: fat, set: setFat, placeholder: '例如 25' },
         ].map((f) => (
           <label key={f.label} className="flex items-center justify-between rounded-3xl bg-white p-4 shadow-card">
-            <span className="font-medium">{f.label}</span>
+            <span className="flex items-center gap-2 font-medium">
+              <Icon name={f.icon} size={22} fill className="text-leaf" />
+              {f.label}
+            </span>
             <span className="flex items-center gap-2">
               <input
                 inputMode="decimal"
@@ -641,7 +674,7 @@ function ManualSheet({ open, onClose }: { open: boolean; onClose: () => void }) 
             await saveBody({ weight: Math.round(w * 10) / 10, ...(fat ? { bodyFat: f } : {}) }, 'manual')
             haptic([10, 30, 10])
             onClose()
-            toast('已記錄體重 ✓')
+            toast('已記錄體重')
           }}
         >
           儲存
