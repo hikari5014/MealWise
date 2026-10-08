@@ -1,6 +1,6 @@
 import Dexie, { type EntityTable } from 'dexie'
 import { LEGACY_AVOID } from './data/avoid'
-import type { BodyRecord, Check, DayMark, LogEntry, PlanEntry, Pref, Profile, WaterDay } from './types'
+import type { BodyRecord, Check, DayMark, Recipe, LogEntry, PlanEntry, Pref, Profile, WaterDay } from './types'
 
 // 所有資料都只存在這台裝置的瀏覽器裡（IndexedDB）
 export const db = new Dexie('mealwise') as Dexie & {
@@ -12,6 +12,7 @@ export const db = new Dexie('mealwise') as Dexie & {
   body: EntityTable<BodyRecord, 'date'>
   prefs: EntityTable<Pref, 'key'>
   days: EntityTable<DayMark, 'date'>
+  recipes: EntityTable<Recipe, 'id'>
 }
 
 db.version(1).stores({
@@ -43,4 +44,9 @@ db.version(3).stores({
 // v4：月曆標記（大餐、運動日、禁食日）
 db.version(4).stores({
   days: 'date',
+})
+
+// v5：使用者自訂食譜
+db.version(5).stores({
+  recipes: 'id, createdAt',
 })

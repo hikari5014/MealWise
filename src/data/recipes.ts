@@ -1,3 +1,5 @@
+import { clearAvoidCache } from './avoid'
+import { RECIPE_STYLE } from './cuisine'
 import type { FoodImage } from './foodImages'
 import type { Ingredient, MealSlot, Nutrition, PrepTask, Recipe, Section } from '../types'
 
@@ -35,7 +37,8 @@ const r = (d: Draft): Recipe => ({
   ...d,
 })
 
-export const RECIPES: Recipe[] = [
+/** 內建食譜 */
+export const BUILTIN_RECIPES: Recipe[] = [
   // ── 早餐 ──
   r({
     id: 'overnight-oats',
@@ -1645,4 +1648,23 @@ export const RECIPES: Recipe[] = [
   }),
 ]
 
+BUILTIN_RECIPES.forEach((x) => {
+  const style = RECIPE_STYLE[x.id]
+  if (style) [x.cuisine, x.kind] = style
+})
+
+/**
+ * 全部食譜（內建 + 使用者自訂）。
+ * 自訂食譜存在 IndexedDB，App 讀到後用 setCustomRecipes 放進來；
+ * 其他地方一律讀 RECIPES／RECIPE_MAP，不用管它是哪一種。
+ */
+export const RECIPES: Recipe[] = [...BUILTIN_RECIPES]
 export const RECIPE_MAP: Record<string, Recipe> = Object.fromEntries(RECIPES.map((x) => [x.id, x]))
+
+export function setCustomRecipes(list: Recipe[]) {
+  RECIPES.length = 0
+  RECIPES.push(...BUILTIN_RECIPES, ...list)
+  for (const k of Object.keys(RECIPE_MAP)) delete RECIPE_MAP[k]
+  for (const x of RECIPES) RECIPE_MAP[x.id] = x
+  clearAvoidCache()
+}

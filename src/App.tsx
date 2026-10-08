@@ -1,14 +1,19 @@
 import { motion, MotionConfig } from 'framer-motion'
-import { useState } from 'react'
+import { useLiveQuery } from 'dexie-react-hooks'
+import { useMemo, useState } from 'react'
 import { Food } from './components/Food'
 import { HealthSyncProvider } from './components/HealthSync'
 import { Icon } from './components/Icon'
 import { RecipeDetailProvider } from './components/RecipeDetail'
+import { RecipeEditorProvider } from './components/RecipeEditor'
 import { ShareProvider } from './components/Share'
 import { UpdateProvider } from './components/Update'
 import { ToastProvider } from './components/ui'
 import { haptic, spring } from './lib/feedback'
+import { setCustomRecipes } from './data/recipes'
+import { db } from './db'
 import { useProfile } from './lib/hooks'
+import { RecipesVersion } from './lib/recipeStore'
 import type { IconName } from './lib/icons'
 import Lists from './pages/Lists'
 import Me from './pages/Me'
@@ -27,6 +32,12 @@ type TabId = (typeof TABS)[number]['id']
 
 export default function App() {
   const profile = useProfile()
+  // 自訂食譜：讀到後放進全部食譜清單；版本字串讓有快取的畫面重新計算
+  const customs = useLiveQuery(() => db.recipes.orderBy('createdAt').toArray())
+  const recipesVersion = useMemo(() => {
+    setCustomRecipes(customs ?? [])
+    return (customs ?? []).map((r) => `${r.id}:${r.createdAt}`).join()
+  }, [customs])
   const [tab, setTab] = useState<TabId>('today')
   const [dir, setDir] = useState(0)
 
@@ -42,12 +53,14 @@ export default function App() {
   }
 
   return (
+    <RecipesVersion.Provider value={recipesVersion}>
     <MotionConfig reducedMotion="user">
       <ToastProvider>
         <UpdateProvider>
           <HealthSyncProvider>
             <ShareProvider onImported={() => go('plan')}>
-              <RecipeDetailProvider>
+              <RecipeEditorProvider>
+<RecipeDetailProvider>
                 {profile === undefined ? (
                   <Splash />
                 ) : profile === null ? (
@@ -72,11 +85,13 @@ export default function App() {
                   </>
                 )}
               </RecipeDetailProvider>
+</RecipeEditorProvider>
             </ShareProvider>
           </HealthSyncProvider>
         </UpdateProvider>
       </ToastProvider>
     </MotionConfig>
+    </RecipesVersion.Provider>
   )
 }
 

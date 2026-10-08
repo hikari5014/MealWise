@@ -39,13 +39,34 @@ export const suggestKcal = (goal: Goal) => ({ lose: 1600, maintain: 1900, gain: 
 export const fitsProfile = (recipe: Recipe, profile?: Profile) => {
   if (!profile) return true
   if (profile.vegetarian && !recipe.vegetarian) return false
+  if (profile.taste?.dislikes.includes(recipe.id)) return false
   return !recipeAvoidTags(recipe).some((t) => profile.avoid.includes(t))
 }
 
 export const recipesFor = (meal: MealSlot | null, profile?: Profile) =>
   RECIPES.filter((r) => (meal ? r.meals.includes(meal) : true) && fitsProfile(r, profile))
 
-const pick = <T,>(arr: T[]) => arr[Math.floor(Math.random() * arr.length)]
+/** 越符合口味偏好分數越高：最愛 +4、喜歡的料理國家 +2、喜歡的菜色類型 +1 */
+export const tasteScore = (recipe: Recipe, profile?: Profile) => {
+  const t = profile?.taste
+  if (!t) return 0
+  return (
+    (t.favorites.includes(recipe.id) ? 4 : 0) +
+    (recipe.cuisine && t.cuisines.includes(recipe.cuisine) ? 2 : 0) +
+    (recipe.kind && t.kinds.includes(recipe.kind) ? 1 : 0)
+  )
+}
+
+/** 依偏好加權抽一道：分數越高越容易被選到 */
+const pickWeighted = (arr: Recipe[], profile?: Profile) => {
+  const weights = arr.map((r) => 1 + tasteScore(r, profile) * 2)
+  let n = Math.random() * weights.reduce((a, b) => a + b, 0)
+  for (let i = 0; i < arr.length; i++) {
+    n -= weights[i]
+    if (n <= 0) return arr[i]
+  }
+  return arr[arr.length - 1]
+}
 
 /**
  * 一鍵排菜單：依照每天的飲食計劃（斷食、每餐偏好、運動日、大餐）
@@ -74,7 +95,7 @@ export const autoPlan = (
       if (!pool.length) continue
       const minUse = Math.min(...pool.map((r) => used.get(r.id) ?? 0))
       const fresh = pool.filter((r) => (used.get(r.id) ?? 0) === minUse)
-      const chosen = pick(fresh)
+      const chosen = pickWeighted(fresh, profile)
       used.set(chosen.id, (used.get(chosen.id) ?? 0) + 1)
       result.push({ date, meal, recipeId: chosen.id })
     }

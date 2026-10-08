@@ -7,6 +7,7 @@ import { Icon } from '../components/Icon'
 import { MonthCalendar } from '../components/MonthCalendar'
 import { RowPhoto, useRecipeDetail } from '../components/RecipeDetail'
 import { RecipePhoto } from '../components/RecipePhoto'
+import { useRecipeEditor } from '../components/RecipeEditor'
 import { Button, listContainer, listItem, Segmented, useToast } from '../components/ui'
 import { RECIPE_MAP } from '../data/recipes'
 import { db } from '../db'
@@ -14,7 +15,10 @@ import { addDays, monthDay, todayKey, weekDays, weekdayLabel, weekStart } from '
 import { haptic, spring } from '../lib/feedback'
 import { resolveDay } from '../lib/dietPlan'
 import { useMarks, usePlans } from '../lib/hooks'
-import { autoPlan, recipesFor } from '../lib/meal'
+import { autoPlan, recipesFor, tasteScore } from '../lib/meal'
+import { getTaste, useRecipesVersion } from '../lib/recipeStore'
+import type { IconName } from '../lib/icons'
+import { CUISINES, type Cuisine } from '../data/cuisine'
 import { MealTitle } from './Today'
 import { MEAL_LABEL, MEAL_SLOTS, type MealSlot, type PlanEntry, type Profile } from '../types'
 
@@ -303,18 +307,38 @@ function PlanRow({ plan, onRemove }: { plan: PlanEntry; onRemove: () => void }) 
 function Library({ profile }: { profile: Profile }) {
   const [meal, setMeal] = useState<MealSlot | 'all'>('all')
   const [query, setQuery] = useState('')
+  const [group, setGroup] = useState<'all' | 'fav' | 'mine' | Cuisine>('all')
   const openDetail = useRecipeDetail()
-  const list = recipesFor(meal === 'all' ? null : meal, profile).filter(
-    (r) => !query.trim() || r.name.includes(query.trim()) || r.tags.some((t) => t.includes(query.trim())),
-  )
+  const openEditor = useRecipeEditor()
+  const taste = getTaste(profile)
+  useRecipesVersion()
+  const q = query.trim()
+  const list = recipesFor(meal === 'all' ? null : meal, profile)
+    .filter((r) => !q || r.name.includes(q) || r.tags.some((t) => t.includes(q)))
+    .filter((r) =>
+      group === 'all' ? true : group === 'fav' ? taste.favorites.includes(r.id) : group === 'mine' ? r.custom : r.cuisine === group,
+    )
+    .sort((a, b) => tasteScore(b, profile) - tasteScore(a, profile))
+  const groups: { id: typeof group; label: string; icon?: IconName }[] = [
+    { id: 'all', label: '全部料理' },
+    { id: 'fav', label: '我的最愛', icon: 'favorite' },
+    { id: 'mine', label: '我的食譜', icon: 'edit' },
+    ...CUISINES.map((c) => ({ id: c.id, label: c.label })),
+  ]
   return (
     <div className="space-y-3">
-      <input
-        value={query}
-        onChange={(e) => setQuery(e.target.value)}
-        placeholder="搜尋食譜或標籤"
-        className="w-full rounded-2xl bg-white px-4 py-3 text-sm shadow-card outline-none ring-leaf/40 focus:ring-2"
-      />
+      <div className="flex gap-2">
+        <input
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder="搜尋食譜或標籤"
+          className="min-w-0 flex-1 rounded-2xl bg-white px-4 py-3 text-sm shadow-card outline-none ring-leaf/40 focus:ring-2"
+        />
+        <Button className="flex items-center gap-1 px-3 text-sm" onClick={() => openEditor()}>
+          <Icon name="add" size={20} weight={600} />
+          新增
+        </Button>
+      </div>
       <div className="-mx-4 flex gap-2 overflow-x-auto px-4">
         {(['all', ...MEAL_SLOTS] as const).map((m) => (
           <motion.button
@@ -329,8 +353,30 @@ function Library({ profile }: { profile: Profile }) {
           </motion.button>
         ))}
       </div>
-      <p className="px-1 text-xs text-muted">已依你的飲食需求過濾，共 {list.length} 道</p>
-      <motion.div key={meal} variants={listContainer} initial="hidden" animate="show" className="grid grid-cols-2 gap-3">
+      <div className="-mx-4 flex gap-2 overflow-x-auto px-4">
+        {groups.map((g) => (
+          <motion.button
+            key={g.id}
+            whileTap={{ scale: 0.92 }}
+            onClick={() => setGroup(g.id)}
+            className={`flex shrink-0 items-center gap-1 rounded-full px-3 py-1 text-xs transition-colors ${
+              group === g.id ? 'bg-leaf text-white' : 'bg-leaf-soft/60 text-leaf-dark'
+            }`}
+          >
+            {g.icon && <Icon name={g.icon} size={14} fill={group === g.id} />}
+            {g.label}
+          </motion.button>
+        ))}
+      </div>
+      <p className="px-1 text-xs text-muted">
+        已依你的飲食需求過濾，共 {list.length} 道{taste.cuisines.length || taste.favorites.length ? '・喜歡的排在前面' : ''}
+      </p>
+      {list.length === 0 && (
+        <div className="py-10 text-center text-sm text-muted">
+          {group === 'fav' ? '還沒有最愛，在食譜頁點愛心就會出現在這裡' : group === 'mine' ? '還沒有自己的食譜，點右上角「新增」' : '沒有符合的食譜'}
+        </div>
+      )}
+      <motion.div key={`${meal}-${group}`} variants={listContainer} initial="hidden" animate="show" className="grid grid-cols-2 gap-3">
         {list.map((r) => {
           const layoutId = `lib-${r.id}`
           return (
@@ -345,6 +391,16 @@ function Library({ profile }: { profile: Profile }) {
                 <RecipePhoto recipe={r} />
               </motion.div>
               <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/10 to-transparent" />
+              {taste.favorites.includes(r.id) && (
+                <span className="absolute right-2 top-2 grid h-7 w-7 place-items-center rounded-full bg-white/90 text-tomato shadow">
+                  <Icon name="favorite" size={16} fill />
+                </span>
+              )}
+              {r.custom && (
+                <span className="absolute left-2 top-2 rounded-full bg-white/90 px-2 py-0.5 text-[10px] font-medium text-leaf-dark shadow">
+                  我的
+                </span>
+              )}
               <div className="absolute inset-x-3 bottom-3 text-white">
                 <div className="text-[15px] font-bold leading-snug drop-shadow">{r.name}</div>
                 <div className="mt-0.5 flex items-center gap-1 text-[11px] text-white/85">

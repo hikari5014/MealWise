@@ -37,8 +37,10 @@ export function RecipePhoto({
   /** 慢慢放大的 Ken Burns 效果 */
   zoom?: boolean
 }) {
-  const [failed, setFailed] = useState(!credits[recipe.id])
+  const src = recipe.photoUrl ?? (credits[recipe.id] ? photoSrc(recipe.id, size) : undefined)
+  const [failedSrc, setFailedSrc] = useState<string>()
   const [loaded, setLoaded] = useState(false)
+  const failed = !src || failedSrc === src
 
   if (failed) {
     return (
@@ -51,13 +53,14 @@ export function RecipePhoto({
   return (
     <div className={`absolute inset-0 ${className}`} style={{ backgroundColor: recipe.color }}>
       <motion.img
-        src={photoSrc(recipe.id, size)}
+        src={src}
+        referrerPolicy="no-referrer"
         alt={recipe.name}
         draggable={false}
         loading="lazy"
         decoding="async"
         onLoad={() => setLoaded(true)}
-        onError={() => setFailed(true)}
+        onError={() => setFailedSrc(src)}
         className="h-full w-full select-none object-cover"
         initial={false}
         animate={{ opacity: loaded ? 1 : 0, scale: zoom && loaded ? [1, 1.08] : 1 }}

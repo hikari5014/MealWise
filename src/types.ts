@@ -1,3 +1,4 @@
+import type { Cuisine, Kind } from './data/cuisine'
 import type { FoodImage } from './data/foodImages'
 import type { DietPlan } from './lib/dietPlan'
 import type { IconName } from './lib/icons'
@@ -82,6 +83,13 @@ export interface Recipe {
   prep: PrepTask[]
   /** 1 人份 */
   nutrition: Nutrition
+  cuisine?: Cuisine
+  kind?: Kind
+  /** 使用者自己新增的食譜 */
+  custom?: boolean
+  /** 自訂食譜的圖片網址（不上傳，只存網址） */
+  photoUrl?: string
+  createdAt?: number
 }
 
 export type Goal = 'lose' | 'maintain' | 'gain'
@@ -104,6 +112,17 @@ export interface Profile {
   servings: number
   /** 飲食計劃（斷食、每餐偏好、運動日、大餐規則），見 lib/dietPlan.ts */
   plan?: Partial<DietPlan>
+  /** 口味偏好 */
+  taste?: Taste
+}
+
+export interface Taste {
+  cuisines: Cuisine[]
+  kinds: Kind[]
+  /** 最愛的食譜 id */
+  favorites: string[]
+  /** 不想再出現的食譜 id */
+  dislikes: string[]
 }
 
 export interface PlanEntry {

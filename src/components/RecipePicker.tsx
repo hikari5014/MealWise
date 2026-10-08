@@ -2,7 +2,8 @@ import { motion } from 'framer-motion'
 import { useMemo, useState } from 'react'
 import { RECIPE_MAP } from '../data/recipes'
 import { fitsRule, MEAL_RULE_ICON, MEAL_RULE_LABEL, type MealDecision } from '../lib/dietPlan'
-import { recipesFor } from '../lib/meal'
+import { recipesFor, tasteScore } from '../lib/meal'
+import { useRecipesVersion } from '../lib/recipeStore'
 import { MEAL_LABEL, type MealSlot, type Profile, type Recipe } from '../types'
 import { Icon } from './Icon'
 import { RecipeThumb, useRecipeDetail } from './RecipeDetail'
@@ -35,6 +36,7 @@ export function RecipePicker({
 }) {
   const [query, setQuery] = useState('')
   const [allMeals, setAllMeals] = useState(false)
+  const version = useRecipesVersion()
   const list = useMemo(() => {
     let base = recipesFor(allMeals ? null : meal, profile)
     if (rule && !allMeals && rule !== 'normal' && rule !== 'skip' && rule !== 'feast') {
@@ -42,8 +44,10 @@ export function RecipePicker({
       base = recipesFor(null, profile).filter((r) => fitsRule(r, rule))
     }
     const q = query.trim()
-    return q ? base.filter((r) => r.name.includes(q) || r.tags.some((t) => t.includes(q))) : base
-  }, [meal, profile, query, allMeals, rule])
+    const found = q ? base.filter((r) => r.name.includes(q) || r.tags.some((t) => t.includes(q))) : base
+    // 最愛、喜歡的料理排前面，減少滑來滑去找
+    return [...found].sort((a, b) => tasteScore(b, profile) - tasteScore(a, profile))
+  }, [meal, profile, query, allMeals, rule, version])
   const recentRecipes = recent.map((id) => RECIPE_MAP[id]).filter(Boolean).slice(0, 6)
 
   const close = () => {

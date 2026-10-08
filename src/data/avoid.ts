@@ -210,13 +210,104 @@ const INGREDIENT_TAGS: Record<string, string[]> = {
   牛番茄: ['tomato'],
 }
 
+/**
+ * 不在上面清單裡的食材（例如自訂食譜），用關鍵字判斷。
+ * 長的字先比對並「吃掉」，避免「雞蛋」被當成雞肉、「洋蔥」被當成蔥。
+ */
+const KEYWORDS: [string, string[]][] = [
+  ['鮮奶油', ['milk']],
+  ['奶油乳酪', ['cheese']],
+  ['花生醬', ['peanut']],
+  ['雞蛋', ['egg']],
+  ['鴨蛋', ['egg']],
+  ['蛋白粉', ['milk']],
+  ['洋蔥', ['onion']],
+  ['青蔥', ['scallion']],
+  ['辣椒', ['chili']],
+  ['甜椒', ['bellpepper']],
+  ['青椒', ['bellpepper']],
+  ['紅蘿蔔', ['carrot']],
+  ['胡蘿蔔', ['carrot']],
+  ['豆腐', ['tofu']],
+  ['豆干', ['tofu']],
+  ['豆漿', ['soymilk']],
+  ['醬油', ['soysauce', 'wheat']],
+  ['味噌', ['miso']],
+  ['毛豆', ['edamame']],
+  ['起司', ['cheese']],
+  ['乳酪', ['cheese']],
+  ['優格', ['yogurt']],
+  ['優酪', ['yogurt']],
+  ['奶油', ['butter']],
+  ['牛奶', ['milk']],
+  ['鮮奶', ['milk']],
+  ['花枝', ['squid']],
+  ['魷魚', ['squid']],
+  ['章魚', ['squid']],
+  ['牡蠣', ['shellfish']],
+  ['干貝', ['shellfish']],
+  ['培根', ['pork']],
+  ['火腿', ['pork']],
+  ['香腸', ['pork']],
+  ['燕麥', ['oats']],
+  ['吐司', ['wheat']],
+  ['麵包', ['wheat']],
+  ['麵粉', ['wheat']],
+  ['核桃', ['treenuts']],
+  ['杏仁', ['treenuts']],
+  ['腰果', ['treenuts']],
+  ['堅果', ['treenuts']],
+  ['芝麻', ['sesame']],
+  ['香菜', ['cilantro']],
+  ['芹菜', ['celery']],
+  ['茄子', ['eggplant']],
+  ['苦瓜', ['bittergourd']],
+  ['番茄', ['tomato']],
+  ['蕃茄', ['tomato']],
+  ['蝦', ['shrimp']],
+  ['蟹', ['crab']],
+  ['蛤', ['shellfish']],
+  ['蚵', ['shellfish']],
+  ['貝', ['shellfish']],
+  ['魚', ['fish']],
+  ['牛', ['beef']],
+  ['豬', ['pork']],
+  ['雞', ['chicken']],
+  ['羊', ['lamb']],
+  ['鴨', ['duck']],
+  ['鵝', ['duck']],
+  ['蛋', ['egg']],
+  ['麵', ['wheat']],
+  ['菇', ['mushroom']],
+  ['蒜', ['garlic']],
+  ['薑', ['ginger']],
+  ['蔥', ['scallion']],
+  ['辣', ['chili']],
+]
+
+const guessTags = (name: string) => {
+  let rest = name
+  const tags = new Set<string>()
+  for (const [word, t] of KEYWORDS) {
+    if (rest.includes(word)) {
+      t.forEach((x) => tags.add(x))
+      rest = rest.split(word).join('□')
+    }
+  }
+  return [...tags]
+}
+
+export const ingredientTags = (name: string) => INGREDIENT_TAGS[name] ?? guessTags(name)
+
 const cache = new Map<string, string[]>()
+
+export const clearAvoidCache = () => cache.clear()
 
 /** 一道食譜含有的所有「不想吃」細項 */
 export const recipeAvoidTags = (recipe: Recipe) => {
   let tags = cache.get(recipe.id)
   if (!tags) {
-    tags = [...new Set(recipe.ingredients.flatMap((i) => INGREDIENT_TAGS[i.name] ?? []))]
+    tags = [...new Set(recipe.ingredients.flatMap((i) => ingredientTags(i.name)))]
     cache.set(recipe.id, tags)
   }
   return tags

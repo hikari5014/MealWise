@@ -3,6 +3,10 @@ import { createContext, useCallback, useContext, useEffect, useState, type React
 import { RECIPE_MAP } from '../data/recipes'
 import { Icon } from './Icon'
 import { photoCredit, RecipePhoto } from './RecipePhoto'
+import { useRecipeEditor } from './RecipeEditor'
+import { useToast } from './ui'
+import { useProfile } from '../lib/hooks'
+import { deleteCustomRecipe, getTaste, saveCustomRecipe, toggleDislike, toggleFavorite } from '../lib/recipeStore'
 import { formatQty } from '../lib/meal'
 import { haptic, softSpring } from '../lib/feedback'
 import { AVOID_ITEM_MAP, recipeAvoidTags } from '../data/avoid'
@@ -86,6 +90,13 @@ export function RecipeDetailProvider({ children }: { children: ReactNode }) {
 
 function Detail({ recipe, layoutId, onClose }: Opened & { onClose: () => void }) {
   const n = recipe.nutrition
+  const profile = useProfile()
+  const taste = getTaste(profile)
+  const fav = taste.favorites.includes(recipe.id)
+  const disliked = taste.dislikes.includes(recipe.id)
+  const openEditor = useRecipeEditor()
+  const toast = useToast()
+  const [confirmDelete, setConfirmDelete] = useState(false)
   return (
     <div className="fixed inset-0 z-40">
       <motion.div
@@ -118,6 +129,23 @@ function Detail({ recipe, layoutId, onClose }: Opened & { onClose: () => void })
             className="absolute left-4 top-[calc(16px+env(safe-area-inset-top))] grid h-10 w-10 place-items-center rounded-full bg-white/85 shadow-card backdrop-blur"
           >
             <Icon name="arrow_back" size={22} weight={500} />
+          </motion.button>
+          <motion.button
+            whileTap={{ scale: 0.8 }}
+            animate={fav ? { scale: [1, 1.35, 0.9, 1.1, 1] } : { scale: 1 }}
+            transition={{ duration: 0.5 }}
+            aria-label={fav ? '取消最愛' : '加入最愛'}
+            aria-pressed={fav}
+            onClick={() => {
+              haptic(fav ? 6 : [10, 30, 14])
+              toggleFavorite(recipe.id)
+              if (!fav) toast('加入最愛，排菜單時會優先挑')
+            }}
+            className={`absolute right-4 top-[calc(16px+env(safe-area-inset-top))] grid h-10 w-10 place-items-center rounded-full shadow-card backdrop-blur ${
+              fav ? 'bg-tomato text-white' : 'bg-white/85 text-tomato'
+            }`}
+          >
+            <Icon name="favorite" size={22} fill={fav} />
           </motion.button>
           <motion.div
             className="absolute inset-x-5 bottom-5 text-white"
@@ -167,6 +195,7 @@ function Detail({ recipe, layoutId, onClose }: Opened & { onClose: () => void })
             ))}
           </div>
 
+          {recipe.ingredients.length > 0 && (
           <section>
             <h2 className="mb-2 font-bold">食材（1 人份）</h2>
             <ul className="divide-y divide-ink/5 rounded-3xl bg-white px-4 shadow-card">
@@ -178,7 +207,9 @@ function Detail({ recipe, layoutId, onClose }: Opened & { onClose: () => void })
               ))}
             </ul>
           </section>
+          )}
 
+          {recipe.steps.length > 0 && (
           <section>
             <h2 className="mb-2 font-bold">步驟</h2>
             <ol className="space-y-3">
@@ -192,6 +223,7 @@ function Detail({ recipe, layoutId, onClose }: Opened & { onClose: () => void })
               ))}
             </ol>
           </section>
+          )}
 
           {recipe.prep.length > 0 && (
             <section>
@@ -213,7 +245,56 @@ function Detail({ recipe, layoutId, onClose }: Opened & { onClose: () => void })
           {recipeAvoidTags(recipe).length > 0 && (
             <p className="text-xs text-muted">含：{recipeAvoidTags(recipe).map((t) => AVOID_ITEM_MAP[t]?.label).join('、')}</p>
           )}
-          <p className="text-xs text-muted">營養數值為估算，僅供參考。</p>
+          <div className="flex flex-wrap gap-2">
+            <motion.button
+              whileTap={{ scale: 0.92 }}
+              onClick={() => {
+                haptic(8)
+                toggleDislike(recipe.id)
+                toast(disliked ? '已恢復這道食譜' : '之後排菜單不會再出現這道')
+              }}
+              className={`flex items-center gap-1 rounded-full px-3 py-1.5 text-xs shadow-sm ${disliked ? 'bg-ink text-cream' : 'bg-white text-muted'}`}
+            >
+              <Icon name="thumb_down" size={15} fill={disliked} />
+              {disliked ? '已設為不想吃' : '不想吃這道'}
+            </motion.button>
+            {recipe.custom && (
+              <>
+                <motion.button
+                  whileTap={{ scale: 0.92 }}
+                  onClick={() => {
+                    onClose()
+                    openEditor(recipe)
+                  }}
+                  className="flex items-center gap-1 rounded-full bg-white px-3 py-1.5 text-xs text-leaf-dark shadow-sm"
+                >
+                  <Icon name="edit" size={15} />
+                  編輯
+                </motion.button>
+                <motion.button
+                  whileTap={{ scale: 0.92 }}
+                  animate={confirmDelete ? { x: [0, -4, 4, 0] } : {}}
+                  onClick={async () => {
+                    if (!confirmDelete) {
+                      setConfirmDelete(true)
+                      haptic(10)
+                      return
+                    }
+                    await deleteCustomRecipe(recipe.id)
+                    onClose()
+                    toast(`已刪除「${recipe.name}」`, () => saveCustomRecipe(recipe))
+                  }}
+                  className={`flex items-center gap-1 rounded-full px-3 py-1.5 text-xs shadow-sm ${
+                    confirmDelete ? 'bg-tomato text-white' : 'bg-white text-tomato'
+                  }`}
+                >
+                  <Icon name="delete" size={15} />
+                  {confirmDelete ? '再點一次確定刪除' : '刪除'}
+                </motion.button>
+              </>
+            )}
+          </div>
+          <p className="text-xs text-muted">營養數值為估算，僅供參考。{recipe.custom ? '這是你自己新增的食譜。' : ''}</p>
           <PhotoCreditLine id={recipe.id} />
         </motion.div>
       </motion.div>

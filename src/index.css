@@ -49,3 +49,13 @@ button {
   overflow: hidden;
   transition: font-variation-settings 0.3s ease;
 }
+
+/*
+ * iPhone 的 Safari 會在輸入框字體小於 16px 時自動放大畫面。
+ * 所有輸入框一律至少 16px，就不會在點下去時跳動放大。
+ */
+input:not([type='checkbox']):not([type='radio']):not([type='range']),
+textarea,
+select {
+  font-size: max(16px, 1em) !important;
+}
