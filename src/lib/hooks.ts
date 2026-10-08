@@ -1,6 +1,7 @@
 import { useLiveQuery } from 'dexie-react-hooks'
 import { db } from '../db'
-import type { LogEntry, MealSlot } from '../types'
+import type { DayMark, LogEntry, MealSlot } from '../types'
+import { addDays } from './date'
 
 /** undefined = 讀取中，null = 還沒設定 */
 export const useProfile = () => useLiveQuery(() => db.profile.get('me').then((p) => p ?? null))
@@ -17,7 +18,7 @@ export const useWater = (date: string) => useLiveQuery(() => db.water.get(date).
 export const useRecent = () =>
   useLiveQuery(async () => {
     const logs = await db.logs.orderBy('createdAt').reverse().limit(40).toArray()
-    return [...new Set(logs.map((l) => l.recipeId))]
+    return [...new Set(logs.map((l) => l.recipeId).filter(Boolean))]
   }) ?? []
 
 export const useChecks = (prefix: string) =>
@@ -55,4 +56,24 @@ export const useBody = (days = 30) =>
 export const usePref = <T,>(key: string, fallback: T): [T, (v: T) => Promise<unknown>] => {
   const value = useLiveQuery(() => db.prefs.get(key).then((p) => (p ? (p.value as T) : fallback)), [key]) ?? fallback
   return [value, (v: T) => db.prefs.put({ key, value: v })]
+}
+
+/** 月曆標記；會多抓前一天，因為「昨天的大餐」會影響今天 */
+export const useMarks = (dates: string[]) =>
+  useLiveQuery(
+    async () => {
+      if (!dates.length) return {}
+      const keys = [addDays(dates[0], -1), ...dates]
+      const rows = await db.days.where('date').anyOf(keys).toArray()
+      return Object.fromEntries(rows.map((r) => [r.date, r])) as Record<string, DayMark>
+    },
+    [dates.join()],
+  ) ?? ({} as Record<string, DayMark>)
+
+export const saveMark = async (date: string, patch: Partial<DayMark>) => {
+  const cur = (await db.days.get(date)) ?? { date }
+  const next = { ...cur, ...patch, date }
+  const empty = !next.feast && next.training === undefined && !next.fast
+  if (empty) await db.days.delete(date)
+  else await db.days.put(next)
 }

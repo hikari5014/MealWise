@@ -547,5 +547,257 @@
     "licenseVersion": "2.0",
     "licenseUrl": "https://creativecommons.org/licenses/by/2.0/",
     "landingUrl": "https://www.flickr.com/photos/33549343@N04/3403757140"
+  },
+  "shake-classic": {
+    "title": "Vanilla protein shake smoothie",
+    "creator": "EasyHealthySmoothie",
+    "source": "flickr",
+    "license": "by",
+    "licenseVersion": "2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/2.0/",
+    "landingUrl": "https://www.flickr.com/photos/150788323@N04/33908848574"
+  },
+  "shake-berry": {
+    "title": "Berry smoothie",
+    "creator": "boldray",
+    "source": "flickr",
+    "license": "by",
+    "licenseVersion": "2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/2.0/",
+    "landingUrl": "https://www.flickr.com/photos/8492327@N07/8870315976"
+  },
+  "shake-cocoa": {
+    "title": "Untitled (chocolate banana shake)",
+    "creator": "Unknown",
+    "source": "rawpixel",
+    "license": "cc0",
+    "licenseVersion": "1.0",
+    "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "landingUrl": "https://www.rawpixel.com/image/5963065/free-public-domain-cc0-photo"
+  },
+  "shake-matcha": {
+    "title": "Matcha Latte",
+    "creator": "Kirinohana",
+    "source": "flickr",
+    "license": "by",
+    "licenseVersion": "2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/2.0/",
+    "landingUrl": "https://www.flickr.com/photos/94085795@N08/9600173692"
+  },
+  "cauli-fried-rice": {
+    "title": "Easy Fried Cauliflower Rice-1",
+    "creator": "DelishPlan",
+    "source": "flickr",
+    "license": "by",
+    "licenseVersion": "2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/2.0/",
+    "landingUrl": "https://www.flickr.com/photos/142840472@N04/31717741910"
+  },
+  "lettuce-wraps": {
+    "title": "Chili Sauce Lettuce Wrap",
+    "creator": "Maggie Hoffman",
+    "source": "flickr",
+    "license": "by",
+    "licenseVersion": "2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/2.0/",
+    "landingUrl": "https://www.flickr.com/photos/8830972@N08/3209324691"
+  },
+  "tofu-steak": {
+    "title": "Beancurd With Minced Meat In Malaysia",
+    "creator": "thienzieyung",
+    "source": "flickr",
+    "license": "by",
+    "licenseVersion": "2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/2.0/",
+    "landingUrl": "https://www.flickr.com/photos/26978304@N08/7005554748"
+  },
+  "garlic-shrimp-broccoli": {
+    "title": "stir fried shrimp with broccoli",
+    "creator": "iandeth",
+    "source": "flickr",
+    "license": "by",
+    "licenseVersion": "2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/2.0/",
+    "landingUrl": "https://www.flickr.com/photos/7466314@N05/2167264537"
+  },
+  "salmon-salad": {
+    "title": "Salmon salad",
+    "creator": "adactio",
+    "source": "flickr",
+    "license": "by",
+    "licenseVersion": "2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/2.0/",
+    "landingUrl": "https://www.flickr.com/photos/74105777@N00/200944451"
+  },
+  "beef-broccoli": {
+    "title": "Beef Broccoli DSC01892",
+    "creator": "takaokun",
+    "source": "wikimedia",
+    "license": "by",
+    "licenseVersion": "2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/2.0/",
+    "landingUrl": "https://commons.wikimedia.org/w/index.php?curid=136408686"
+  },
+  "chicken-skewers": {
+    "title": "Korean spicy chicken skewers",
+    "creator": "KFoodaddict",
+    "source": "flickr",
+    "license": "by",
+    "licenseVersion": "2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/2.0/",
+    "landingUrl": "https://www.flickr.com/photos/61056459@N05/6325410086"
+  },
+  "konjac-noodles": {
+    "title": "しらたき炒め (stir-fried shirataki) 2024-06-21",
+    "creator": "RuinDig/Yuki Uchida",
+    "source": "wikimedia",
+    "license": "by",
+    "licenseVersion": "4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+    "landingUrl": "https://commons.wikimedia.org/w/index.php?curid=149947911"
+  },
+  "stuffed-peppers": {
+    "title": "Stuffed Peppers",
+    "creator": "suavehouse113",
+    "source": "flickr",
+    "license": "by",
+    "licenseVersion": "2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/2.0/",
+    "landingUrl": "https://www.flickr.com/photos/94513428@N00/3921374103"
+  },
+  "tuna-salad": {
+    "title": "Avocado and Tuna Salad",
+    "creator": "The Marmot",
+    "source": "flickr",
+    "license": "by",
+    "licenseVersion": "2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/2.0/",
+    "landingUrl": "https://www.flickr.com/photos/38142119@N00/19588718359"
+  },
+  "egg-drop-soup": {
+    "title": "Tomato & egg soup by Ju Ju",
+    "creator": "Gary Soup",
+    "source": "flickr",
+    "license": "by",
+    "licenseVersion": "2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/2.0/",
+    "landingUrl": "https://www.flickr.com/photos/87117631@N00/25675249200"
+  },
+  "steamed-egg": {
+    "title": "芙蓉鸡米 ｜ Chicken-flavored steamed egg with minced pork",
+    "creator": "angelhsu",
+    "source": "flickr",
+    "license": "by",
+    "licenseVersion": "2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/2.0/",
+    "landingUrl": "https://www.flickr.com/photos/96878389@N00/8096488863"
+  },
+  "baked-white-fish": {
+    "title": "baked cod in butter and dill",
+    "creator": "jeffreyw",
+    "source": "flickr",
+    "license": "by",
+    "licenseVersion": "2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/2.0/",
+    "landingUrl": "https://www.flickr.com/photos/7927684@N03/4387804393"
+  },
+  "chicken-veg-soup": {
+    "title": "Chicken-Vegetable Soup",
+    "creator": "Tobyotter",
+    "source": "flickr",
+    "license": "by",
+    "licenseVersion": "2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/2.0/",
+    "landingUrl": "https://www.flickr.com/photos/78428166@N00/4391399438"
+  },
+  "mushroom-chicken": {
+    "title": "Mmm... chicken marsala with garlic mashed potatoes and steamed broccoli",
+    "creator": "jeffreyw",
+    "source": "flickr",
+    "license": "by",
+    "licenseVersion": "2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/2.0/",
+    "landingUrl": "https://www.flickr.com/photos/7927684@N03/16408123408"
+  },
+  "kimchi-tofu-soup": {
+    "title": "Kimchi jjigae キムチチゲ",
+    "creator": "jetalone",
+    "source": "flickr",
+    "license": "by",
+    "licenseVersion": "2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/2.0/",
+    "landingUrl": "https://www.flickr.com/photos/92203585@N00/3859278554"
+  },
+  "sashimi-salad": {
+    "title": "Sashimi Salad",
+    "creator": "Geoff Peters 604",
+    "source": "flickr",
+    "license": "by",
+    "licenseVersion": "2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/2.0/",
+    "landingUrl": "https://www.flickr.com/photos/54359128@N00/3469819897"
+  },
+  "cabbage-pork": {
+    "title": "培根高丽菜 Stir Fried Cabbage and Bacon",
+    "creator": "Augapfel",
+    "source": "flickr",
+    "license": "by",
+    "licenseVersion": "2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/2.0/",
+    "landingUrl": "https://www.flickr.com/photos/47038415@N00/1790642939"
+  },
+  "egg-white-omelette": {
+    "title": "Spinach omelette",
+    "creator": "mdid",
+    "source": "flickr",
+    "license": "by",
+    "licenseVersion": "2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/2.0/",
+    "landingUrl": "https://www.flickr.com/photos/58246614@N00/3278835124"
+  },
+  "cottage-cheese-berries": {
+    "title": "10. cottage cheese with blackberries & cashews",
+    "creator": "jules:stonesoup",
+    "source": "flickr",
+    "license": "by",
+    "licenseVersion": "2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/2.0/",
+    "landingUrl": "https://www.flickr.com/photos/58367355@N00/6902905454"
+  },
+  "cucumber-salad": {
+    "title": "Sichuan cucumber salad",
+    "creator": "WordRidden",
+    "source": "flickr",
+    "license": "by",
+    "licenseVersion": "2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/2.0/",
+    "landingUrl": "https://www.flickr.com/photos/97844767@N00/8492780011"
+  },
+  "seaweed-salad": {
+    "title": "Fuji seaweed salad",
+    "creator": "khawkins04",
+    "source": "flickr",
+    "license": "by",
+    "licenseVersion": "2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/2.0/",
+    "landingUrl": "https://www.flickr.com/photos/49978063@N00/5473790679"
+  },
+  "tea-egg": {
+    "title": "Chinese marbled tea egg",
+    "creator": "WordRidden",
+    "source": "flickr",
+    "license": "by",
+    "licenseVersion": "2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/2.0/",
+    "landingUrl": "https://www.flickr.com/photos/97844767@N00/8493882246"
+  },
+  "grilled-chicken-salad": {
+    "title": "Grilled Chicken Salad",
+    "creator": "jshontz",
+    "source": "flickr",
+    "license": "by",
+    "licenseVersion": "2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/2.0/",
+    "landingUrl": "https://www.flickr.com/photos/29332685@N07/7494198200"
   }
 }

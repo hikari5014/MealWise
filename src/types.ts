@@ -1,4 +1,5 @@
 import type { FoodImage } from './data/foodImages'
+import type { DietPlan } from './lib/dietPlan'
 import type { IconName } from './lib/icons'
 
 export type MealSlot = 'breakfast' | 'lunch' | 'dinner' | 'snack'
@@ -101,6 +102,8 @@ export interface Profile {
   /** 過敏或不想吃的細項 id，見 data/avoid.ts */
   avoid: string[]
   servings: number
+  /** 飲食計劃（斷食、每餐偏好、運動日、大餐規則），見 lib/dietPlan.ts */
+  plan?: Partial<DietPlan>
 }
 
 export interface PlanEntry {
@@ -114,7 +117,10 @@ export interface LogEntry {
   id?: number
   date: string
   meal: MealSlot
+  /** 自訂餐點（外食、大餐）時是空字串 */
   recipeId: string
+  /** 外食或大餐：自己輸入或請 AI 估算的營養 */
+  custom?: { name: string; nutrition: Nutrition }
   planId?: number
   portion: number
   createdAt: number
@@ -143,4 +149,16 @@ export interface BodyRecord {
 export interface Pref {
   key: string
   value: unknown
+}
+
+/** 月曆上某一天的標記 */
+export interface DayMark {
+  date: string
+  /** 哪一餐是大餐 */
+  feast?: MealSlot | null
+  feastNote?: string
+  /** 手動指定是否為運動日（沒設定就照每週固定的運動日） */
+  training?: boolean
+  /** 整天禁食 */
+  fast?: boolean
 }

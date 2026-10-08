@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion'
 import { useMemo, useState } from 'react'
 import { BodyCard } from '../components/BodyCard'
+import { DietPlanCard, DietPlanSheet } from '../components/DietPlan'
 import { Icon } from '../components/Icon'
 import { AboutCard } from '../components/Update'
 import { Button, Card, Sheet, useToast } from '../components/ui'
@@ -17,6 +18,7 @@ import Onboarding from './Onboarding'
 export default function Me({ profile }: { profile: Profile }) {
   const [editing, setEditing] = useState(false)
   const [confirmReset, setConfirmReset] = useState(false)
+  const [planSheet, setPlanSheet] = useState(false)
   const toast = useToast()
   const today = todayKey()
   const days = useMemo(() => Array.from({ length: 7 }, (_, i) => addDays(today, i - 6)), [today])
@@ -77,6 +79,8 @@ export default function Me({ profile }: { profile: Profile }) {
         </div>
       </Card>
 
+      <DietPlanCard profile={profile} onOpen={() => setPlanSheet(true)} />
+
       <BodyCard />
 
       <Card>
@@ -130,6 +134,7 @@ export default function Me({ profile }: { profile: Profile }) {
       )}
 
       <AboutCard />
+      <DietPlanSheet open={planSheet} onClose={() => setPlanSheet(false)} profile={profile} />
 
       <div className="space-y-2 pt-2 text-center text-xs text-muted">
         <p className="flex items-center justify-center gap-1">

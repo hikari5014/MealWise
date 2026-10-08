@@ -1,19 +1,20 @@
 import { recipeAvoidTags } from '../data/avoid'
 import { RECIPES, RECIPE_MAP } from '../data/recipes'
-import type { Goal, Ingredient, LogEntry, MealSlot, Nutrition, PlanEntry, Profile, Recipe, Section } from '../types'
+import { fitsRule, resolveDay } from './dietPlan'
+import type { DayMark, Goal, Ingredient, LogEntry, MealSlot, Nutrition, PlanEntry, Profile, Recipe, Section } from '../types'
 
 export const EMPTY_NUTRITION: Nutrition = { kcal: 0, protein: 0, carbs: 0, fat: 0, fiber: 0 }
 
 export const sumNutrition = (logs: LogEntry[]): Nutrition =>
   logs.reduce((acc, log) => {
-    const r = RECIPE_MAP[log.recipeId]
-    if (!r) return acc
+    const nutri = log.custom?.nutrition ?? RECIPE_MAP[log.recipeId]?.nutrition
+    if (!nutri) return acc
     return {
-      kcal: acc.kcal + r.nutrition.kcal * log.portion,
-      protein: acc.protein + r.nutrition.protein * log.portion,
-      carbs: acc.carbs + r.nutrition.carbs * log.portion,
-      fat: acc.fat + r.nutrition.fat * log.portion,
-      fiber: acc.fiber + r.nutrition.fiber * log.portion,
+      kcal: acc.kcal + nutri.kcal * log.portion,
+      protein: acc.protein + nutri.protein * log.portion,
+      carbs: acc.carbs + nutri.carbs * log.portion,
+      fat: acc.fat + nutri.fat * log.portion,
+      fiber: acc.fiber + nutri.fiber * log.portion,
     }
   }, EMPTY_NUTRITION)
 
@@ -46,15 +47,30 @@ export const recipesFor = (meal: MealSlot | null, profile?: Profile) =>
 
 const pick = <T,>(arr: T[]) => arr[Math.floor(Math.random() * arr.length)]
 
-/** 一鍵排菜單：填滿空的早午晚餐，盡量不重複 */
-export const autoPlan = (days: string[], existing: PlanEntry[], profile?: Profile): PlanEntry[] => {
+/**
+ * 一鍵排菜單：依照每天的飲食計劃（斷食、每餐偏好、運動日、大餐）
+ * 填滿空的餐，盡量不重複。
+ */
+export const autoPlan = (
+  days: string[],
+  existing: PlanEntry[],
+  profile: Profile,
+  marks: Record<string, DayMark | undefined> = {},
+): PlanEntry[] => {
   const result: PlanEntry[] = []
   const used = new Map<string, number>()
   existing.forEach((e) => used.set(e.recipeId, (used.get(e.recipeId) ?? 0) + 1))
   for (const date of days) {
+    const day = resolveDay(date, profile, marks)
     for (const meal of ['breakfast', 'lunch', 'dinner'] as MealSlot[]) {
       if (existing.some((e) => e.date === date && e.meal === meal)) continue
-      const pool = recipesFor(meal, profile)
+      const rule = day.meals[meal].rule
+      if (rule === 'skip' || rule === 'feast') continue
+      const base = recipesFor(meal, profile)
+      let pool = base.filter((r) => fitsRule(r, rule))
+      // 蛋白飲大多標成早餐／點心；找不到就從全部食譜裡找符合規則的
+      if (!pool.length) pool = recipesFor(null, profile).filter((r) => fitsRule(r, rule))
+      if (!pool.length) pool = base
       if (!pool.length) continue
       const minUse = Math.min(...pool.map((r) => used.get(r.id) ?? 0))
       const fresh = pool.filter((r) => (used.get(r.id) ?? 0) === minUse)

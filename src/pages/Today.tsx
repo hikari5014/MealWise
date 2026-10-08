@@ -1,6 +1,8 @@
 import { AnimatePresence, motion } from 'framer-motion'
 import { useMemo, useState } from 'react'
 import { HealthTip } from '../components/BodyCard'
+import { AiEstimateSheet } from '../components/AiEstimate'
+import { DietPlanSheet, RuleBadge, TodayPlanCard } from '../components/DietPlan'
 import { RecipePicker } from '../components/RecipePicker'
 import { useShare } from '../components/Share'
 import { Icon } from '../components/Icon'
@@ -12,7 +14,8 @@ import { RECIPE_MAP } from '../data/recipes'
 import { db } from '../db'
 import { greeting, monthDay, todayKey, weekdayLabel } from '../lib/date'
 import { haptic, spring } from '../lib/feedback'
-import { actions, useLogs, usePlans, useRecent, useWater } from '../lib/hooks'
+import { resolveDay } from '../lib/dietPlan'
+import { actions, useLogs, useMarks, usePlans, useRecent, useWater } from '../lib/hooks'
 import { macroTargets, PORTIONS, sumNutrition } from '../lib/meal'
 import { MEAL_COLOR, MEAL_ICON, MEAL_LABEL, MEAL_SLOTS, type LogEntry, type MealSlot, type PlanEntry, type Profile } from '../types'
 
@@ -26,10 +29,14 @@ export default function Today({ profile, onGoPlan }: { profile: Profile; onGoPla
   const toast = useToast()
   const share = useShare()
   const [picking, setPicking] = useState<MealSlot | null>(null)
+  const [eatOut, setEatOut] = useState<MealSlot | null>(null)
+  const [planSheet, setPlanSheet] = useState(false)
+  const marks = useMarks(dates)
+  const day = resolveDay(date, profile, marks)
 
   const total = sumNutrition(logs)
-  const targets = macroTargets(profile)
-  const left = Math.round(profile.kcal - total.kcal)
+  const targets = macroTargets({ ...profile, kcal: day.kcal })
+  const left = Math.round(day.kcal - total.kcal)
 
   const togglePlan = async (plan: PlanEntry) => {
     const done = logs.find((l) => l.planId === plan.id)
@@ -43,7 +50,7 @@ export default function Today({ profile, onGoPlan }: { profile: Profile; onGoPla
 
   const removeLog = async (log: LogEntry) => {
     await db.logs.delete(log.id!)
-    toast(`已移除 ${RECIPE_MAP[log.recipeId]?.name}`, () => actions.restoreLog(log))
+    toast(`已移除 ${log.custom?.name ?? RECIPE_MAP[log.recipeId]?.name}`, () => actions.restoreLog(log))
   }
 
   const cyclePortion = async (log: LogEntry) => {
@@ -67,7 +74,7 @@ export default function Today({ profile, onGoPlan }: { profile: Profile; onGoPla
       </header>
 
       <Card className="flex items-center gap-5">
-        <Ring value={total.kcal} target={profile.kcal}>
+        <Ring value={total.kcal} target={day.kcal}>
           <div>
             <div className="text-3xl font-bold tabular-nums">
               <CountUp value={Math.abs(left)} />
@@ -82,6 +89,8 @@ export default function Today({ profile, onGoPlan }: { profile: Profile; onGoPla
           <MacroBar label="纖維" value={total.fiber} target={targets.fiber} color="#5b8c5a" />
         </div>
       </Card>
+
+      <TodayPlanCard day={day} onOpenSettings={() => setPlanSheet(true)} />
 
       <Card>
         <WaterCup ml={water} target={profile.waterMl} onAdd={(d) => actions.addWater(date, d)} />
@@ -119,12 +128,35 @@ export default function Today({ profile, onGoPlan }: { profile: Profile; onGoPla
         const mealKcal = sumNutrition(logs.filter((l) => l.meal === meal)).kcal
         return (
           <section key={meal}>
-            <div className="mb-2 flex items-center justify-between px-1">
-              <h2 className="font-bold">
+            <div className="mb-2 flex items-center justify-between gap-2 px-1">
+              <h2 className="flex items-center gap-2 font-bold">
                 <MealTitle meal={meal} />
+                <RuleBadge decision={day.meals[meal]} compact />
               </h2>
               <span className="text-xs tabular-nums text-muted">{Math.round(mealKcal)} kcal</span>
             </div>
+            {day.meals[meal].rule === 'skip' && !mealPlans.length && !extra.length && (
+              <p className="mb-1 flex items-center gap-1.5 px-1 text-xs text-muted">
+                <Icon name="hourglass_top" size={15} />
+                {day.meals[meal].reason}，這餐先跳過
+              </p>
+            )}
+            {day.meals[meal].rule === 'feast' && (
+              <motion.button
+                whileTap={{ scale: 0.97 }}
+                onClick={() => setEatOut(meal)}
+                className="mb-2 flex w-full items-center gap-3 rounded-2xl bg-gradient-to-br from-tomato-soft to-honey-soft p-3 text-left shadow-card"
+              >
+                <span className="grid h-10 w-10 place-items-center rounded-xl bg-white text-tomato">
+                  <Icon name="celebration" size={24} fill motion="wiggle" />
+                </span>
+                <span className="flex-1">
+                  <span className="block text-sm font-bold">今天的大餐{day.feastNote ? `：${day.feastNote}` : ''}</span>
+                  <span className="block text-xs text-ink/70">吃完拍張照，請 AI 幫你估熱量</span>
+                </span>
+                <Icon name="smart_toy" size={22} className="text-tomato" />
+              </motion.button>
+            )}
             <div className="space-y-2">
               <AnimatePresence initial={false}>
                 {mealPlans.map((plan) => {
@@ -141,7 +173,10 @@ export default function Today({ profile, onGoPlan }: { profile: Profile; onGoPla
                     />
                   )
                 })}
-                {extra.map((log) => (
+                {extra.map((log) =>
+                  log.custom ? (
+                    <CustomRow key={`l${log.id}`} log={log} onRemove={() => removeLog(log)} />
+                  ) : (
                   <MealRow
                     key={`l${log.id}`}
                     recipeId={log.recipeId}
@@ -151,7 +186,8 @@ export default function Today({ profile, onGoPlan }: { profile: Profile; onGoPla
                     onToggle={() => removeLog(log)}
                     onPortion={() => cyclePortion(log)}
                   />
-                ))}
+                  ),
+                )}
               </AnimatePresence>
               <motion.button
                 whileTap={{ scale: 0.97 }}
@@ -173,6 +209,8 @@ export default function Today({ profile, onGoPlan }: { profile: Profile; onGoPla
         meal={picking}
         profile={profile}
         recent={recent}
+        rule={picking ? day.meals[picking].rule : undefined}
+        onEatOut={() => setEatOut(picking)}
         onClose={() => setPicking(null)}
         title={picking ? `${MEAL_LABEL[picking]}吃了什麼？` : ''}
         onPick={async (r) => {
@@ -182,6 +220,8 @@ export default function Today({ profile, onGoPlan }: { profile: Profile; onGoPla
           toast(`已記錄 ${r.name}`, () => db.logs.delete(id))
         }}
       />
+      <AiEstimateSheet open={eatOut !== null} meal={eatOut} date={date} onClose={() => setEatOut(null)} />
+      <DietPlanSheet open={planSheet} onClose={() => setPlanSheet(false)} profile={profile} />
     </div>
   )
 }
@@ -268,5 +308,32 @@ export function MealTitle({ meal }: { meal: MealSlot }) {
       </span>
       {MEAL_LABEL[meal]}
     </span>
+  )
+}
+
+function CustomRow({ log, onRemove }: { log: LogEntry; onRemove: () => void }) {
+  const c = log.custom!
+  return (
+    <motion.div
+      layout
+      initial={{ opacity: 0, y: 8, scale: 0.98 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      exit={{ opacity: 0, x: -40, transition: { duration: 0.18 } }}
+      transition={spring}
+      className="relative flex min-h-[72px] items-center gap-3 overflow-hidden rounded-2xl bg-gradient-to-r from-white via-white to-tomato-soft py-3 pl-4 pr-3 shadow-card"
+    >
+      <div className="min-w-0 flex-1">
+        <div className="flex items-center gap-1.5 truncate font-medium">
+          <Icon name="ramen_dining" size={18} fill className="shrink-0 text-tomato" />
+          <span className="truncate">{c.name}</span>
+        </div>
+        <div className="text-xs tabular-nums text-muted">
+          {Math.round(c.nutrition.kcal)} kcal・蛋白質 {c.nutrition.protein}g・碳水 {c.nutrition.carbs}g
+        </div>
+      </div>
+      <div className="relative">
+        <CheckButton checked onToggle={onRemove} />
+      </div>
+    </motion.div>
   )
 }

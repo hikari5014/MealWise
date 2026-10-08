@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion'
 import { useMemo, useState } from 'react'
 import { RECIPE_MAP } from '../data/recipes'
+import { fitsRule, MEAL_RULE_ICON, MEAL_RULE_LABEL, type MealDecision } from '../lib/dietPlan'
 import { recipesFor } from '../lib/meal'
 import { MEAL_LABEL, type MealSlot, type Profile, type Recipe } from '../types'
 import { Icon } from './Icon'
@@ -17,6 +18,8 @@ export function RecipePicker({
   recent = [],
   onPick,
   title,
+  rule,
+  onEatOut,
 }: {
   open: boolean
   onClose: () => void
@@ -25,14 +28,22 @@ export function RecipePicker({
   recent?: string[]
   onPick: (recipe: Recipe) => void
   title?: string
+  /** 這一餐的飲食規則；有的話只列出符合的食譜 */
+  rule?: MealDecision['rule']
+  /** 有提供就顯示「外食・大餐」入口 */
+  onEatOut?: () => void
 }) {
   const [query, setQuery] = useState('')
   const [allMeals, setAllMeals] = useState(false)
   const list = useMemo(() => {
-    const base = recipesFor(allMeals ? null : meal, profile)
+    let base = recipesFor(allMeals ? null : meal, profile)
+    if (rule && !allMeals && rule !== 'normal' && rule !== 'skip' && rule !== 'feast') {
+      // 符合規則的食譜可能不在這個餐別（例如蛋白飲當午餐），所以從全部食譜裡找
+      base = recipesFor(null, profile).filter((r) => fitsRule(r, rule))
+    }
     const q = query.trim()
     return q ? base.filter((r) => r.name.includes(q) || r.tags.some((t) => t.includes(q))) : base
-  }, [meal, profile, query, allMeals])
+  }, [meal, profile, query, allMeals, rule])
   const recentRecipes = recent.map((id) => RECIPE_MAP[id]).filter(Boolean).slice(0, 6)
 
   const close = () => {
@@ -43,6 +54,33 @@ export function RecipePicker({
 
   return (
     <Sheet open={open} onClose={close} title={title ?? (meal ? `選擇${MEAL_LABEL[meal]}` : '選擇食譜')}>
+      {onEatOut && !query && (
+        <motion.button
+          whileTap={{ scale: 0.97 }}
+          onClick={() => {
+            close()
+            onEatOut()
+          }}
+          className="mb-4 flex w-full items-center gap-3 rounded-3xl bg-gradient-to-br from-tomato-soft to-honey-soft p-3 text-left shadow-card"
+        >
+          <span className="grid h-11 w-11 place-items-center rounded-2xl bg-white text-tomato">
+            <Icon name="ramen_dining" size={26} fill motion="float" />
+          </span>
+          <span className="flex-1">
+            <span className="block font-bold">外食・大餐</span>
+            <span className="block text-xs text-ink/70">拍照給 AI 估算熱量，不用一樣一樣輸入</span>
+          </span>
+          <Icon name="smart_toy" size={22} className="text-tomato" />
+        </motion.button>
+      )}
+
+      {rule && rule !== 'normal' && rule !== 'skip' && rule !== 'feast' && !allMeals && (
+        <p className="mb-3 flex items-center gap-1.5 text-xs text-muted">
+          <Icon name={MEAL_RULE_ICON[rule]} size={15} fill className="text-leaf" />
+          依你的飲食計劃，只列出「{MEAL_RULE_LABEL[rule]}」的食譜
+        </p>
+      )}
+
       {recentRecipes.length > 0 && !query && (
         <div className="mb-4">
           <div className="mb-2 text-xs font-medium text-muted">最近吃過・點一下就好</div>
@@ -77,7 +115,7 @@ export function RecipePicker({
         {meal && (
           <label className="mt-2 flex items-center gap-2 text-xs text-muted">
             <input type="checkbox" checked={allMeals} onChange={(e) => setAllMeals(e.target.checked)} className="accent-leaf" />
-            顯示所有餐別的食譜
+            顯示所有食譜
           </label>
         )}
       </div>

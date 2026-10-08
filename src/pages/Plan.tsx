@@ -2,7 +2,9 @@ import { AnimatePresence, motion } from 'framer-motion'
 import { useMemo, useState } from 'react'
 import { RecipePicker } from '../components/RecipePicker'
 import { useShare } from '../components/Share'
+import { DietPlanSheet, RuleBadge } from '../components/DietPlan'
 import { Icon } from '../components/Icon'
+import { MonthCalendar } from '../components/MonthCalendar'
 import { RowPhoto, useRecipeDetail } from '../components/RecipeDetail'
 import { RecipePhoto } from '../components/RecipePhoto'
 import { Button, listContainer, listItem, Segmented, useToast } from '../components/ui'
@@ -10,13 +12,15 @@ import { RECIPE_MAP } from '../data/recipes'
 import { db } from '../db'
 import { addDays, monthDay, todayKey, weekDays, weekdayLabel, weekStart } from '../lib/date'
 import { haptic, spring } from '../lib/feedback'
-import { usePlans } from '../lib/hooks'
+import { resolveDay } from '../lib/dietPlan'
+import { useMarks, usePlans } from '../lib/hooks'
 import { autoPlan, recipesFor } from '../lib/meal'
 import { MealTitle } from './Today'
 import { MEAL_LABEL, MEAL_SLOTS, type MealSlot, type PlanEntry, type Profile } from '../types'
 
 export default function Plan({ profile }: { profile: Profile }) {
-  const [view, setView] = useState<'week' | 'library'>('week')
+  const [view, setView] = useState<'week' | 'month' | 'library'>('week')
+  const [focus, setFocus] = useState<string | null>(null)
   return (
     <div className="space-y-4">
       <header className="pt-2">
@@ -27,17 +31,28 @@ export default function Plan({ profile }: { profile: Profile }) {
         value={view}
         onChange={setView}
         options={[
-          { value: 'week', label: '一週菜單', icon: 'calendar_month' },
+          { value: 'week', label: '週', icon: 'calendar_month' },
+          { value: 'month', label: '月曆', icon: 'calendar_view_month' },
           { value: 'library', label: '食譜庫', icon: 'menu_book' },
         ]}
       />
       <motion.div
         key={view}
-        initial={{ opacity: 0, x: view === 'week' ? -16 : 16 }}
+        initial={{ opacity: 0, x: view === 'week' ? -16 : view === 'month' ? 0 : 16 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.2, ease: 'easeOut' }}
       >
-        {view === 'week' ? <Week profile={profile} /> : <Library profile={profile} />}
+        {view === 'week' && <Week key={focus ?? 'today'} profile={profile} focus={focus} />}
+        {view === 'month' && (
+          <MonthCalendar
+            profile={profile}
+            onGoDay={(d) => {
+              setFocus(d)
+              setView('week')
+            }}
+          />
+        )}
+        {view === 'library' && <Library profile={profile} />}
       </motion.div>
     </div>
   )
@@ -71,11 +86,13 @@ export function WeekSwitcher({ start, onChange }: { start: string; onChange: (s:
   )
 }
 
-function Week({ profile }: { profile: Profile }) {
+function Week({ profile, focus }: { profile: Profile; focus: string | null }) {
   const today = todayKey()
-  const [start, setStart] = useState(weekStart(today))
+  const [start, setStart] = useState(weekStart(focus ?? today))
   const days = useMemo(() => weekDays(start), [start])
-  const [selected, setSelected] = useState(today)
+  const [selected, setSelected] = useState(focus ?? today)
+  const [planSheet, setPlanSheet] = useState(false)
+  const marks = useMarks(days)
   const [dir, setDir] = useState(0)
   const [picking, setPicking] = useState<MealSlot | null>(null)
   const plans = usePlans(days)
@@ -84,6 +101,7 @@ function Week({ profile }: { profile: Profile }) {
   const day = days.includes(selected) ? selected : days[0]
   const dayPlans = plans.filter((p) => p.date === day)
   const dayKcal = dayPlans.reduce((s, p) => s + (RECIPE_MAP[p.recipeId]?.nutrition.kcal ?? 0), 0)
+  const resolved = resolveDay(day, profile, marks)
 
   const select = (d: string) => {
     haptic(6)
@@ -93,7 +111,7 @@ function Week({ profile }: { profile: Profile }) {
 
   const fillWeek = async () => {
     const targetDays = days.filter((d) => d >= today)
-    const added = autoPlan(targetDays.length ? targetDays : days, plans, profile)
+    const added = autoPlan(targetDays.length ? targetDays : days, plans, profile, marks)
     if (!added.length) {
       toast('這週都排好了')
       return
@@ -123,6 +141,7 @@ function Week({ profile }: { profile: Profile }) {
         {days.map((d) => {
           const count = plans.filter((p) => p.date === d).length
           const active = d === day
+          const r = resolveDay(d, profile, marks)
           return (
             <button key={d} onClick={() => select(d)} className="relative flex flex-col items-center rounded-2xl py-2">
               {active && <motion.span layoutId="day-pill" transition={spring} className="absolute inset-0 rounded-2xl bg-leaf shadow-card" />}
@@ -135,6 +154,11 @@ function Week({ profile }: { profile: Profile }) {
                   <span key={i} className={`h-1 w-1 rounded-full ${active ? 'bg-white' : 'bg-leaf/60'}`} />
                 ))}
               </span>
+              {(r.feastMeal || r.training || r.fastDay) && (
+                <span className={`relative mt-1 ${active ? 'text-white' : r.feastMeal ? 'text-tomato' : r.fastDay ? 'text-ink/50' : 'text-leaf'}`}>
+                  <Icon name={r.feastMeal ? 'celebration' : r.fastDay ? 'no_meals' : 'fitness_center'} size={13} fill={!!r.feastMeal} />
+                </span>
+              )}
             </button>
           )
         })}
@@ -165,14 +189,34 @@ function Week({ profile }: { profile: Profile }) {
           transition={{ duration: 0.2, ease: 'easeOut' }}
           className="space-y-4"
         >
-          <div className="px-1 text-xs text-muted">
-            這天預計 <span className="font-bold tabular-nums text-ink">{dayKcal}</span> / {profile.kcal} kcal
+          <div className="flex flex-wrap items-center gap-2 px-1 text-xs text-muted">
+            <span>
+              這天預計 <span className="font-bold tabular-nums text-ink">{dayKcal}</span> / {resolved.kcal} kcal
+            </span>
+            {resolved.training && (
+              <span className="flex items-center gap-0.5 rounded-full bg-leaf-soft px-2 py-0.5 text-leaf-dark">
+                <Icon name="fitness_center" size={12} />
+                運動日
+              </span>
+            )}
+            <button onClick={() => setPlanSheet(true)} className="ml-auto flex items-center gap-0.5 text-leaf-dark">
+              <Icon name="tune" size={14} />
+              飲食計劃
+            </button>
           </div>
           {MEAL_SLOTS.map((meal) => (
             <section key={meal}>
-              <h2 className="mb-2 px-1 font-bold">
+              <h2 className="mb-2 flex items-center gap-2 px-1 font-bold">
                 <MealTitle meal={meal} />
+                <RuleBadge decision={resolved.meals[meal]} compact />
               </h2>
+              {(resolved.meals[meal].rule === 'skip' || resolved.meals[meal].rule === 'feast') && (
+                <p className="mb-2 px-1 text-xs text-muted">
+                  {resolved.meals[meal].rule === 'feast'
+                    ? `大餐${resolved.feastNote ? `：${resolved.feastNote}` : ''}・當天到「今天」用 AI 估算記錄就好`
+                    : resolved.meals[meal].reason}
+                </p>
+              )}
               <div className="space-y-2">
                 <AnimatePresence initial={false}>
                   {dayPlans
@@ -201,6 +245,7 @@ function Week({ profile }: { profile: Profile }) {
         open={picking !== null}
         meal={picking}
         profile={profile}
+        rule={picking ? resolved.meals[picking].rule : undefined}
         onClose={() => setPicking(null)}
         onPick={async (r) => {
           if (!picking) return
@@ -208,6 +253,7 @@ function Week({ profile }: { profile: Profile }) {
           await db.plans.add({ date: day, meal: picking, recipeId: r.id })
         }}
       />
+      <DietPlanSheet open={planSheet} onClose={() => setPlanSheet(false)} profile={profile} />
     </div>
   )
 }
