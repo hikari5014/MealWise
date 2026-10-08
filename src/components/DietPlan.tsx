@@ -365,7 +365,7 @@ export function DietPlanSheet({ open, onClose, profile }: { open: boolean; onClo
               </div>
             ))}
           </div>
-          <p className="px-1 text-xs text-muted">一鍵排菜單會照這裡挑食譜，例如「蛋白飲」只排蛋白飲、「不吃澱粉」只排低醣料理。</p>
+          <p className="px-1 text-xs text-muted">快速挑選和推薦會照這裡挑食譜，例如「蛋白飲」只排蛋白飲、「不吃澱粉」只排低醣料理。</p>
         </Section>
 
         <Section icon="fitness_center" title="運動日">

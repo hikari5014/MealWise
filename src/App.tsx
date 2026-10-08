@@ -4,6 +4,8 @@ import { useMemo, useState } from 'react'
 import { Food } from './components/Food'
 import { HealthSyncProvider } from './components/HealthSync'
 import { Icon } from './components/Icon'
+import { BatchCookProvider } from './components/BatchCook'
+import { ComposerProvider } from './components/Composer'
 import { RecipeDetailProvider } from './components/RecipeDetail'
 import { RecipeEditorProvider } from './components/RecipeEditor'
 import { ShareProvider } from './components/Share'
@@ -61,6 +63,8 @@ export default function App() {
             <ShareProvider onImported={() => go('plan')}>
               <RecipeEditorProvider>
 <RecipeDetailProvider>
+              <BatchCookProvider>
+              <ComposerProvider>
                 {profile === undefined ? (
                   <Splash />
                 ) : profile === null ? (
@@ -84,6 +88,8 @@ export default function App() {
                     <BottomNav tab={tab} onChange={go} />
                   </>
                 )}
+              </ComposerProvider>
+              </BatchCookProvider>
               </RecipeDetailProvider>
 </RecipeEditorProvider>
             </ShareProvider>

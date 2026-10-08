@@ -85,7 +85,7 @@ export function TasteSheet({ open, onClose, profile }: { open: boolean; onClose:
   return (
     <Sheet open={open} onClose={onClose} title="口味偏好">
       <div className="space-y-5">
-        <p className="text-sm text-muted">選你喜歡的，一鍵排菜單就會優先挑這些，不用每次自己想。</p>
+        <p className="text-sm text-muted">選你喜歡的，快速挑選和推薦就會優先出現這些，不用每次自己想。</p>
 
         <section>
           <h3 className="mb-2 text-sm font-bold">喜歡哪些國家的料理？</h3>

@@ -1,6 +1,8 @@
 import { AnimatePresence, motion } from 'framer-motion'
 import { useMemo, useState } from 'react'
 import { RecipePicker } from '../components/RecipePicker'
+import { useBatchCook } from '../components/BatchCook'
+import { copyDay, copyLastWeek, emptySlots, QuickPickSheet } from '../components/QuickPick'
 import { useShare } from '../components/Share'
 import { DietPlanSheet, RuleBadge } from '../components/DietPlan'
 import { Icon } from '../components/Icon'
@@ -8,10 +10,11 @@ import { MonthCalendar } from '../components/MonthCalendar'
 import { RowPhoto, useRecipeDetail } from '../components/RecipeDetail'
 import { RecipePhoto } from '../components/RecipePhoto'
 import { useRecipeEditor } from '../components/RecipeEditor'
-import { Button, listContainer, listItem, Segmented, useToast } from '../components/ui'
+import { useComposer } from '../components/Composer'
+import { Button, listContainer, listItem, Segmented, Sheet, useToast } from '../components/ui'
 import { RECIPE_MAP } from '../data/recipes'
 import { db } from '../db'
-import { addDays, monthDay, todayKey, weekDays, weekdayLabel, weekStart } from '../lib/date'
+import { addDays, fromKey, monthDay, todayKey, weekDays, weekdayLabel, weekStart } from '../lib/date'
 import { haptic, spring } from '../lib/feedback'
 import { resolveDay } from '../lib/dietPlan'
 import { useMarks, usePlans } from '../lib/hooks'
@@ -96,6 +99,9 @@ function Week({ profile, focus }: { profile: Profile; focus: string | null }) {
   const days = useMemo(() => weekDays(start), [start])
   const [selected, setSelected] = useState(focus ?? today)
   const [planSheet, setPlanSheet] = useState(false)
+  const [quick, setQuick] = useState(false)
+  const [copying, setCopying] = useState(false)
+  const batch = useBatchCook()
   const marks = useMarks(days)
   const [dir, setDir] = useState(0)
   const [picking, setPicking] = useState<MealSlot | null>(null)
@@ -122,8 +128,20 @@ function Week({ profile, focus }: { profile: Profile; focus: string | null }) {
     }
     haptic([10, 40, 10, 40, 16])
     const ids = (await db.plans.bulkAdd(added, { allKeys: true })) as number[]
-    toast(`幫你排了 ${added.length} 餐`, () => db.plans.bulkDelete(ids))
+    toast(`隨機排了 ${added.length} 餐`, () => db.plans.bulkDelete(ids))
   }
+
+  const lastWeek = async () => {
+    const r = await copyLastWeek(start)
+    if (!r.lastCount) return toast('上週沒有菜單可以複製')
+    if (!r.count) return toast('這週的餐都排好了')
+    haptic([10, 40, 10])
+    toast(`複製了上週 ${r.count} 餐`, () => db.plans.bulkDelete(r.ids))
+  }
+
+  const quickDays = days.filter((d) => d >= today)
+  const quickTargets = quickDays.length ? quickDays : days
+  const emptyCount = emptySlots(quickTargets, plans, profile, marks).length
 
   const remove = async (plan: PlanEntry) => {
     await db.plans.delete(plan.id!)
@@ -169,18 +187,40 @@ function Week({ profile, focus }: { profile: Profile; focus: string | null }) {
       </div>
 
       <div className="flex gap-2">
-        <Button className="flex-1" onClick={fillWeek}>
-          <span className="flex items-center justify-center gap-2">
-            <Icon name="auto_awesome" size={20} fill motion="pulse" />
-            一鍵排滿這週
+        <Button className="flex-1" onClick={() => setQuick(true)}>
+          <span className="flex items-center justify-center gap-1.5">
+            <Icon name="touch_app" size={20} fill motion="pulse" />
+            快速挑選
+            {emptyCount > 0 && <span className="rounded-full bg-white/25 px-1.5 text-xs tabular-nums">{emptyCount}</span>}
           </span>
         </Button>
-        <Button variant="soft" className="grid w-12 place-items-center px-0" aria-label="分享菜單" onClick={() => share.openShare({ weekStart: start, day })}>
-          <Icon name="qr_code_2" size={22} />
+        <Button variant="soft" className="flex-1" onClick={() => batch.start()}>
+          <span className="flex items-center justify-center gap-1.5">
+            <Icon name="skillet" size={20} />
+            一次備餐
+          </span>
         </Button>
-        <Button variant="soft" className="grid w-12 place-items-center px-0" aria-label="掃描朋友的菜單" onClick={share.openScanner}>
-          <Icon name="qr_code_scanner" size={22} />
-        </Button>
+      </div>
+      <div className="-mx-4 flex gap-2 overflow-x-auto px-4 text-xs">
+        {(
+          [
+            ['history', '複製上週', lastWeek],
+            ['content_copy', '這天複製到…', () => setCopying(true)],
+            ['auto_awesome', '隨機排滿', fillWeek],
+            ['qr_code_2', '分享', () => share.openShare({ weekStart: start, day })],
+            ['qr_code_scanner', '掃描', share.openScanner],
+          ] as [IconName, string, () => void][]
+        ).map(([icon, label, fn]) => (
+          <motion.button
+            key={label}
+            whileTap={{ scale: 0.92 }}
+            onClick={fn}
+            className="flex shrink-0 items-center gap-1 rounded-full bg-white px-3 py-1.5 text-ink/80 shadow-card"
+          >
+            <Icon name={icon} size={16} />
+            {label}
+          </motion.button>
+        ))}
       </div>
 
       <AnimatePresence mode="wait" initial={false} custom={dir}>
@@ -258,7 +298,68 @@ function Week({ profile, focus }: { profile: Profile; focus: string | null }) {
         }}
       />
       <DietPlanSheet open={planSheet} onClose={() => setPlanSheet(false)} profile={profile} />
+      <QuickPickSheet open={quick} onClose={() => setQuick(false)} days={quickTargets} plans={plans} profile={profile} marks={marks} />
+      <CopyDaySheet open={copying} onClose={() => setCopying(false)} from={day} hasPlans={dayPlans.length > 0} />
     </div>
+  )
+}
+
+/** 把選的這天菜單複製到其他天（只補空著的餐） */
+function CopyDaySheet({ open, onClose, from, hasPlans }: { open: boolean; onClose: () => void; from: string; hasPlans: boolean }) {
+  const toast = useToast()
+  const [targets, setTargets] = useState<string[]>([])
+  const options = Array.from({ length: 13 }, (_, i) => addDays(from, i + 1))
+  const run = async () => {
+    const ids = await copyDay(from, targets)
+    onClose()
+    setTargets([])
+    if (!ids.length) return toast('選的那幾天都已經排好了')
+    haptic([10, 40, 10])
+    toast(`複製了 ${ids.length} 餐`, () => db.plans.bulkDelete(ids))
+  }
+  return (
+    <Sheet open={open} onClose={onClose} title={`把 ${monthDay(from)}（${weekdayLabel(from)}）複製到…`}>
+      {!hasPlans ? (
+        <p className="py-8 text-center text-sm text-muted">這天還沒有排菜，先排好一天再複製</p>
+      ) : (
+        <div className="space-y-4">
+          <p className="text-xs text-muted">適合「平日都吃差不多」的人：排好一天，複製到其他天。已經排了的餐不會被蓋掉。</p>
+          <div className="flex gap-2 text-xs">
+            <button onClick={() => setTargets(options.slice(0, 6).filter((d) => ![0, 6].includes(fromKey(d).getDay())))} className="rounded-full bg-leaf-soft px-3 py-1 text-leaf-dark">
+              接下來的平日
+            </button>
+            <button onClick={() => setTargets(options.slice(0, 6))} className="rounded-full bg-leaf-soft px-3 py-1 text-leaf-dark">
+              接下來 6 天
+            </button>
+            <button onClick={() => setTargets([])} className="rounded-full bg-white px-3 py-1 text-muted shadow-card">
+              清除
+            </button>
+          </div>
+          <div className="grid grid-cols-7 gap-1.5">
+            {options.map((d) => {
+              const on = targets.includes(d)
+              return (
+                <motion.button
+                  key={d}
+                  whileTap={{ scale: 0.88 }}
+                  onClick={() => {
+                    haptic(6)
+                    setTargets((t) => (on ? t.filter((x) => x !== d) : [...t, d]))
+                  }}
+                  className={`flex flex-col items-center rounded-2xl py-2 transition-colors ${on ? 'bg-leaf text-white' : 'bg-white shadow-card'}`}
+                >
+                  <span className={`text-[10px] ${on ? 'text-white/80' : 'text-muted'}`}>{weekdayLabel(d)}</span>
+                  <span className="text-sm font-bold">{Number(d.slice(-2))}</span>
+                </motion.button>
+              )
+            })}
+          </div>
+          <Button className="w-full" disabled={!targets.length} onClick={run}>
+            {targets.length ? `複製到 ${targets.length} 天` : '選要複製到哪幾天'}
+          </Button>
+        </div>
+      )}
+    </Sheet>
   )
 }
 
@@ -310,6 +411,7 @@ function Library({ profile }: { profile: Profile }) {
   const [group, setGroup] = useState<'all' | 'fav' | 'mine' | 'shake' | Cuisine>('all')
   const openDetail = useRecipeDetail()
   const openEditor = useRecipeEditor()
+  const openComposer = useComposer()
   const taste = getTaste(profile)
   useRecipesVersion()
   const q = query.trim()
@@ -343,6 +445,10 @@ function Library({ profile }: { profile: Profile }) {
           placeholder="搜尋食譜或標籤"
           className="min-w-0 flex-1 rounded-2xl bg-white px-4 py-3 text-sm shadow-card outline-none ring-leaf/40 focus:ring-2"
         />
+        <Button variant="soft" className="flex items-center gap-1 px-3 text-sm" onClick={openComposer}>
+          <Icon name="restaurant_menu" size={18} />
+          組合
+        </Button>
         <Button className="flex items-center gap-1 px-3 text-sm" onClick={() => openEditor()}>
           <Icon name="add" size={20} weight={600} />
           新增

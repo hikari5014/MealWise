@@ -171,6 +171,12 @@ const INGREDIENT_TAGS: Record<string, string[]> = {
   紅蘿蔔: ['carrot'],
   冷凍三色豆: ['carrot'],
   小番茄: ['tomato'],
+  沙茶醬: ['fish', 'shrimp'],
+  醬油膏: ['soysauce', 'wheat'],
+  蔥薑蒜: ['scallion', 'ginger', 'garlic'],
+  黑麻油: ['sesame'],
+  香油: ['sesame'],
+
   乳清蛋白粉: ['milk'],
   水煮鮪魚罐頭: ['fish'],
   水煮蛋: ['egg'],

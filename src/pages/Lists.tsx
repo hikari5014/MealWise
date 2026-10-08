@@ -10,6 +10,7 @@ import { buildShopping, formatQty } from '../lib/meal'
 import { SECTION_IMAGE, SECTION_LABEL, SECTION_ORDER, type PlanEntry, type Profile } from '../types'
 import { WeekSwitcher } from './Plan'
 import { WeekPrepView } from '../components/WeekPrep'
+import { BatchSessions } from '../components/BatchCook'
 
 export default function Lists({ profile }: { profile: Profile }) {
   const [view, setView] = useState<'shop' | 'prep'>('shop')
@@ -32,6 +33,8 @@ export default function Lists({ profile }: { profile: Profile }) {
           { value: 'prep', label: '一週備餐', icon: 'skillet' },
         ]}
       />
+      {view === 'prep' && <BatchSessions />}
+      {view === 'prep' && <h2 className="px-1 pt-2 text-sm font-bold">或照這週菜單備餐</h2>}
       <WeekSwitcher start={start} onChange={setStart} />
       {plans.length === 0 ? (
         <div className="py-16 text-center text-sm text-muted">
