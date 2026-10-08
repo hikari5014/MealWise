@@ -29,3 +29,4 @@ npm run build    # 打包
 
 - 圖示：[Google Material Symbols](https://fonts.google.com/icons)（Apache 2.0）
 - 食物插圖：[Microsoft Fluent Emoji 3D](https://github.com/microsoft/fluentui-emoji)（MIT，見 `public/food/LICENSE.txt`）
+- 食譜照片：來自 Openverse（Flickr、Wikimedia、rawpixel 等），皆為 CC0、公眾領域或 CC BY，作者與授權列在 `src/data/photoCredits.json`，並顯示在每道食譜頁面底部
