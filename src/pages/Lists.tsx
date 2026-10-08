@@ -3,14 +3,13 @@ import { useMemo, useState } from 'react'
 import { CheckButton, Segmented } from '../components/ui'
 import { Food } from '../components/Food'
 import { Icon } from '../components/Icon'
-import { RecipePhoto } from '../components/RecipePhoto'
-import { RECIPE_MAP } from '../data/recipes'
 import { todayKey, weekDays, weekStart } from '../lib/date'
 import { spring } from '../lib/feedback'
 import { actions, useChecks, usePlans } from '../lib/hooks'
 import { buildShopping, formatQty } from '../lib/meal'
 import { SECTION_IMAGE, SECTION_LABEL, SECTION_ORDER, type PlanEntry, type Profile } from '../types'
 import { WeekSwitcher } from './Plan'
+import { WeekPrepView } from '../components/WeekPrep'
 
 export default function Lists({ profile }: { profile: Profile }) {
   const [view, setView] = useState<'shop' | 'prep'>('shop')
@@ -30,7 +29,7 @@ export default function Lists({ profile }: { profile: Profile }) {
         onChange={setView}
         options={[
           { value: 'shop', label: '採購清單', icon: 'shopping_cart' },
-          { value: 'prep', label: '備料清單', icon: 'skillet' },
+          { value: 'prep', label: '一週備餐', icon: 'skillet' },
         ]}
       />
       <WeekSwitcher start={start} onChange={setStart} />
@@ -46,7 +45,7 @@ export default function Lists({ profile }: { profile: Profile }) {
           {view === 'shop' ? (
             <Shopping weekKey={start} plans={plans} servings={profile.servings} />
           ) : (
-            <Prep weekKey={start} plans={plans} />
+            <WeekPrepView weekKey={start} plans={plans} servings={profile.servings} />
           )}
         </motion.div>
       )}
@@ -149,53 +148,6 @@ function Shopping({ weekKey, plans, servings }: { weekKey: string; plans: PlanEn
           </section>
         )
       })}
-    </div>
-  )
-}
-
-function Prep({ weekKey, plans }: { weekKey: string; plans: PlanEntry[] }) {
-  const prefix = `prep|${weekKey}|`
-  const checks = useChecks(prefix)
-  const counts = new Map<string, number>()
-  plans.forEach((p) => counts.set(p.recipeId, (counts.get(p.recipeId) ?? 0) + 1))
-  const recipes = [...counts.keys()].map((id) => RECIPE_MAP[id]).filter((r) => r && r.prep.length)
-  const tasks = recipes.flatMap((r) => r.prep.map((t) => `${prefix}${r.id}|${t.task}`))
-  const done = tasks.filter((k) => checks.has(k)).length
-
-  if (!recipes.length) {
-    return <div className="py-12 text-center text-sm text-muted">這週的菜色都是現煮現吃，不用先備料</div>
-  }
-
-  return (
-    <div className="space-y-4">
-      <Progress done={done} total={tasks.length} doneText="備料完成！" />
-      <p className="px-1 text-xs text-muted">週末花一點時間先準備好，平日煮飯會快很多</p>
-      {recipes.map((r) => (
-        <section key={r.id} className="rounded-3xl bg-white p-4 shadow-card">
-          <div className="mb-2 flex items-center gap-2">
-            <span className="relative h-10 w-10 overflow-hidden rounded-xl">
-              <RecipePhoto recipe={r} />
-            </span>
-            <span className="font-medium">{r.name}</span>
-            <span className="ml-auto rounded-full bg-honey-soft px-2 py-0.5 text-xs">本週 {counts.get(r.id)} 次</span>
-          </div>
-          <ul className="space-y-2">
-            {r.prep.map((t) => {
-              const key = `${prefix}${r.id}|${t.task}`
-              const checked = checks.has(key)
-              return (
-                <li key={t.task} className="flex items-center gap-3" onClick={() => actions.toggleCheck(key, !checked)}>
-                  <CheckButton checked={checked} onToggle={() => actions.toggleCheck(key, !checked)} size={24} />
-                  <div className="flex-1 text-sm">
-                    <span className={checked ? 'text-muted line-through' : ''}>{t.task}</span>
-                    <div className="text-xs text-muted">保存：{t.keep}</div>
-                  </div>
-                </li>
-              )
-            })}
-          </ul>
-        </section>
-      ))}
     </div>
   )
 }

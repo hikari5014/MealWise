@@ -1,5 +1,6 @@
 import { clearAvoidCache } from './avoid'
 import { RECIPE_STYLE } from './cuisine'
+import { BRAND_RECIPES } from './proteinBrands'
 import type { FoodImage } from './foodImages'
 import type { Ingredient, MealSlot, Nutrition, PrepTask, Recipe, Section } from '../types'
 
@@ -1647,6 +1648,8 @@ export const BUILTIN_RECIPES: Recipe[] = [
     nutrition: n(160, 13, 2, 10, 0),
   }),
 ]
+
+BUILTIN_RECIPES.push(...BRAND_RECIPES)
 
 BUILTIN_RECIPES.forEach((x) => {
   const style = RECIPE_STYLE[x.id]

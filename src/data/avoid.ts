@@ -65,6 +65,7 @@ export const AVOID_GROUPS: AvoidGroup[] = [
     items: [
       { id: 'tofu', label: '豆腐', image: 'oden' },
       { id: 'soyprotein', label: '大豆蛋白粉', image: 'cup-straw' },
+      { id: 'soylecithin', label: '大豆卵磷脂（微量）', image: 'beans' },
       { id: 'soymilk', label: '豆漿', image: 'cup-straw' },
       { id: 'soysauce', label: '醬油・豆瓣醬', image: 'salt' },
       { id: 'miso', label: '味噌', image: 'oats' },
@@ -225,7 +226,10 @@ const KEYWORDS: [string, string[]][] = [
   ['花生醬', ['peanut']],
   ['雞蛋', ['egg']],
   ['鴨蛋', ['egg']],
-  ['蛋白粉', ['milk']],
+  ['蛋白霜', ['egg']],
+  ['蛋白液', ['egg']],
+  // 「蛋白（protein）」不是蛋，先吃掉避免誤判；蛋白粉的過敏原由產品標示另外指定
+  ['蛋白', []],
   ['洋蔥', ['onion']],
   ['青蔥', ['scallion']],
   ['辣椒', ['chili']],
@@ -312,7 +316,7 @@ export const clearAvoidCache = () => cache.clear()
 export const recipeAvoidTags = (recipe: Recipe) => {
   let tags = cache.get(recipe.id)
   if (!tags) {
-    tags = [...new Set(recipe.ingredients.flatMap((i) => ingredientTags(i.name)))]
+    tags = [...new Set([...recipe.ingredients.flatMap((i) => ingredientTags(i.name)), ...(recipe.allergenTags ?? [])])]
     cache.set(recipe.id, tags)
   }
   return tags
@@ -325,7 +329,7 @@ export const LEGACY_AVOID: Record<string, string[]> = {
   egg: ['egg'],
   peanut: ['peanut'],
   gluten: ['wheat', 'oats'],
-  soy: ['tofu', 'soyprotein', 'soymilk', 'soysauce', 'miso', 'edamame', 'tempeh'],
+  soy: ['tofu', 'soyprotein', 'soylecithin', 'soymilk', 'soysauce', 'miso', 'edamame', 'tempeh'],
   nuts: ['treenuts'],
 }
 

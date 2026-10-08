@@ -1,5 +1,6 @@
 import { AnimatePresence, motion } from 'framer-motion'
 import { createContext, useCallback, useContext, useEffect, useState, type ReactNode } from 'react'
+import { BatchSheet } from './Batch'
 import { RECIPE_MAP } from '../data/recipes'
 import { Icon } from './Icon'
 import { photoCredit, RecipePhoto } from './RecipePhoto'
@@ -18,6 +19,7 @@ interface Opened {
 }
 
 const Ctx = createContext<(recipeId: string, layoutId: string) => void>(() => {})
+const BatchCtx = createContext<(recipe: Recipe) => void>(() => {})
 
 export const useRecipeDetail = () => useContext(Ctx)
 
@@ -63,6 +65,7 @@ export function RowPhoto({ recipe, layoutId, dim = false }: { recipe: Recipe; la
 
 export function RecipeDetailProvider({ children }: { children: ReactNode }) {
   const [opened, setOpened] = useState<Opened | null>(null)
+  const [batch, setBatch] = useState<Recipe | null>(null)
   const open = useCallback((recipeId: string, layoutId: string) => {
     const recipe = RECIPE_MAP[recipeId]
     if (recipe) {
@@ -81,9 +84,12 @@ export function RecipeDetailProvider({ children }: { children: ReactNode }) {
   return (
     <Ctx.Provider value={open}>
       {children}
-      <AnimatePresence>
-        {opened && <Detail key={opened.layoutId} {...opened} onClose={() => setOpened(null)} />}
-      </AnimatePresence>
+      <BatchCtx.Provider value={setBatch}>
+        <AnimatePresence>
+          {opened && <Detail key={opened.layoutId} {...opened} onClose={() => setOpened(null)} />}
+        </AnimatePresence>
+      </BatchCtx.Provider>
+      <BatchSheet recipe={batch} onClose={() => setBatch(null)} />
     </Ctx.Provider>
   )
 }
@@ -97,6 +103,7 @@ function Detail({ recipe, layoutId, onClose }: Opened & { onClose: () => void })
   const openEditor = useRecipeEditor()
   const toast = useToast()
   const [confirmDelete, setConfirmDelete] = useState(false)
+  const openBatch = useContext(BatchCtx)
   return (
     <div className="fixed inset-0 z-40">
       <motion.div
@@ -245,6 +252,21 @@ function Detail({ recipe, layoutId, onClose }: Opened & { onClose: () => void })
           {recipeAvoidTags(recipe).length > 0 && (
             <p className="text-xs text-muted">含：{recipeAvoidTags(recipe).map((t) => AVOID_ITEM_MAP[t]?.label).join('、')}</p>
           )}
+          <motion.button
+            whileTap={{ scale: 0.97 }}
+            onClick={() => openBatch(recipe)}
+            className="flex w-full items-center gap-3 rounded-3xl bg-gradient-to-br from-leaf-soft to-honey-soft p-3 text-left shadow-card"
+          >
+            <span className="grid h-11 w-11 place-items-center rounded-2xl bg-white text-leaf-dark">
+              <Icon name="kitchen" size={24} fill />
+            </span>
+            <span className="flex-1">
+              <span className="block font-bold">做成一週份</span>
+              <span className="block text-xs text-ink/70">一次煮好幾份：份量、分裝、冷藏冷凍、加熱方式</span>
+            </span>
+            <Icon name="chevron_right" size={22} className="text-muted" />
+          </motion.button>
+
           <div className="flex flex-wrap gap-2">
             <motion.button
               whileTap={{ scale: 0.92 }}

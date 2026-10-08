@@ -93,6 +93,8 @@ export interface Recipe {
   photoOf?: string
   /** 品牌產品的營養資料來源網址 */
   sourceUrl?: string
+  /** 依產品標示直接指定的過敏原（補食材名稱判斷不到的） */
+  allergenTags?: string[]
   createdAt?: number
 }
 

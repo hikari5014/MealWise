@@ -119,6 +119,7 @@ export const buildShopping = (plans: PlanEntry[], servings: number): ShoppingIte
     const r = RECIPE_MAP[plan.recipeId]
     if (!r) continue
     r.ingredients.forEach((ing: Ingredient) => {
+      if (/^(冷水|熱水|溫水|水)$/.test(ing.name)) return
       const key = `${ing.name}|${ing.unit}`
       const item = map.get(key) ?? { key, name: ing.name, qty: 0, unit: ing.unit, section: ing.section, from: [] }
       item.qty += ing.qty * servings
