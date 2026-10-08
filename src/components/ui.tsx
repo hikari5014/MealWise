@@ -1,5 +1,5 @@
 import { AnimatePresence, motion, useDragControls, type HTMLMotionProps } from 'framer-motion'
-import { createContext, useCallback, useContext, useRef, useState, type ReactNode } from 'react'
+import { createContext, useCallback, useContext, useEffect, useRef, useState, type ReactNode } from 'react'
 import { haptic, spring } from '../lib/feedback'
 
 /* ── 按鈕：按下微縮、放開回彈 ── */
@@ -72,46 +72,54 @@ export function Sheet({
   children: ReactNode
 }) {
   const controls = useDragControls()
+  // 自己管理「關閉後多久移除」，不依賴 AnimatePresence 等待內部所有動畫結束
+  // （內容裡有巢狀動畫時，它偶爾會卡住，留下一層看不見卻擋住點擊的遮罩）
+  const [mounted, setMounted] = useState(open)
+  useEffect(() => {
+    if (open) {
+      setMounted(true)
+      return
+    }
+    const t = window.setTimeout(() => setMounted(false), 360)
+    return () => window.clearTimeout(t)
+  }, [open])
+  if (!mounted) return null
+
   return (
-    <AnimatePresence>
-      {open && (
-        <div className="fixed inset-0 z-40">
-          <motion.div
-            className="absolute inset-0 bg-ink/30 backdrop-blur-[2px]"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={onClose}
-          />
-          <motion.div
-            role="dialog"
-            aria-modal="true"
-            className="absolute inset-x-0 bottom-0 mx-auto flex max-h-[88dvh] max-w-lg flex-col rounded-t-3xl bg-cream pb-[env(safe-area-inset-bottom)] shadow-2xl"
-            initial={{ y: '100%' }}
-            animate={{ y: 0 }}
-            exit={{ y: '100%' }}
-            transition={{ type: 'spring', stiffness: 380, damping: 36 }}
-            drag="y"
-            dragControls={controls}
-            dragListener={false}
-            dragConstraints={{ top: 0, bottom: 0 }}
-            dragElastic={{ top: 0, bottom: 0.6 }}
-            onDragEnd={(_, info) => {
-              if (info.offset.y > 100 || info.velocity.y > 500) onClose()
-            }}
-          >
-            <div
-              className="flex cursor-grab touch-none flex-col items-center px-5 pb-2 pt-3"
-              onPointerDown={(e) => controls.start(e)}
-            >
-              <div className="h-1.5 w-10 rounded-full bg-ink/15" />
-              {title && <div className="mt-3 w-full text-lg font-bold">{title}</div>}
-            </div>
-            <div className="overflow-y-auto px-5 pb-6">{children}</div>
-          </motion.div>
+    <div className={`fixed inset-0 z-40 ${open ? '' : 'pointer-events-none'}`} aria-hidden={!open}>
+      <motion.div
+        className="absolute inset-0 bg-ink/30 backdrop-blur-[2px]"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: open ? 1 : 0 }}
+        transition={{ duration: 0.22 }}
+        onClick={onClose}
+      />
+      <motion.div
+        role="dialog"
+        aria-modal="true"
+        className="absolute inset-x-0 bottom-0 mx-auto flex max-h-[88dvh] max-w-lg flex-col rounded-t-3xl bg-cream pb-[env(safe-area-inset-bottom)] shadow-2xl"
+        initial={{ y: '100%' }}
+        animate={{ y: open ? 0 : '100%' }}
+        transition={{ type: 'spring', stiffness: 380, damping: 36 }}
+        drag="y"
+        dragControls={controls}
+        dragListener={false}
+        dragConstraints={{ top: 0, bottom: 0 }}
+        dragElastic={{ top: 0, bottom: 0.6 }}
+        onDragEnd={(_, info) => {
+          if (info.offset.y > 100 || info.velocity.y > 500) onClose()
+        }}
+      >
+        <div
+          className="flex cursor-grab touch-none flex-col items-center px-5 pb-2 pt-3"
+          onPointerDown={(e) => controls.start(e)}
+        >
+          <div className="h-1.5 w-10 rounded-full bg-ink/15" />
+          {title && <div className="mt-3 w-full text-lg font-bold">{title}</div>}
         </div>
-      )}
-    </AnimatePresence>
+        <div className="overflow-y-auto px-5 pb-6">{children}</div>
+      </motion.div>
+    </div>
   )
 }
 

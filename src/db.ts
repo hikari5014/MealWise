@@ -1,6 +1,6 @@
 import Dexie, { type EntityTable } from 'dexie'
 import { LEGACY_AVOID } from './data/avoid'
-import type { Check, LogEntry, PlanEntry, Profile, WaterDay } from './types'
+import type { BodyRecord, Check, LogEntry, PlanEntry, Pref, Profile, WaterDay } from './types'
 
 // 所有資料都只存在這台裝置的瀏覽器裡（IndexedDB）
 export const db = new Dexie('mealwise') as Dexie & {
@@ -9,6 +9,8 @@ export const db = new Dexie('mealwise') as Dexie & {
   logs: EntityTable<LogEntry, 'id'>
   water: EntityTable<WaterDay, 'date'>
   checks: EntityTable<Check, 'key'>
+  body: EntityTable<BodyRecord, 'date'>
+  prefs: EntityTable<Pref, 'key'>
 }
 
 db.version(1).stores({
@@ -30,3 +32,9 @@ db.version(2)
         p.avoid = [...new Set(p.avoid.flatMap((a) => LEGACY_AVOID[a] ?? [a]))]
       }),
   )
+
+// v3：身體數據（體重、體脂…）與偏好設定
+db.version(3).stores({
+  body: 'date',
+  prefs: 'key',
+})

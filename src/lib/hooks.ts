@@ -44,3 +44,15 @@ export const actions = {
     await db.checks.put({ key, checked })
   },
 }
+
+/** 最近 n 天的身體數據（舊到新） */
+export const useBody = (days = 30) =>
+  useLiveQuery(async () => {
+    const all = await db.body.orderBy('date').reverse().limit(days).toArray()
+    return all.reverse()
+  }, [days]) ?? []
+
+export const usePref = <T,>(key: string, fallback: T): [T, (v: T) => Promise<unknown>] => {
+  const value = useLiveQuery(() => db.prefs.get(key).then((p) => (p ? (p.value as T) : fallback)), [key]) ?? fallback
+  return [value, (v: T) => db.prefs.put({ key, value: v })]
+}

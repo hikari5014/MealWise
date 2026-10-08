@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion'
 import { useMemo, useState } from 'react'
+import { BodyCard } from '../components/BodyCard'
 import { Button, Card, Sheet, useToast } from '../components/ui'
 import { db } from '../db'
 import { addDays, todayKey, weekdayLabel } from '../lib/date'
@@ -72,6 +73,8 @@ export default function Me({ profile }: { profile: Profile }) {
           {profile.avoid.length ? `避開：${summarizeAvoid(profile.avoid).join('、')}` : '沒有忌口'}
         </div>
       </Card>
+
+      <BodyCard />
 
       <Card>
         <h2 className="mb-3 font-bold">近 7 天熱量</h2>

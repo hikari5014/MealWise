@@ -1,5 +1,6 @@
 import { AnimatePresence, motion } from 'framer-motion'
 import { useMemo, useState } from 'react'
+import { HealthTip } from '../components/BodyCard'
 import { RecipePicker } from '../components/RecipePicker'
 import { RecipeThumb, useRecipeDetail } from '../components/RecipeDetail'
 import { CountUp, MacroBar, Ring } from '../components/Ring'
@@ -81,6 +82,8 @@ export default function Today({ profile, onGoPlan }: { profile: Profile; onGoPla
       <Card>
         <WaterCup ml={water} target={profile.waterMl} onAdd={(d) => actions.addWater(date, d)} />
       </Card>
+
+      <HealthTip />
 
       {plans.length === 0 && (
         <motion.button

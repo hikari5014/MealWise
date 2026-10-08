@@ -111,3 +111,18 @@ export interface Check {
   key: string
   checked: boolean
 }
+
+export interface BodyRecord {
+  date: string
+  weight?: number
+  bodyFat?: number
+  steps?: number
+  activeKcal?: number
+  source: 'health' | 'manual'
+  updatedAt: number
+}
+
+export interface Pref {
+  key: string
+  value: unknown
+}
