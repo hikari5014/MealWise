@@ -3,7 +3,6 @@ import { createContext, useContext, useEffect, useMemo, useState, type ReactNode
 import { ingredientTags } from '../data/avoid'
 import {
   COMP_MAP,
-  COMPONENTS,
   comboName,
   comboNutrition,
   comboSteps,
@@ -20,6 +19,7 @@ import { haptic, spring } from '../lib/feedback'
 import { useProfile } from '../lib/hooks'
 import { newRecipeId, saveCustomRecipe } from '../lib/recipeStore'
 import { Food } from './Food'
+import { IngredientPicker } from './IngredientPicker'
 import { Icon } from './Icon'
 import { useRecipeDetail } from './RecipeDetail'
 import { Button, Sheet, useToast } from './ui'
@@ -37,7 +37,7 @@ export function ComposerProvider({ children }: { children: ReactNode }) {
   )
 }
 
-const PARTS: Part[] = ['protein', 'veg', 'carb', 'fat', 'flavor']
+const PARTS: Part[] = ['protein', 'veg', 'fruit', 'carb', 'fat', 'flavor']
 const START: Combo = { items: {}, method: 'pan' }
 
 /** 料理組合器：挑食材和煮法，自動產生菜名、做法和營養 */
@@ -64,21 +64,20 @@ function Composer({ open, onClose }: { open: boolean; onClose: () => void }) {
   const steps = useMemo(() => comboSteps(combo), [combo])
   const name = customName ?? autoName
   const selected = Object.keys(combo.items).filter((id) => combo.items[id] > 0)
-  const hasMain = selected.some((id) => ['protein', 'veg'].includes(COMP_MAP[id]?.part))
+  const hasMain = selected.some((id) => ['protein', 'veg', 'fruit'].includes(COMP_MAP[id]?.part))
   const preview = useMemo(() => comboToRecipe(combo, 'preview'), [combo])
 
+  /** 超過該類上限就不加，回傳 false 讓畫面播失敗動畫 */
   const toggle = (comp: Comp) => {
-    haptic(6)
-    setCombo((c) => {
-      const items = { ...c.items }
-      if (items[comp.id]) delete items[comp.id]
-      else {
-        const same = Object.keys(items).filter((id) => COMP_MAP[id].part === comp.part)
-        if (same.length >= PART_LABEL[comp.part].max) delete items[same[0]]
-        items[comp.id] = comp.qty
-      }
-      return { ...c, items }
-    })
+    const items = { ...combo.items }
+    if (items[comp.id]) delete items[comp.id]
+    else {
+      const same = Object.keys(items).filter((id) => COMP_MAP[id].part === comp.part)
+      if (same.length >= PART_LABEL[comp.part].max) return false
+      items[comp.id] = comp.qty
+    }
+    setCombo({ ...combo, items })
+    return true
   }
   const setQty = (comp: Comp, q: number) => {
     haptic(4)
@@ -90,7 +89,7 @@ function Composer({ open, onClose }: { open: boolean; onClose: () => void }) {
       const m = METHODS.find((x) => x.id === method)!
       const items = { ...c.items }
       // 換煮法時，油量跟著建議值走
-      const oilId = ['olive-oil', 'camellia-oil'].find((id) => items[id])
+      const oilId = Object.keys(items).find((id) => /oil/.test(id))
       if (oilId) {
         if (m.oil) items[oilId] = m.oil
         else delete items[oilId]
@@ -192,64 +191,63 @@ function Composer({ open, onClose }: { open: boolean; onClose: () => void }) {
           </div>
         </div>
 
-        {PARTS.map((part) => {
-          const comps = COMPONENTS.filter((x) => x.part === part)
-          const chosen = comps.filter((x) => combo.items[x.id])
-          return (
-            <section key={part}>
-              <div className="mb-1.5 flex items-baseline gap-2 px-1">
-                <span className="text-sm font-bold">{PART_LABEL[part].label}</span>
-                <span className="text-[11px] text-muted">{PART_LABEL[part].hint}</span>
-              </div>
-              <div className="-mx-5 flex gap-2 overflow-x-auto px-5 pb-1">
-                {comps.map((comp) => {
-                  const on = !!combo.items[comp.id]
-                  const no = blocked(comp)
-                  return (
-                    <motion.button
-                      key={comp.id}
-                      whileTap={{ scale: 0.88 }}
-                      onClick={() => toggle(comp)}
-                      animate={{ y: on ? -2 : 0 }}
-                      transition={spring}
-                      className={`relative flex w-[68px] shrink-0 flex-col items-center gap-1 rounded-2xl px-1 py-2 text-[11px] leading-tight transition-colors ${
-                        on ? 'bg-leaf text-white shadow-card' : 'bg-white shadow-card'
-                      } ${no && !on ? 'opacity-40' : ''}`}
-                    >
-                      <Food id={comp.image} size={30} />
-                      <span className="line-clamp-2 text-center">{comp.name}</span>
-                      {no && <span className="absolute right-1 top-1 rounded-full bg-tomato px-1 text-[9px] text-white">不吃</span>}
-                    </motion.button>
-                  )
-                })}
-              </div>
-              <AnimatePresence initial={false}>
-                {chosen.map((comp) => (
-                  <motion.div
-                    key={comp.id}
-                    initial={{ height: 0, opacity: 0 }}
-                    animate={{ height: 'auto', opacity: 1 }}
-                    exit={{ height: 0, opacity: 0 }}
-                    className="overflow-hidden"
-                  >
-                    <div className="mt-1.5 flex items-center gap-2 rounded-2xl bg-white/70 px-3 py-1.5 text-sm">
-                      <span className="flex-1 truncate">{comp.name}</span>
-                      <button onClick={() => setQty(comp, combo.items[comp.id] - comp.step)} aria-label="減少" className="grid h-7 w-7 place-items-center rounded-full bg-white shadow-card">
-                        <Icon name="remove" size={16} />
-                      </button>
-                      <span className="w-16 text-center tabular-nums">
-                        {combo.items[comp.id]} {comp.unit}
-                      </span>
-                      <button onClick={() => setQty(comp, combo.items[comp.id] + comp.step)} aria-label="增加" className="grid h-7 w-7 place-items-center rounded-full bg-white shadow-card">
-                        <Icon name="add" size={16} />
-                      </button>
-                    </div>
-                  </motion.div>
-                ))}
-              </AnimatePresence>
-            </section>
-          )
-        })}
+        <div>
+          <div className="mb-1.5 flex items-baseline gap-2 px-1">
+            <span className="text-sm font-bold">食材</span>
+            <span className="text-[11px] text-muted">點分類挑選，例如 肉類 → 豬肉 → 五花肉</span>
+          </div>
+          <IngredientPicker items={combo.items} blocked={blocked} onToggle={toggle} />
+        </div>
+
+        <AnimatePresence initial={false}>
+          {selected.length > 0 && (
+            <motion.section
+              key="chosen"
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              className="overflow-hidden"
+            >
+              <div className="mb-1.5 px-1 text-sm font-bold">已選 {selected.length} 樣・調整份量</div>
+              <ul className="space-y-1.5">
+                <AnimatePresence initial={false}>
+                  {PARTS.flatMap((part) => selected.filter((id) => COMP_MAP[id].part === part)).map((id) => {
+                    const comp = COMP_MAP[id]
+                    return (
+                      <motion.li
+                        key={id}
+                        layout
+                        initial={{ opacity: 0, x: -20, scale: 0.9 }}
+                        animate={{ opacity: 1, x: 0, scale: 1 }}
+                        exit={{ opacity: 0, x: 30, transition: { duration: 0.15 } }}
+                        transition={spring}
+                        className="flex items-center gap-2 rounded-2xl bg-white px-2.5 py-1.5 text-sm shadow-card"
+                      >
+                        <Food id={comp.image} size={26} />
+                        <span className="min-w-0 flex-1 truncate">
+                          {comp.name}
+                          <span className="ml-1 text-[10px] text-muted">{PART_LABEL[comp.part].label}</span>
+                        </span>
+                        <button onClick={() => setQty(comp, combo.items[id] - comp.step)} aria-label="減少" className="grid h-7 w-7 place-items-center rounded-full bg-cream">
+                          <Icon name="remove" size={16} />
+                        </button>
+                        <span className="w-14 text-center text-xs tabular-nums">
+                          {combo.items[id]} {comp.unit}
+                        </span>
+                        <button onClick={() => setQty(comp, combo.items[id] + comp.step)} aria-label="增加" className="grid h-7 w-7 place-items-center rounded-full bg-cream">
+                          <Icon name="add" size={16} />
+                        </button>
+                        <button onClick={() => toggle(comp)} aria-label={`移除${comp.name}`} className="grid h-7 w-7 place-items-center text-muted">
+                          <Icon name="close" size={16} />
+                        </button>
+                      </motion.li>
+                    )
+                  })}
+                </AnimatePresence>
+              </ul>
+            </motion.section>
+          )}
+        </AnimatePresence>
 
         {hasMain && (
           <div className="rounded-3xl bg-white p-4 shadow-card">
@@ -285,7 +283,7 @@ function Composer({ open, onClose }: { open: boolean; onClose: () => void }) {
             隨機
           </Button>
           <Button className="flex-1" disabled={!hasMain} onClick={save}>
-            {hasMain ? '存成我的食譜' : '至少選一樣蛋白質或蔬菜'}
+            {hasMain ? '存成我的食譜' : '先選一樣蛋白質、蔬菜或水果'}
           </Button>
         </div>
       </div>

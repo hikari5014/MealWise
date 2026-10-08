@@ -127,6 +127,20 @@ export const AVOID_ITEM_MAP: Record<string, AvoidItem> = Object.fromEntries(
 
 /** 每種食材含有哪些「不想吃」的細項 */
 const INGREDIENT_TAGS: Record<string, string[]> = {
+  // 組合料理用的食材
+  腰內肉: ['pork'],
+  梅花肉: ['pork'],
+  五花肉: ['pork'],
+  '棒棒腿（去皮）': ['chicken'],
+  '透抽／小卷': ['squid'],
+  蛋白: ['egg'],
+  蠔油: ['shellfish'],
+  '全麥義大利麵（熟）': ['wheat'],
+  '烏龍麵（熟）': ['wheat'],
+  杏鮑菇: ['mushroom'],
+  香菇: ['mushroom'],
+  綜合菇: ['mushroom'],
+  苦瓜: ['bittergourd'],
   乾香菇: ['mushroom'],
   鴻喜菇: ['mushroom'],
   金針菇: ['mushroom'],
