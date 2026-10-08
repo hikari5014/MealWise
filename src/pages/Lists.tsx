@@ -3,6 +3,7 @@ import { useMemo, useState } from 'react'
 import { CheckButton, Segmented } from '../components/ui'
 import { Food } from '../components/Food'
 import { Icon } from '../components/Icon'
+import { RecipePhoto } from '../components/RecipePhoto'
 import { RECIPE_MAP } from '../data/recipes'
 import { todayKey, weekDays, weekStart } from '../lib/date'
 import { spring } from '../lib/feedback'
@@ -172,8 +173,8 @@ function Prep({ weekKey, plans }: { weekKey: string; plans: PlanEntry[] }) {
       {recipes.map((r) => (
         <section key={r.id} className="rounded-3xl bg-white p-4 shadow-card">
           <div className="mb-2 flex items-center gap-2">
-            <span className="grid h-8 w-8 place-items-center rounded-xl" style={{ backgroundColor: r.color }}>
-              <Food id={r.image} size={24} />
+            <span className="relative h-10 w-10 overflow-hidden rounded-xl">
+              <RecipePhoto recipe={r} />
             </span>
             <span className="font-medium">{r.name}</span>
             <span className="ml-auto rounded-full bg-honey-soft px-2 py-0.5 text-xs">本週 {counts.get(r.id)} 次</span>

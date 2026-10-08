@@ -1,8 +1,8 @@
 import { AnimatePresence, motion } from 'framer-motion'
 import { createContext, useCallback, useContext, useEffect, useState, type ReactNode } from 'react'
 import { RECIPE_MAP } from '../data/recipes'
-import { Food } from './Food'
 import { Icon } from './Icon'
+import { photoCredit, RecipePhoto } from './RecipePhoto'
 import { formatQty } from '../lib/meal'
 import { haptic, softSpring } from '../lib/feedback'
 import { AVOID_ITEM_MAP, recipeAvoidTags } from '../data/avoid'
@@ -17,18 +17,42 @@ const Ctx = createContext<(recipeId: string, layoutId: string) => void>(() => {}
 
 export const useRecipeDetail = () => useContext(Ctx)
 
-/** 食譜縮圖（與詳細頁共用動畫） */
+/** 食譜照片縮圖（與詳細頁共用動畫） */
 export function RecipeThumb({ recipe, layoutId, size = 48 }: { recipe: Recipe; layoutId: string; size?: number }) {
   return (
     <motion.div
       layoutId={layoutId}
       transition={softSpring}
-      className="grid shrink-0 place-items-center rounded-2xl"
-      style={{ width: size, height: size, backgroundColor: recipe.color }}
+      className="relative shrink-0 overflow-hidden rounded-2xl"
+      style={{ width: size, height: size }}
     >
-      <motion.span layout="position" className="grid place-items-center">
-        <Food id={recipe.image} size={Math.round(size * 0.72)} alt={recipe.name} />
-      </motion.span>
+      <RecipePhoto recipe={recipe} />
+    </motion.div>
+  )
+}
+
+/**
+ * 列表項目右半邊的照片背景：往左淡出成白色，文字留在左邊乾淨好讀。
+ * 父層需要 relative + overflow-hidden。
+ */
+export function RowPhoto({ recipe, layoutId, dim = false }: { recipe: Recipe; layoutId?: string; dim?: boolean }) {
+  return (
+    <motion.div
+      layoutId={layoutId}
+      transition={softSpring}
+      className="pointer-events-none absolute inset-y-0 right-0 w-[55%] overflow-hidden"
+      style={{
+        WebkitMaskImage: 'linear-gradient(to right, transparent 0%, rgba(0,0,0,.55) 35%, #000 70%)',
+        maskImage: 'linear-gradient(to right, transparent 0%, rgba(0,0,0,.55) 35%, #000 70%)',
+      }}
+    >
+      <motion.div
+        className="absolute inset-0"
+        animate={{ filter: dim ? 'grayscale(0.7) brightness(1.05)' : 'grayscale(0) brightness(1)' }}
+        transition={{ duration: 0.4 }}
+      >
+        <RecipePhoto recipe={recipe} />
+      </motion.div>
     </motion.div>
   )
 }
@@ -83,20 +107,39 @@ function Detail({ recipe, layoutId, onClose }: Opened & { onClose: () => void })
         <motion.div
           layoutId={layoutId}
           transition={softSpring}
-          className="relative grid h-64 place-items-center rounded-b-[40px] pt-[env(safe-area-inset-top)]"
-          style={{ backgroundColor: recipe.color }}
+          className="relative h-80 overflow-hidden rounded-b-[40px]"
         >
-          <motion.span layout="position" className="grid place-items-center">
-            <Food id={recipe.image} size={150} float alt={recipe.name} />
-          </motion.span>
+          <RecipePhoto recipe={recipe} size="lg" zoom />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/15 to-black/25" />
           <motion.button
             whileTap={{ scale: 0.9 }}
             aria-label="關閉"
             onClick={onClose}
-            className="absolute left-4 top-[calc(16px+env(safe-area-inset-top))] grid h-10 w-10 place-items-center rounded-full bg-white/80 shadow-card"
+            className="absolute left-4 top-[calc(16px+env(safe-area-inset-top))] grid h-10 w-10 place-items-center rounded-full bg-white/85 shadow-card backdrop-blur"
           >
             <Icon name="arrow_back" size={22} weight={500} />
           </motion.button>
+          <motion.div
+            className="absolute inset-x-5 bottom-5 text-white"
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0, transition: { delay: 0.15, ...softSpring } }}
+            exit={{ opacity: 0 }}
+          >
+            <h1 className="text-[28px] font-bold leading-tight drop-shadow">{recipe.name}</h1>
+            <div className="mt-2 flex flex-wrap gap-1.5 text-xs">
+              <span className="flex items-center gap-1 rounded-full bg-white/20 px-2.5 py-1 backdrop-blur">
+                <Icon name="timer" size={14} /> {recipe.minutes} 分鐘
+              </span>
+              <span className="rounded-full bg-white/20 px-2.5 py-1 backdrop-blur">
+                {recipe.meals.map((m) => MEAL_LABEL[m]).join('・')}
+              </span>
+              {recipe.tags.map((t) => (
+                <span key={t} className="rounded-full bg-white/20 px-2.5 py-1 backdrop-blur">
+                  {t}
+                </span>
+              ))}
+            </div>
+          </motion.div>
         </motion.div>
 
         <motion.div
@@ -105,21 +148,6 @@ function Detail({ recipe, layoutId, onClose }: Opened & { onClose: () => void })
           animate={{ opacity: 1, y: 0, transition: { delay: 0.12, ...softSpring } }}
           exit={{ opacity: 0, y: 12 }}
         >
-          <div>
-            <h1 className="text-2xl font-bold">{recipe.name}</h1>
-            <div className="mt-2 flex flex-wrap gap-2 text-xs">
-              <span className="flex items-center gap-1 rounded-full bg-white px-3 py-1">
-                <Icon name="timer" size={14} /> {recipe.minutes} 分鐘
-              </span>
-              <span className="rounded-full bg-white px-3 py-1">{recipe.meals.map((m) => MEAL_LABEL[m]).join('・')}</span>
-              {recipe.tags.map((t) => (
-                <span key={t} className="rounded-full bg-leaf-soft px-3 py-1 text-leaf-dark">
-                  {t}
-                </span>
-              ))}
-            </div>
-          </div>
-
           <div className="grid grid-cols-5 gap-2 rounded-3xl bg-white p-4 text-center shadow-card">
             {[
               ['熱量', n.kcal, 'kcal'],
@@ -186,8 +214,33 @@ function Detail({ recipe, layoutId, onClose }: Opened & { onClose: () => void })
             <p className="text-xs text-muted">含：{recipeAvoidTags(recipe).map((t) => AVOID_ITEM_MAP[t]?.label).join('、')}</p>
           )}
           <p className="text-xs text-muted">營養數值為估算，僅供參考。</p>
+          <PhotoCreditLine id={recipe.id} />
         </motion.div>
       </motion.div>
     </div>
+  )
+}
+
+const LICENSE_LABEL = { cc0: 'CC0 公眾領域', pdm: '公眾領域', by: 'CC BY' } as const
+
+function PhotoCreditLine({ id }: { id: string }) {
+  const c = photoCredit(id)
+  if (!c) return null
+  return (
+    <p className="flex flex-wrap items-center gap-1 text-[11px] text-muted">
+      <Icon name="image" size={14} />
+      照片：
+      <a href={c.landingUrl} target="_blank" rel="noreferrer" className="underline">
+        {c.creator || c.title || '來源'}
+      </a>
+      <span>
+        （{c.source}・
+        <a href={c.licenseUrl} target="_blank" rel="noreferrer" className="underline">
+          {LICENSE_LABEL[c.license]}
+          {c.license === 'by' && c.licenseVersion ? ` ${c.licenseVersion}` : ''}
+        </a>
+        ）
+      </span>
+    </p>
   )
 }

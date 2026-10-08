@@ -1,9 +1,10 @@
 import { AnimatePresence, motion } from 'framer-motion'
 import { useMemo, useState } from 'react'
 import { RecipePicker } from '../components/RecipePicker'
-import { Food } from '../components/Food'
+import { useShare } from '../components/Share'
 import { Icon } from '../components/Icon'
-import { RecipeThumb, useRecipeDetail } from '../components/RecipeDetail'
+import { RowPhoto, useRecipeDetail } from '../components/RecipeDetail'
+import { RecipePhoto } from '../components/RecipePhoto'
 import { Button, listContainer, listItem, Segmented, useToast } from '../components/ui'
 import { RECIPE_MAP } from '../data/recipes'
 import { db } from '../db'
@@ -79,6 +80,7 @@ function Week({ profile }: { profile: Profile }) {
   const [picking, setPicking] = useState<MealSlot | null>(null)
   const plans = usePlans(days)
   const toast = useToast()
+  const share = useShare()
   const day = days.includes(selected) ? selected : days[0]
   const dayPlans = plans.filter((p) => p.date === day)
   const dayKcal = dayPlans.reduce((s, p) => s + (RECIPE_MAP[p.recipeId]?.nutrition.kcal ?? 0), 0)
@@ -144,6 +146,12 @@ function Week({ profile }: { profile: Profile }) {
             <Icon name="auto_awesome" size={20} fill motion="pulse" />
             一鍵排滿這週
           </span>
+        </Button>
+        <Button variant="soft" className="grid w-12 place-items-center px-0" aria-label="分享菜單" onClick={() => share.openShare({ weekStart: start, day })}>
+          <Icon name="qr_code_2" size={22} />
+        </Button>
+        <Button variant="soft" className="grid w-12 place-items-center px-0" aria-label="掃描朋友的菜單" onClick={share.openScanner}>
+          <Icon name="qr_code_scanner" size={22} />
         </Button>
       </div>
 
@@ -225,12 +233,10 @@ function PlanRow({ plan, onRemove }: { plan: PlanEntry; onRemove: () => void }) 
           onRemove()
         }
       }}
-      className="flex touch-pan-y items-center gap-3 rounded-2xl bg-white p-2 pr-2 shadow-card"
+      className="relative flex min-h-[72px] touch-pan-y items-center gap-3 overflow-hidden rounded-2xl bg-white py-3 pl-4 pr-2 shadow-card"
     >
-      <button onClick={() => openDetail(recipe.id, layoutId)} aria-label={`查看${recipe.name}`}>
-        <RecipeThumb recipe={recipe} layoutId={layoutId} />
-      </button>
-      <button className="min-w-0 flex-1 text-left" onClick={() => openDetail(recipe.id, layoutId)}>
+      <RowPhoto recipe={recipe} layoutId={layoutId} />
+      <button className="relative min-w-0 flex-1 text-left" onClick={() => openDetail(recipe.id, layoutId)}>
         <div className="truncate font-medium">{recipe.name}</div>
         <div className="text-xs text-muted">
           {recipe.nutrition.kcal} kcal・{recipe.minutes} 分鐘
@@ -240,7 +246,7 @@ function PlanRow({ plan, onRemove }: { plan: PlanEntry; onRemove: () => void }) 
         whileTap={{ scale: 0.85 }}
         onClick={onRemove}
         aria-label={`移除${recipe.name}`}
-        className="grid h-9 w-9 place-items-center rounded-full text-muted hover:bg-ink/5"
+        className="relative grid h-9 w-9 place-items-center rounded-full bg-white/90 text-muted shadow-sm"
       >
         <Icon name="close" size={20} />
       </motion.button>
@@ -287,21 +293,20 @@ function Library({ profile }: { profile: Profile }) {
               variants={listItem}
               whileTap={{ scale: 0.96 }}
               onClick={() => openDetail(r.id, layoutId)}
-              className="overflow-hidden rounded-3xl bg-white text-left shadow-card"
+              className="relative aspect-[4/5] overflow-hidden rounded-3xl text-left shadow-card"
             >
-              <motion.div
-                layoutId={layoutId}
-                className="grid h-24 place-items-center"
-                style={{ backgroundColor: r.color }}
-              >
-                <motion.span layout="position" className="grid place-items-center">
-                  <Food id={r.image} size={68} alt={r.name} />
-                </motion.span>
+              <motion.div layoutId={layoutId} className="absolute inset-0">
+                <RecipePhoto recipe={r} />
               </motion.div>
-              <div className="p-3">
-                <div className="truncate text-sm font-medium">{r.name}</div>
-                <div className="text-xs text-muted">
-                  {r.nutrition.kcal} kcal・{r.minutes} 分
+              <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/10 to-transparent" />
+              <div className="absolute inset-x-3 bottom-3 text-white">
+                <div className="text-[15px] font-bold leading-snug drop-shadow">{r.name}</div>
+                <div className="mt-0.5 flex items-center gap-1 text-[11px] text-white/85">
+                  <Icon name="local_fire_department" size={13} fill />
+                  {r.nutrition.kcal} kcal
+                  <span className="mx-0.5 opacity-60">·</span>
+                  <Icon name="timer" size={13} />
+                  {r.minutes} 分
                 </div>
               </div>
             </motion.button>

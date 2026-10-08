@@ -4,6 +4,7 @@ import { Food } from './components/Food'
 import { HealthSyncProvider } from './components/HealthSync'
 import { Icon } from './components/Icon'
 import { RecipeDetailProvider } from './components/RecipeDetail'
+import { ShareProvider } from './components/Share'
 import { UpdateProvider } from './components/Update'
 import { ToastProvider } from './components/ui'
 import { haptic, spring } from './lib/feedback'
@@ -45,31 +46,33 @@ export default function App() {
       <ToastProvider>
         <UpdateProvider>
           <HealthSyncProvider>
-            <RecipeDetailProvider>
-              {profile === undefined ? (
-                <Splash />
-              ) : profile === null ? (
-                <Onboarding />
-              ) : (
-                <>
-                  <main className="mx-auto max-w-lg px-4 pb-[calc(96px+env(safe-area-inset-bottom))] pt-[calc(12px+env(safe-area-inset-top))]">
-                    {/* 只做「進場」動畫：換頁不必等舊頁離場，切換更跟手也更穩定 */}
-                    <motion.div
-                      key={tab}
-                      initial={{ opacity: 0, x: dir * 28 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ duration: 0.24, ease: [0.22, 1, 0.36, 1] }}
-                    >
-                      {tab === 'today' && <Today profile={profile} onGoPlan={() => go('plan')} />}
-                      {tab === 'plan' && <Plan profile={profile} />}
-                      {tab === 'lists' && <Lists profile={profile} />}
-                      {tab === 'me' && <Me profile={profile} />}
-                    </motion.div>
-                  </main>
-                  <BottomNav tab={tab} onChange={go} />
-                </>
-              )}
-            </RecipeDetailProvider>
+            <ShareProvider onImported={() => go('plan')}>
+              <RecipeDetailProvider>
+                {profile === undefined ? (
+                  <Splash />
+                ) : profile === null ? (
+                  <Onboarding />
+                ) : (
+                  <>
+                    <main className="mx-auto max-w-lg px-4 pb-[calc(96px+env(safe-area-inset-bottom))] pt-[calc(12px+env(safe-area-inset-top))]">
+                      {/* 只做「進場」動畫：換頁不必等舊頁離場，切換更跟手也更穩定 */}
+                      <motion.div
+                        key={tab}
+                        initial={{ opacity: 0, x: dir * 28 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ duration: 0.24, ease: [0.22, 1, 0.36, 1] }}
+                      >
+                        {tab === 'today' && <Today profile={profile} onGoPlan={() => go('plan')} />}
+                        {tab === 'plan' && <Plan profile={profile} />}
+                        {tab === 'lists' && <Lists profile={profile} />}
+                        {tab === 'me' && <Me profile={profile} />}
+                      </motion.div>
+                    </main>
+                    <BottomNav tab={tab} onChange={go} />
+                  </>
+                )}
+              </RecipeDetailProvider>
+            </ShareProvider>
           </HealthSyncProvider>
         </UpdateProvider>
       </ToastProvider>

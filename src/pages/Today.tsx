@@ -2,8 +2,9 @@ import { AnimatePresence, motion } from 'framer-motion'
 import { useMemo, useState } from 'react'
 import { HealthTip } from '../components/BodyCard'
 import { RecipePicker } from '../components/RecipePicker'
+import { useShare } from '../components/Share'
 import { Icon } from '../components/Icon'
-import { RecipeThumb, useRecipeDetail } from '../components/RecipeDetail'
+import { RowPhoto, useRecipeDetail } from '../components/RecipeDetail'
 import { CountUp, MacroBar, Ring } from '../components/Ring'
 import { Card, CheckButton, useToast } from '../components/ui'
 import { WaterCup } from '../components/WaterCup'
@@ -23,6 +24,7 @@ export default function Today({ profile, onGoPlan }: { profile: Profile; onGoPla
   const water = useWater(date)
   const recent = useRecent()
   const toast = useToast()
+  const share = useShare()
   const [picking, setPicking] = useState<MealSlot | null>(null)
 
   const total = sumNutrition(logs)
@@ -98,6 +100,16 @@ export default function Today({ profile, onGoPlan }: { profile: Profile; onGoPla
             <span className="flex-1">今天還沒排菜單，先去排一下，之後吃飯只要打勾就好</span>
             <Icon name="arrow_forward" size={20} />
           </span>
+        </motion.button>
+      )}
+      {plans.length === 0 && (
+        <motion.button
+          whileTap={{ scale: 0.97 }}
+          onClick={share.openScanner}
+          className="-mt-2 flex w-full items-center justify-center gap-1.5 py-1 text-xs text-muted"
+        >
+          <Icon name="qr_code_scanner" size={16} />
+          或掃描朋友分享的菜單 QR Code
         </motion.button>
       )}
 
@@ -200,13 +212,18 @@ function MealRow({
       animate={{ opacity: 1, y: 0, scale: 1 }}
       exit={{ opacity: 0, x: -40, transition: { duration: 0.18 } }}
       transition={spring}
-      className={`flex items-center gap-3 rounded-2xl p-2 pr-3 shadow-card transition-colors ${done ? 'bg-leaf-soft/70' : 'bg-white'}`}
+      className={`relative flex min-h-[72px] items-center gap-3 overflow-hidden rounded-2xl py-3 pl-4 pr-3 shadow-card transition-colors ${
+        done ? 'bg-leaf-soft' : 'bg-white'
+      }`}
     >
-      <button onClick={() => openDetail(recipe.id, layoutId)} aria-label={`查看${recipe.name}`}>
-        <RecipeThumb recipe={recipe} layoutId={layoutId} />
-      </button>
-      <div className="min-w-0 flex-1">
-        <div className={`truncate font-medium transition-opacity ${done ? 'opacity-70' : ''}`}>{recipe.name}</div>
+      <RowPhoto recipe={recipe} layoutId={layoutId} dim={done} />
+      <div className="relative min-w-0 flex-1">
+        <button
+          onClick={() => openDetail(recipe.id, layoutId)}
+          className={`block max-w-full truncate text-left font-medium transition-opacity ${done ? 'opacity-70' : ''}`}
+        >
+          {recipe.name}
+        </button>
         <div className="flex items-center gap-2 text-xs text-muted">
           <span className="tabular-nums">{Math.round(recipe.nutrition.kcal * (portion ?? 1))} kcal</span>
           {onPortion && portionLabel && (
@@ -233,7 +250,9 @@ function MealRow({
           )}
         </div>
       </div>
-      <CheckButton checked={done} onToggle={onToggle} />
+      <div className="relative">
+        <CheckButton checked={done} onToggle={onToggle} />
+      </div>
     </motion.div>
   )
 }

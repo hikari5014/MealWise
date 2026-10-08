@@ -3,9 +3,9 @@ import { useMemo, useState } from 'react'
 import { RECIPE_MAP } from '../data/recipes'
 import { recipesFor } from '../lib/meal'
 import { MEAL_LABEL, type MealSlot, type Profile, type Recipe } from '../types'
-import { Food } from './Food'
 import { Icon } from './Icon'
 import { RecipeThumb, useRecipeDetail } from './RecipeDetail'
+import { RecipePhoto } from './RecipePhoto'
 import { listContainer, listItem, Sheet } from './ui'
 
 /** 挑選食譜的底部視窗（含「最近吃過」快速選） */
@@ -57,8 +57,8 @@ export function RecipePicker({
                 }}
                 className="flex shrink-0 items-center gap-2 rounded-2xl bg-white py-2 pl-2 pr-3 text-sm shadow-card"
               >
-                <span className="grid h-8 w-8 place-items-center rounded-xl" style={{ backgroundColor: r.color }}>
-                  <Food id={r.image} size={24} />
+                <span className="relative h-8 w-8 overflow-hidden rounded-xl">
+                  <RecipePhoto recipe={r} />
                 </span>
                 {r.name}
               </motion.button>
@@ -105,7 +105,7 @@ function PickerRow({ recipe, onPick }: { recipe: Recipe; onPick: () => void }) {
   return (
     <motion.li variants={listItem} className="flex items-center gap-3 rounded-2xl bg-white p-2 pr-3 shadow-card">
       <button onClick={() => openDetail(recipe.id, layoutId)} aria-label={`查看${recipe.name}`}>
-        <RecipeThumb recipe={recipe} layoutId={layoutId} />
+        <RecipeThumb recipe={recipe} layoutId={layoutId} size={52} />
       </button>
       <button className="min-w-0 flex-1 text-left" onClick={onPick}>
         <div className="truncate font-medium">{recipe.name}</div>

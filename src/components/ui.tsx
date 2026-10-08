@@ -39,7 +39,7 @@ export function CheckButton({ checked, onToggle, size = 32 }: { checked: boolean
         onToggle()
       }}
       whileTap={{ scale: 0.85 }}
-      animate={{ scale: checked ? [1, 1.18, 1] : 1, backgroundColor: checked ? '#5b8c5a' : 'rgba(255,255,255,0)' }}
+      animate={{ scale: checked ? [1, 1.18, 1] : 1, backgroundColor: checked ? '#5b8c5a' : 'rgba(255,255,255,0.92)' }}
       transition={{ duration: 0.32 }}
       className="grid shrink-0 place-items-center rounded-full border-2 border-leaf"
       style={{ width: size, height: size }}

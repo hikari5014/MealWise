@@ -48,7 +48,14 @@ export default defineConfig({
       includeAssets: ['favicon.svg', 'apple-touch-icon.png'],
       workbox: {
         globPatterns: ['**/*.{js,css,html,svg,png,webp}'],
+        // 食譜照片比較大，看過才存進快取，不在安裝時全部下載
+        globIgnores: ['photos/**'],
         runtimeCaching: [
+          {
+            urlPattern: ({ url }) => url.pathname.includes('/photos/'),
+            handler: 'CacheFirst',
+            options: { cacheName: 'recipe-photos', expiration: { maxEntries: 300 } },
+          },
           {
             urlPattern: ({ url }) => url.origin === 'https://fonts.googleapis.com',
             handler: 'StaleWhileRevalidate',
