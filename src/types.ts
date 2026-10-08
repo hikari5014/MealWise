@@ -16,18 +16,6 @@ export const MEAL_EMOJI: Record<MealSlot, string> = {
   snack: '🍪',
 }
 
-export type Allergen = 'dairy' | 'egg' | 'seafood' | 'peanut' | 'gluten' | 'soy' | 'nuts'
-
-export const ALLERGEN_LABEL: Record<Allergen, string> = {
-  dairy: '乳製品',
-  egg: '蛋',
-  seafood: '海鮮',
-  peanut: '花生',
-  gluten: '麩質',
-  soy: '黃豆',
-  nuts: '堅果',
-}
-
 export type Section = 'produce' | 'protein' | 'dairyEgg' | 'grain' | 'pantry'
 
 export const SECTION_LABEL: Record<Section, string> = {
@@ -69,7 +57,6 @@ export interface Recipe {
   minutes: number
   tags: string[]
   vegetarian: boolean
-  allergens: Allergen[]
   /** 1 人份 */
   ingredients: Ingredient[]
   steps: string[]
@@ -93,7 +80,8 @@ export interface Profile {
   kcal: number
   waterMl: number
   vegetarian: boolean
-  avoid: Allergen[]
+  /** 過敏或不想吃的細項 id，見 data/avoid.ts */
+  avoid: string[]
   servings: number
 }
 

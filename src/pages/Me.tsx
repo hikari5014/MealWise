@@ -6,7 +6,8 @@ import { addDays, todayKey, weekdayLabel } from '../lib/date'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { useLogs } from '../lib/hooks'
 import { macroTargets, sumNutrition } from '../lib/meal'
-import { ALLERGEN_LABEL, GOAL_LABEL, type Profile } from '../types'
+import { summarizeAvoid } from '../data/avoid'
+import { GOAL_LABEL, type Profile } from '../types'
 import Onboarding from './Onboarding'
 
 export default function Me({ profile }: { profile: Profile }) {
@@ -68,7 +69,7 @@ export default function Me({ profile }: { profile: Profile }) {
         </div>
         <div className="mt-3 text-xs text-muted">
           {profile.vegetarian ? '蛋奶素・' : ''}
-          {profile.avoid.length ? `避開：${profile.avoid.map((a) => ALLERGEN_LABEL[a]).join('、')}` : '沒有忌口'}
+          {profile.avoid.length ? `避開：${summarizeAvoid(profile.avoid).join('、')}` : '沒有忌口'}
         </div>
       </Card>
 

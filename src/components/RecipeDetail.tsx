@@ -3,7 +3,8 @@ import { createContext, useCallback, useContext, useEffect, useState, type React
 import { RECIPE_MAP } from '../data/recipes'
 import { formatQty } from '../lib/meal'
 import { haptic, softSpring } from '../lib/feedback'
-import { ALLERGEN_LABEL, MEAL_LABEL, type Recipe } from '../types'
+import { AVOID_ITEM_MAP, recipeAvoidTags } from '../data/avoid'
+import { MEAL_LABEL, type Recipe } from '../types'
 
 interface Opened {
   recipe: Recipe
@@ -170,8 +171,8 @@ function Detail({ recipe, layoutId, onClose }: Opened & { onClose: () => void })
             </section>
           )}
 
-          {recipe.allergens.length > 0 && (
-            <p className="text-xs text-muted">含：{recipe.allergens.map((a) => ALLERGEN_LABEL[a]).join('、')}</p>
+          {recipeAvoidTags(recipe).length > 0 && (
+            <p className="text-xs text-muted">含：{recipeAvoidTags(recipe).map((t) => AVOID_ITEM_MAP[t]?.label).join('、')}</p>
           )}
           <p className="text-xs text-muted">營養數值為估算，僅供參考。</p>
         </motion.div>

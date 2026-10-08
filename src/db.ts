@@ -1,4 +1,5 @@
 import Dexie, { type EntityTable } from 'dexie'
+import { LEGACY_AVOID } from './data/avoid'
 import type { Check, LogEntry, PlanEntry, Profile, WaterDay } from './types'
 
 // 所有資料都只存在這台裝置的瀏覽器裡（IndexedDB）
@@ -17,3 +18,15 @@ db.version(1).stores({
   water: 'date',
   checks: 'key',
 })
+
+// v2：忌口從大分類改成細項
+db.version(2)
+  .stores({})
+  .upgrade((tx) =>
+    tx
+      .table('profile')
+      .toCollection()
+      .modify((p: Profile) => {
+        p.avoid = [...new Set(p.avoid.flatMap((a) => LEGACY_AVOID[a] ?? [a]))]
+      }),
+  )

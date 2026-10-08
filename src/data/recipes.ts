@@ -1,4 +1,4 @@
-import type { Allergen, Ingredient, MealSlot, Nutrition, PrepTask, Recipe, Section } from '../types'
+import type { Ingredient, MealSlot, Nutrition, PrepTask, Recipe, Section } from '../types'
 
 // 營養數值為 1 人份的估算值，僅供參考
 
@@ -21,7 +21,6 @@ interface Draft {
   minutes: number
   tags?: string[]
   vegetarian?: boolean
-  allergens?: Allergen[]
   ingredients: Ingredient[]
   steps: string[]
   prep?: PrepTask[]
@@ -31,7 +30,6 @@ interface Draft {
 const r = (d: Draft): Recipe => ({
   tags: [],
   vegetarian: false,
-  allergens: [],
   prep: [],
   ...d,
 })
@@ -47,7 +45,6 @@ export const RECIPES: Recipe[] = [
     minutes: 5,
     tags: ['高纖', '免開火', '可預做'],
     vegetarian: true,
-    allergens: ['dairy', 'nuts'],
     ingredients: [
       i('燕麥片', 40, 'g', 'grain'),
       i('鮮奶', 200, 'ml', 'dairyEgg'),
@@ -67,7 +64,6 @@ export const RECIPES: Recipe[] = [
     minutes: 10,
     tags: ['好油脂'],
     vegetarian: true,
-    allergens: ['egg', 'gluten'],
     ingredients: [
       i('全麥吐司', 2, '片', 'grain'),
       i('雞蛋', 1, '顆', 'dairyEgg'),
@@ -86,7 +82,6 @@ export const RECIPES: Recipe[] = [
     minutes: 3,
     tags: ['免開火', '高蛋白'],
     vegetarian: true,
-    allergens: ['dairy', 'nuts'],
     ingredients: [
       i('希臘優格', 150, 'g', 'dairyEgg'),
       i('當季水果', 100, 'g', 'produce'),
@@ -104,7 +99,6 @@ export const RECIPES: Recipe[] = [
     minutes: 10,
     tags: ['台式'],
     vegetarian: true,
-    allergens: ['egg', 'gluten'],
     ingredients: [
       i('蛋餅皮', 1, '張', 'grain'),
       i('雞蛋', 1, '顆', 'dairyEgg'),
@@ -124,7 +118,6 @@ export const RECIPES: Recipe[] = [
     minutes: 10,
     tags: ['台式', '飽足'],
     vegetarian: true,
-    allergens: ['soy', 'egg'],
     ingredients: [
       i('紫米飯', 120, 'g', 'grain'),
       i('無糖豆漿', 300, 'ml', 'dairyEgg'),
@@ -144,7 +137,6 @@ export const RECIPES: Recipe[] = [
     minutes: 5,
     tags: ['快速'],
     vegetarian: true,
-    allergens: ['peanut', 'gluten'],
     ingredients: [
       i('全麥吐司', 2, '片', 'grain'),
       i('無糖花生醬', 15, 'g', 'pantry'),
@@ -163,7 +155,6 @@ export const RECIPES: Recipe[] = [
     meals: ['lunch', 'dinner'],
     minutes: 25,
     tags: ['高蛋白', '可預做'],
-    allergens: [],
     ingredients: [
       i('雞胸肉', 150, 'g', 'protein'),
       i('糙米飯', 150, 'g', 'grain'),
@@ -183,7 +174,6 @@ export const RECIPES: Recipe[] = [
     meals: ['lunch', 'dinner'],
     minutes: 20,
     tags: ['好油脂', 'Omega-3'],
-    allergens: ['seafood'],
     ingredients: [
       i('鮭魚', 120, 'g', 'protein'),
       i('白飯', 150, 'g', 'grain'),
@@ -202,7 +192,6 @@ export const RECIPES: Recipe[] = [
     minutes: 15,
     tags: ['家常', '快速'],
     vegetarian: true,
-    allergens: ['egg', 'gluten'],
     ingredients: [
       i('雞蛋', 2, '顆', 'dairyEgg'),
       i('牛番茄', 1, '顆', 'produce'),
@@ -221,7 +210,6 @@ export const RECIPES: Recipe[] = [
     minutes: 15,
     tags: ['植物蛋白', '高纖'],
     vegetarian: true,
-    allergens: ['soy'],
     ingredients: [
       i('板豆腐', 200, 'g', 'dairyEgg'),
       i('青花菜', 80, 'g', 'produce'),
@@ -241,7 +229,6 @@ export const RECIPES: Recipe[] = [
     meals: ['lunch', 'dinner'],
     minutes: 60,
     tags: ['補鐵', '可預做'],
-    allergens: [],
     ingredients: [
       i('牛腱', 150, 'g', 'protein'),
       i('牛番茄', 1, '顆', 'produce'),
@@ -261,7 +248,6 @@ export const RECIPES: Recipe[] = [
     meals: ['lunch', 'dinner'],
     minutes: 15,
     tags: ['快速'],
-    allergens: ['seafood', 'egg'],
     ingredients: [
       i('蝦仁', 100, 'g', 'protein'),
       i('雞蛋', 1, '顆', 'dairyEgg'),
@@ -280,7 +266,6 @@ export const RECIPES: Recipe[] = [
     meals: ['lunch', 'dinner'],
     minutes: 20,
     tags: ['輕盈', '高蛋白'],
-    allergens: [],
     ingredients: [
       i('雞胸肉', 120, 'g', 'protein'),
       i('藜麥', 50, 'g', 'grain'),
@@ -300,7 +285,6 @@ export const RECIPES: Recipe[] = [
     meals: ['lunch', 'dinner'],
     minutes: 20,
     tags: ['下飯'],
-    allergens: ['soy'],
     ingredients: [
       i('嫩豆腐', 1, '盒', 'dairyEgg'),
       i('豬絞肉', 80, 'g', 'protein'),
@@ -320,7 +304,6 @@ export const RECIPES: Recipe[] = [
     minutes: 35,
     tags: ['可預做', '高纖'],
     vegetarian: true,
-    allergens: ['gluten'],
     ingredients: [
       i('馬鈴薯', 1, '顆', 'produce'),
       i('紅蘿蔔', 50, 'g', 'produce'),
@@ -340,7 +323,6 @@ export const RECIPES: Recipe[] = [
     meals: ['lunch', 'dinner'],
     minutes: 15,
     tags: ['快速', '下飯'],
-    allergens: ['soy'],
     ingredients: [
       i('豬肉片', 120, 'g', 'protein'),
       i('洋蔥', 0.5, '顆', 'produce'),
@@ -361,7 +343,6 @@ export const RECIPES: Recipe[] = [
     meals: ['dinner'],
     minutes: 20,
     tags: ['輕盈', '高蛋白'],
-    allergens: ['seafood', 'soy'],
     ingredients: [
       i('鱈魚', 150, 'g', 'protein'),
       i('薑', 10, 'g', 'produce'),
@@ -380,7 +361,6 @@ export const RECIPES: Recipe[] = [
     meals: ['lunch', 'dinner'],
     minutes: 20,
     tags: ['暖胃'],
-    allergens: ['gluten'],
     ingredients: [
       i('雞腿肉', 120, 'g', 'protein'),
       i('小白菜', 80, 'g', 'produce'),
@@ -399,7 +379,6 @@ export const RECIPES: Recipe[] = [
     minutes: 20,
     tags: ['植物蛋白', '高纖'],
     vegetarian: true,
-    allergens: ['soy'],
     ingredients: [
       i('天貝', 100, 'g', 'dairyEgg'),
       i('藜麥', 50, 'g', 'grain'),
@@ -419,7 +398,6 @@ export const RECIPES: Recipe[] = [
     meals: ['lunch', 'dinner'],
     minutes: 50,
     tags: ['台式', '可預做'],
-    allergens: ['soy', 'egg'],
     ingredients: [
       i('豬絞肉', 100, 'g', 'protein'),
       i('乾香菇', 2, '朵', 'pantry'),
@@ -441,7 +419,6 @@ export const RECIPES: Recipe[] = [
     minutes: 20,
     tags: ['西式'],
     vegetarian: true,
-    allergens: ['gluten', 'nuts', 'dairy'],
     ingredients: [
       i('義大利麵', 90, 'g', 'grain'),
       i('青醬', 30, 'g', 'pantry'),
@@ -459,7 +436,6 @@ export const RECIPES: Recipe[] = [
     meals: ['dinner'],
     minutes: 25,
     tags: ['Omega-3'],
-    allergens: ['seafood', 'soy'],
     ingredients: [
       i('鮭魚', 120, 'g', 'protein'),
       i('味噌', 15, 'g', 'pantry'),
@@ -479,7 +455,6 @@ export const RECIPES: Recipe[] = [
     minutes: 15,
     tags: ['輕盈', '暖胃'],
     vegetarian: true,
-    allergens: ['egg', 'soy'],
     ingredients: [
       i('雞蛋豆腐', 1, '盒', 'dairyEgg'),
       i('大白菜', 120, 'g', 'produce'),
@@ -497,7 +472,6 @@ export const RECIPES: Recipe[] = [
     meals: ['lunch', 'dinner'],
     minutes: 15,
     tags: ['補鐵', '增肌'],
-    allergens: ['egg'],
     ingredients: [
       i('牛肉片', 120, 'g', 'protein'),
       i('白飯', 200, 'g', 'grain'),
@@ -516,7 +490,6 @@ export const RECIPES: Recipe[] = [
     meals: ['lunch', 'dinner'],
     minutes: 10,
     tags: ['快速', '冷凍好物'],
-    allergens: ['gluten'],
     ingredients: [i('冷凍水餃', 12, '顆', 'grain'), i('燙青菜', 100, 'g', 'produce')],
     steps: ['水滾放水餃', '浮起後加冷水再煮滾 2 次', '另燙一盤青菜'],
     nutrition: n(560, 22, 70, 20, 5),
@@ -532,7 +505,6 @@ export const RECIPES: Recipe[] = [
     minutes: 10,
     tags: ['高蛋白', '可預做'],
     vegetarian: true,
-    allergens: ['egg'],
     ingredients: [i('雞蛋', 2, '顆', 'dairyEgg')],
     steps: ['冷水放蛋', '水滾後轉小火煮 8 分鐘', '泡冷水剝殼'],
     prep: [p('一次煮好一週份', '冷藏 5 天（帶殼）')],
@@ -547,7 +519,6 @@ export const RECIPES: Recipe[] = [
     minutes: 2,
     tags: ['免開火'],
     vegetarian: true,
-    allergens: ['nuts'],
     ingredients: [i('蘋果', 1, '顆', 'produce'), i('綜合堅果', 15, 'g', 'pantry')],
     steps: ['蘋果切片', '搭配一小把堅果'],
     nutrition: n(180, 4, 25, 9, 5),
@@ -575,7 +546,6 @@ export const RECIPES: Recipe[] = [
     minutes: 1,
     tags: ['植物蛋白'],
     vegetarian: true,
-    allergens: ['soy'],
     ingredients: [i('無糖豆漿', 400, 'ml', 'dairyEgg')],
     steps: ['倒一杯，冰的熱的都好'],
     nutrition: n(140, 14, 6, 7, 2),
@@ -589,7 +559,6 @@ export const RECIPES: Recipe[] = [
     minutes: 8,
     tags: ['高蛋白', '可預做'],
     vegetarian: true,
-    allergens: ['soy'],
     ingredients: [i('毛豆', 100, 'g', 'produce')],
     steps: ['毛豆滾水煮 5 分鐘', '撈起撒鹽'],
     prep: [p('毛豆煮好分裝', '冷藏 3 天')],

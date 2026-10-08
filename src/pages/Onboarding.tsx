@@ -1,10 +1,11 @@
 import { AnimatePresence, motion } from 'framer-motion'
 import { useState } from 'react'
+import { AvoidPicker } from '../components/AvoidPicker'
 import { Button } from '../components/ui'
 import { db } from '../db'
 import { haptic, spring } from '../lib/feedback'
 import { suggestKcal } from '../lib/meal'
-import { ALLERGEN_LABEL, GOAL_LABEL, type Allergen, type Goal, type Profile } from '../types'
+import { GOAL_LABEL, type Goal, type Profile } from '../types'
 
 const GOALS: { value: Goal; emoji: string; hint: string }[] = [
   { value: 'lose', emoji: '🌿', hint: '少一點熱量、多一點蛋白質' },
@@ -90,27 +91,8 @@ export default function Onboarding({ initial, onDone }: { initial?: Profile; onD
         <span>{p.vegetarian ? '是' : '否'}</span>
       </motion.button>
       <div>
-        <div className="mb-2 text-sm text-muted">過敏或不想吃的（可複選）</div>
-        <div className="flex flex-wrap gap-2">
-          {(Object.keys(ALLERGEN_LABEL) as Allergen[]).map((a) => {
-            const on = p.avoid.includes(a)
-            return (
-              <motion.button
-                key={a}
-                whileTap={{ scale: 0.9 }}
-                animate={{ scale: on ? [1, 1.08, 1] : 1 }}
-                onClick={() => {
-                  haptic(6)
-                  set({ avoid: on ? p.avoid.filter((x) => x !== a) : [...p.avoid, a] })
-                }}
-                className={`rounded-full px-4 py-2 text-sm shadow-card transition-colors ${on ? 'bg-tomato text-white' : 'bg-white'}`}
-              >
-                {on ? '✕ ' : ''}
-                {ALLERGEN_LABEL[a]}
-              </motion.button>
-            )
-          })}
-        </div>
+        <div className="mb-2 text-sm text-muted">過敏或不想吃的（點分類可以細選）</div>
+        <AvoidPicker profile={p} onChange={(avoid) => set({ avoid })} />
       </div>
     </div>,
 

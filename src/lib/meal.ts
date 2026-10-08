@@ -1,3 +1,4 @@
+import { recipeAvoidTags } from '../data/avoid'
 import { RECIPES, RECIPE_MAP } from '../data/recipes'
 import type { Goal, Ingredient, LogEntry, MealSlot, Nutrition, PlanEntry, Profile, Recipe, Section } from '../types'
 
@@ -37,7 +38,7 @@ export const suggestKcal = (goal: Goal) => ({ lose: 1600, maintain: 1900, gain: 
 export const fitsProfile = (recipe: Recipe, profile?: Profile) => {
   if (!profile) return true
   if (profile.vegetarian && !recipe.vegetarian) return false
-  return !recipe.allergens.some((a) => profile.avoid.includes(a))
+  return !recipeAvoidTags(recipe).some((t) => profile.avoid.includes(t))
 }
 
 export const recipesFor = (meal: MealSlot | null, profile?: Profile) =>
