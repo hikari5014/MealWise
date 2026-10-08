@@ -8,7 +8,7 @@ import { MEAL_LABEL, type MealSlot, type Profile, type Recipe } from '../types'
 import { Icon } from './Icon'
 import { RecipeThumb, useRecipeDetail } from './RecipeDetail'
 import { RecipePhoto } from './RecipePhoto'
-import { listContainer, listItem, Sheet } from './ui'
+import { listContainer, listItem, Sheet, Tap } from './ui'
 
 /** 挑選食譜的底部視窗（含「最近吃過」快速選） */
 export function RecipePicker({
@@ -146,15 +146,15 @@ function PickerRow({ recipe, onPick }: { recipe: Recipe; onPick: () => void }) {
   const layoutId = `picker-${recipe.id}`
   return (
     <motion.li variants={listItem} className="flex items-center gap-3 rounded-2xl bg-white p-2 pr-3 shadow-card">
-      <button onClick={() => openDetail(recipe.id, layoutId)} aria-label={`查看${recipe.name}`}>
+      <Tap onClick={() => openDetail(recipe.id, layoutId)} aria-label={`查看${recipe.name}`}>
         <RecipeThumb recipe={recipe} layoutId={layoutId} size={52} />
-      </button>
-      <button className="min-w-0 flex-1 text-left" onClick={onPick}>
+      </Tap>
+      <Tap className="min-w-0 flex-1 text-left" onClick={onPick}>
         <div className="truncate font-medium">{recipe.name}</div>
         <div className="text-xs text-muted">
           {recipe.nutrition.kcal} kcal・蛋白質 {recipe.nutrition.protein}g・{recipe.minutes} 分
         </div>
-      </button>
+      </Tap>
       <motion.button
         whileTap={{ scale: 0.85 }}
         onClick={onPick}

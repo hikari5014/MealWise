@@ -15,7 +15,7 @@ import {
 import { MEAL_LABEL, MEAL_SLOTS, SECTION_LABEL, SECTION_ORDER, type MealSlot, type Recipe, type Section } from '../types'
 import { Icon } from './Icon'
 import { RecipePhoto } from './RecipePhoto'
-import { Button, Segmented, Sheet, useToast } from './ui'
+import { Button, Segmented, Sheet, Tap, useToast } from './ui'
 
 const Ctx = createContext<(recipe?: Recipe) => void>(() => {})
 
@@ -289,13 +289,13 @@ function RecipeEditor({ open, recipe, onClose }: { open: boolean; recipe?: Recip
                   />
                 </Field>
                 <Field label="素食">
-                  <button
+                  <Tap
                     type="button"
                     onClick={() => set({ vegetarian: !draft.vegetarian })}
                     className={`w-full rounded-2xl px-4 py-3 text-left shadow-sm transition-colors ${draft.vegetarian ? 'bg-leaf text-white' : 'bg-white'}`}
                   >
                     {draft.vegetarian ? '是（蛋奶素）' : '否'}
-                  </button>
+                  </Tap>
                 </Field>
               </div>
 
@@ -334,14 +334,14 @@ function RecipeEditor({ open, recipe, onClose }: { open: boolean; recipe?: Recip
                               onChange={(e) => setIng(i, { unit: e.target.value })}
                               className="w-12 rounded-xl bg-cream px-2 py-2 text-center outline-none"
                             />
-                            <button
+                            <Tap
                               type="button"
                               aria-label="刪除食材"
                               onClick={() => set({ ingredients: draft.ingredients.filter((_, k) => k !== i) })}
                               className="grid w-8 place-items-center text-muted"
                             >
                               <Icon name="close" size={18} />
-                            </button>
+                            </Tap>
                           </div>
                           <div className="mt-1.5 flex flex-wrap items-center gap-1">
                             <select
@@ -365,14 +365,14 @@ function RecipeEditor({ open, recipe, onClose }: { open: boolean; recipe?: Recip
                       )
                     })}
                   </AnimatePresence>
-                  <button
+                  <Tap
                     type="button"
                     onClick={() => set({ ingredients: [...draft.ingredients, { name: '', qty: '', unit: 'g', section: 'produce' }] })}
                     className="flex w-full items-center justify-center gap-1 rounded-2xl border-2 border-dashed border-ink/10 py-2 text-sm text-muted"
                   >
                     <Icon name="add" size={18} />
                     加一樣食材
-                  </button>
+                  </Tap>
                 </div>
               </Field>
 

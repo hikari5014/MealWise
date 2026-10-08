@@ -9,7 +9,7 @@ import { recipesFor, tasteScore } from '../lib/meal'
 import { MEAL_LABEL, type DayMark, type MealSlot, type PlanEntry, type Profile, type Recipe } from '../types'
 import { Icon } from './Icon'
 import { RecipePhoto } from './RecipePhoto'
-import { Button, Sheet, useToast } from './ui'
+import { Button, Sheet, Tap, useToast } from './ui'
 
 interface Slot {
   date: string
@@ -173,13 +173,13 @@ export function QuickPickSheet({
                 </motion.button>
               ))}
               {sameAsYesterday && (
-                <button
+                <Tap
                   onClick={() => pick(sameAsYesterday)}
                   className="flex w-full items-center justify-center gap-1.5 rounded-2xl bg-leaf-soft py-2.5 text-sm text-leaf-dark"
                 >
                   <Icon name="history" size={18} />
                   跟昨天一樣：{sameAsYesterday.name}
-                </button>
+                </Tap>
               )}
             </motion.div>
           </AnimatePresence>

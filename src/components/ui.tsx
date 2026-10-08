@@ -1,8 +1,41 @@
 import { AnimatePresence, motion, useDragControls, type HTMLMotionProps } from 'framer-motion'
-import { createContext, useCallback, useContext, useEffect, useRef, useState, type ReactNode } from 'react'
+import { createContext, forwardRef, useCallback, useContext, useEffect, useRef, useState, type ReactNode } from 'react'
 import { haptic, spring } from '../lib/feedback'
 import type { IconName } from '../lib/icons'
 import { Icon } from './Icon'
+
+/*
+ * ── 全站的點擊回饋規則 ──
+ * 所有可以點的東西都用 <Tap>（或下面的 <Button>），不要直接寫 <Tap>。
+ * 這樣按下去一定會微縮、放開回彈、輕微震動；npm run build 會檢查有沒有漏掉。
+ * 需要特殊動畫時可以用 motion.button，但一定要給 whileTap。
+ */
+export type TapProps = HTMLMotionProps<'button'> & {
+  /** 按下時縮到多少，預設 0.94；很寬的列表列可以用 0.98 */
+  press?: number
+  /** 點擊時是否輕震，預設會 */
+  feedback?: boolean
+}
+
+export const Tap = forwardRef<HTMLButtonElement, TapProps>(function Tap(
+  { press = 0.94, feedback = true, onClick, type = 'button', disabled, ...rest },
+  ref,
+) {
+  return (
+    <motion.button
+      ref={ref}
+      type={type}
+      disabled={disabled}
+      whileTap={disabled ? undefined : { scale: press }}
+      transition={spring}
+      onClick={(e) => {
+        if (feedback) haptic(5)
+        onClick?.(e)
+      }}
+      {...rest}
+    />
+  )
+})
 
 /* ── 按鈕：按下微縮、放開回彈 ── */
 type BtnProps = HTMLMotionProps<'button'> & { variant?: 'primary' | 'soft' | 'ghost' }
@@ -163,7 +196,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
             >
               <span>{toast.text}</span>
               {toast.undo && (
-                <button
+                <Tap
                   className="font-bold text-honey"
                   onClick={() => {
                     haptic(8)
@@ -172,7 +205,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
                   }}
                 >
                   {toast.actionLabel ?? '復原'}
-                </button>
+                </Tap>
               )}
             </motion.div>
           )}
@@ -197,7 +230,7 @@ export function Segmented<T extends string>({
   return (
     <div className="flex rounded-2xl bg-ink/5 p-1">
       {options.map((o) => (
-        <button
+        <Tap
           key={o.value}
           onClick={() => {
             haptic(6)
@@ -214,7 +247,7 @@ export function Segmented<T extends string>({
             {o.icon && <Icon name={o.icon} size={18} fill={value === o.value} weight={value === o.value ? 600 : 400} />}
             {o.label}
           </span>
-        </button>
+        </Tap>
       ))}
     </div>
   )

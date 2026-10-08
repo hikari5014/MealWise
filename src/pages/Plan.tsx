@@ -11,7 +11,7 @@ import { RowPhoto, useRecipeDetail } from '../components/RecipeDetail'
 import { RecipePhoto } from '../components/RecipePhoto'
 import { useRecipeEditor } from '../components/RecipeEditor'
 import { useComposer } from '../components/Composer'
-import { Button, listContainer, listItem, Segmented, Sheet, useToast } from '../components/ui'
+import { Button, listContainer, listItem, Segmented, Sheet, Tap, useToast } from '../components/ui'
 import { RECIPE_MAP } from '../data/recipes'
 import { db } from '../db'
 import { addDays, fromKey, monthDay, todayKey, weekDays, weekdayLabel, weekStart } from '../lib/date'
@@ -77,10 +77,10 @@ export function WeekSwitcher({ start, onChange }: { start: string; onChange: (s:
       >
         <Icon name="chevron_left" size={22} />
       </motion.button>
-      <button className="text-sm font-medium" onClick={() => onChange(weekStart(todayKey()))}>
+      <Tap className="text-sm font-medium" onClick={() => onChange(weekStart(todayKey()))}>
         {monthDay(start)} – {monthDay(addDays(start, 6))}
         {!isThisWeek && <span className="ml-1 text-xs text-leaf">（回本週）</span>}
-      </button>
+      </Tap>
       <motion.button
         whileTap={{ scale: 0.85 }}
         aria-label="下一週"
@@ -165,7 +165,7 @@ function Week({ profile, focus }: { profile: Profile; focus: string | null }) {
           const active = d === day
           const r = resolveDay(d, profile, marks)
           return (
-            <button key={d} onClick={() => select(d)} className="relative flex flex-col items-center rounded-2xl py-2">
+            <Tap key={d} onClick={() => select(d)} className="relative flex flex-col items-center rounded-2xl py-2">
               {active && <motion.span layoutId="day-pill" transition={spring} className="absolute inset-0 rounded-2xl bg-leaf shadow-card" />}
               <span className={`relative text-[11px] ${active ? 'text-white/80' : 'text-muted'}`}>{weekdayLabel(d)}</span>
               <span className={`relative text-base font-bold ${active ? 'text-white' : d === today ? 'text-leaf' : ''}`}>
@@ -181,7 +181,7 @@ function Week({ profile, focus }: { profile: Profile; focus: string | null }) {
                   <Icon name={r.feastMeal ? 'celebration' : r.fastDay ? 'no_meals' : 'fitness_center'} size={13} fill={!!r.feastMeal} />
                 </span>
               )}
-            </button>
+            </Tap>
           )
         })}
       </div>
@@ -243,10 +243,10 @@ function Week({ profile, focus }: { profile: Profile; focus: string | null }) {
                 運動日
               </span>
             )}
-            <button onClick={() => setPlanSheet(true)} className="ml-auto flex items-center gap-0.5 text-leaf-dark">
+            <Tap onClick={() => setPlanSheet(true)} className="ml-auto flex items-center gap-0.5 text-leaf-dark">
               <Icon name="tune" size={14} />
               飲食計劃
-            </button>
+            </Tap>
           </div>
           {MEAL_SLOTS.map((meal) => (
             <section key={meal}>
@@ -325,15 +325,15 @@ function CopyDaySheet({ open, onClose, from, hasPlans }: { open: boolean; onClos
         <div className="space-y-4">
           <p className="text-xs text-muted">適合「平日都吃差不多」的人：排好一天，複製到其他天。已經排了的餐不會被蓋掉。</p>
           <div className="flex gap-2 text-xs">
-            <button onClick={() => setTargets(options.slice(0, 6).filter((d) => ![0, 6].includes(fromKey(d).getDay())))} className="rounded-full bg-leaf-soft px-3 py-1 text-leaf-dark">
+            <Tap onClick={() => setTargets(options.slice(0, 6).filter((d) => ![0, 6].includes(fromKey(d).getDay())))} className="rounded-full bg-leaf-soft px-3 py-1 text-leaf-dark">
               接下來的平日
-            </button>
-            <button onClick={() => setTargets(options.slice(0, 6))} className="rounded-full bg-leaf-soft px-3 py-1 text-leaf-dark">
+            </Tap>
+            <Tap onClick={() => setTargets(options.slice(0, 6))} className="rounded-full bg-leaf-soft px-3 py-1 text-leaf-dark">
               接下來 6 天
-            </button>
-            <button onClick={() => setTargets([])} className="rounded-full bg-white px-3 py-1 text-muted shadow-card">
+            </Tap>
+            <Tap onClick={() => setTargets([])} className="rounded-full bg-white px-3 py-1 text-muted shadow-card">
               清除
-            </button>
+            </Tap>
           </div>
           <div className="grid grid-cols-7 gap-1.5">
             {options.map((d) => {
@@ -387,12 +387,12 @@ function PlanRow({ plan, onRemove }: { plan: PlanEntry; onRemove: () => void }) 
       className="relative flex min-h-[72px] touch-pan-y items-center gap-3 overflow-hidden rounded-2xl bg-white py-3 pl-4 pr-2 shadow-card"
     >
       <RowPhoto recipe={recipe} layoutId={layoutId} />
-      <button className="relative min-w-0 flex-1 text-left" onClick={() => openDetail(recipe.id, layoutId)}>
+      <Tap className="relative min-w-0 flex-1 text-left" onClick={() => openDetail(recipe.id, layoutId)}>
         <div className="truncate font-medium">{recipe.name}</div>
         <div className="text-xs text-muted">
           {recipe.nutrition.kcal} kcal・{recipe.minutes} 分鐘
         </div>
-      </button>
+      </Tap>
       <motion.button
         whileTap={{ scale: 0.85 }}
         onClick={onRemove}

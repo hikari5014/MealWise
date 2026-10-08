@@ -7,7 +7,7 @@ import { saveMark, useMarks, usePlans } from '../lib/hooks'
 import { MEAL_LABEL, MEAL_SLOTS, type MealSlot, type Profile } from '../types'
 import { RuleBadge } from './DietPlan'
 import { Icon } from './Icon'
-import { Button, Sheet } from './ui'
+import { Button, Sheet, Tap } from './ui'
 
 const WEEK = ['一', '二', '三', '四', '五', '六', '日']
 
@@ -47,9 +47,9 @@ export function MonthCalendar({ profile, onGoDay }: { profile: Profile; onGoDay:
         >
           <Icon name="chevron_left" size={22} />
         </motion.button>
-        <button className="text-base font-bold" onClick={() => setMonth(monthStart(today))}>
+        <Tap className="text-base font-bold" onClick={() => setMonth(monthStart(today))}>
           {m.getFullYear()} 年 {m.getMonth() + 1} 月
-        </button>
+        </Tap>
         <motion.button
           whileTap={{ scale: 0.85 }}
           onClick={() => go(1)}

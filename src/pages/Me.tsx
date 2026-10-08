@@ -5,7 +5,7 @@ import { DietPlanCard, DietPlanSheet } from '../components/DietPlan'
 import { TasteCard, TasteSheet } from '../components/Taste'
 import { Icon } from '../components/Icon'
 import { AboutCard } from '../components/Update'
-import { Button, Card, Sheet, useToast } from '../components/ui'
+import { Button, Card, Sheet, Tap, useToast } from '../components/ui'
 import { db } from '../db'
 import { addDays, todayKey, weekdayLabel } from '../lib/date'
 import { useLiveQuery } from 'dexie-react-hooks'
@@ -145,9 +145,9 @@ export default function Me({ profile }: { profile: Profile }) {
           <Icon name="lock" size={14} />
           資料只存在這台裝置上，不會上傳。
         </p>
-        <button className="underline" onClick={() => setConfirmReset(true)}>
+        <Tap className="underline" onClick={() => setConfirmReset(true)}>
           清除所有資料
-        </button>
+        </Tap>
       </div>
 
       <Sheet open={editing} onClose={() => setEditing(false)}>

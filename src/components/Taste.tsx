@@ -8,7 +8,7 @@ import type { Profile } from '../types'
 import { Food } from './Food'
 import { Icon } from './Icon'
 import { RecipePhoto } from './RecipePhoto'
-import { Card, Sheet } from './ui'
+import { Card, Sheet, Tap } from './ui'
 
 /** 「我的」頁：口味偏好卡片 */
 export function TasteCard({ profile, onOpen }: { profile: Profile; onOpen: () => void }) {
@@ -21,7 +21,7 @@ export function TasteCard({ profile, onOpen }: { profile: Profile; onOpen: () =>
     .join('・')
   return (
     <Card>
-      <button onClick={onOpen} className="flex w-full items-center gap-3 text-left">
+      <Tap press={0.97} onClick={onOpen} className="flex w-full items-center gap-3 text-left">
         <span className="grid h-11 w-11 place-items-center rounded-2xl bg-tomato-soft text-tomato">
           <Icon name="favorite" size={24} fill />
         </span>
@@ -30,7 +30,7 @@ export function TasteCard({ profile, onOpen }: { profile: Profile; onOpen: () =>
           <span className="block truncate text-xs text-muted">{summary || '選喜歡的料理，排菜單時會優先挑'}</span>
         </span>
         <Icon name="chevron_right" size={22} className="text-muted" />
-      </button>
+      </Tap>
     </Card>
   )
 }
@@ -172,9 +172,9 @@ function RecipeList({
                   <RecipePhoto recipe={r} />
                 </span>
                 <span className="flex-1 truncate text-sm">{r.name}</span>
-                <button onClick={() => onRemove(r.id)} className="text-xs text-muted underline">
+                <Tap onClick={() => onRemove(r.id)} className="text-xs text-muted underline">
                   {removeLabel}
-                </button>
+                </Tap>
               </motion.li>
             ))}
           </AnimatePresence>

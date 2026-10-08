@@ -8,7 +8,7 @@ import { useShare } from '../components/Share'
 import { Icon } from '../components/Icon'
 import { RowPhoto, useRecipeDetail } from '../components/RecipeDetail'
 import { CountUp, MacroBar, Ring } from '../components/Ring'
-import { Card, CheckButton, useToast } from '../components/ui'
+import { Card, CheckButton, Tap, useToast } from '../components/ui'
 import { WaterCup } from '../components/WaterCup'
 import { RECIPE_MAP } from '../data/recipes'
 import { db } from '../db'
@@ -258,12 +258,12 @@ function MealRow({
     >
       <RowPhoto recipe={recipe} layoutId={layoutId} dim={done} />
       <div className="relative min-w-0 flex-1">
-        <button
+        <Tap
           onClick={() => openDetail(recipe.id, layoutId)}
           className={`block max-w-full truncate text-left font-medium transition-opacity ${done ? 'opacity-70' : ''}`}
         >
           {recipe.name}
-        </button>
+        </Tap>
         <div className="flex items-center gap-2 text-xs text-muted">
           <span className="tabular-nums">{Math.round(recipe.nutrition.kcal * (portion ?? 1))} kcal</span>
           {onPortion && portionLabel && (

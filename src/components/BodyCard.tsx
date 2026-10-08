@@ -10,7 +10,7 @@ import { Food } from './Food'
 import { PREF_SETUP, PREF_TIP_DISMISSED, useHealth } from './HealthSync'
 import { Icon } from './Icon'
 import { CountUp } from './Ring'
-import { Button, Card } from './ui'
+import { Button, Card, Tap } from './ui'
 
 const usePrefValue = (key: string) => useLiveQuery(() => db.prefs.get(key).then((p) => p?.value ?? null), [key])
 
@@ -70,9 +70,9 @@ export function BodyCard() {
           身體數據
         </h2>
         {ios && (
-          <button type="button" onClick={() => health.openGuide(0)} className="text-xs text-leaf-dark underline">
+          <Tap type="button" onClick={() => health.openGuide(0)} className="text-xs text-leaf-dark underline">
             {setup ? '捷徑教學' : '連結 Apple 健康'}
-          </button>
+          </Tap>
         )}
       </div>
 
@@ -208,9 +208,9 @@ export function HealthTip() {
           <Food id="scale" size={30} />
         </motion.span>
         <div className="flex-1 text-sm text-leaf-dark">今天還沒同步體重</div>
-        <button type="button" onClick={health.openPaste} className="text-xs text-leaf-dark underline">
+        <Tap type="button" onClick={health.openPaste} className="text-xs text-leaf-dark underline">
           貼上
-        </button>
+        </Tap>
         <Button className="px-3 py-1.5 text-sm" onClick={health.sync}>
           同步
         </Button>

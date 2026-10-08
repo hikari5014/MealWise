@@ -8,6 +8,7 @@ import type { Profile } from '../types'
 import { Food } from './Food'
 import { Icon } from './Icon'
 import { CountUp } from './Ring'
+import { Tap } from './ui'
 
 const COLS = 3
 const bouncy = { type: 'spring', stiffness: 520, damping: 14 } as const
@@ -217,9 +218,9 @@ function DetailPanel({
             <ItemChip key={item.id} item={item} on={selected.has(item.id)} onToggle={() => onToggle(item.id)} />
           ))}
         </motion.div>
-        <button type="button" onClick={onClose} className="mt-3 w-full text-center text-xs text-muted">
+        <Tap press={0.97} type="button" onClick={onClose} className="mt-3 w-full text-center text-xs text-muted">
           完成
-        </button>
+        </Tap>
       </div>
     </div>
   )

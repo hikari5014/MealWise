@@ -22,7 +22,7 @@ import { Food } from './Food'
 import { IngredientPicker } from './IngredientPicker'
 import { Icon } from './Icon'
 import { useRecipeDetail } from './RecipeDetail'
-import { Button, Sheet, useToast } from './ui'
+import { Button, Sheet, Tap, useToast } from './ui'
 
 const Ctx = createContext<() => void>(() => {})
 export const useComposer = () => useContext(Ctx)
@@ -146,9 +146,9 @@ function Composer({ open, onClose }: { open: boolean; onClose: () => void }) {
               </div>
             </div>
             {customName !== null && (
-              <button onClick={() => setCustomName(null)} aria-label="用自動菜名" className="text-ink/50">
+              <Tap onClick={() => setCustomName(null)} aria-label="用自動菜名" className="text-ink/50">
                 <Icon name="refresh" size={18} />
-              </button>
+              </Tap>
             )}
           </div>
           <div className="mt-2 grid grid-cols-4 gap-1.5 text-center">
@@ -228,18 +228,18 @@ function Composer({ open, onClose }: { open: boolean; onClose: () => void }) {
                           {comp.name}
                           <span className="ml-1 text-[10px] text-muted">{PART_LABEL[comp.part].label}</span>
                         </span>
-                        <button onClick={() => setQty(comp, combo.items[id] - comp.step)} aria-label="減少" className="grid h-7 w-7 place-items-center rounded-full bg-cream">
+                        <Tap onClick={() => setQty(comp, combo.items[id] - comp.step)} aria-label="減少" className="grid h-7 w-7 place-items-center rounded-full bg-cream">
                           <Icon name="remove" size={16} />
-                        </button>
+                        </Tap>
                         <span className="w-14 text-center text-xs tabular-nums">
                           {combo.items[id]} {comp.unit}
                         </span>
-                        <button onClick={() => setQty(comp, combo.items[id] + comp.step)} aria-label="增加" className="grid h-7 w-7 place-items-center rounded-full bg-cream">
+                        <Tap onClick={() => setQty(comp, combo.items[id] + comp.step)} aria-label="增加" className="grid h-7 w-7 place-items-center rounded-full bg-cream">
                           <Icon name="add" size={16} />
-                        </button>
-                        <button onClick={() => toggle(comp)} aria-label={`移除${comp.name}`} className="grid h-7 w-7 place-items-center text-muted">
+                        </Tap>
+                        <Tap onClick={() => toggle(comp)} aria-label={`移除${comp.name}`} className="grid h-7 w-7 place-items-center text-muted">
                           <Icon name="close" size={16} />
-                        </button>
+                        </Tap>
                       </motion.li>
                     )
                   })}
@@ -251,13 +251,13 @@ function Composer({ open, onClose }: { open: boolean; onClose: () => void }) {
 
         {hasMain && (
           <div className="rounded-3xl bg-white p-4 shadow-card">
-            <button onClick={() => setShowSteps(!showSteps)} className="flex w-full items-center gap-2 text-left text-sm font-bold">
+            <Tap press={0.97} onClick={() => setShowSteps(!showSteps)} className="flex w-full items-center gap-2 text-left text-sm font-bold">
               <Icon name="menu_book" size={18} className="text-leaf-dark" />
               自動產生的做法（{steps.length} 步）
               <motion.span animate={{ rotate: showSteps ? 180 : 0 }} className="ml-auto text-muted">
                 <Icon name="expand_more" size={20} />
               </motion.span>
-            </button>
+            </Tap>
             <AnimatePresence initial={false}>
               {showSteps && (
                 <motion.ol

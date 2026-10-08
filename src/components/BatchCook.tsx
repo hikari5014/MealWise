@@ -24,7 +24,7 @@ import { Food } from './Food'
 import { Icon } from './Icon'
 import { useRecipeDetail } from './RecipeDetail'
 import { RecipePhoto } from './RecipePhoto'
-import { Button, CheckButton, Segmented, Sheet, useToast } from './ui'
+import { Button, CheckButton, Segmented, Sheet, Tap, useToast } from './ui'
 
 const STORAGE_STYLE = {
   fridge: 'bg-sky-soft text-sky',
@@ -248,7 +248,7 @@ function BatchWizard({
           {!q && (
             <div className="-mx-5 flex gap-2 overflow-x-auto px-5">
               {filters.map((f) => (
-                <button
+                <Tap
                   key={f.id}
                   onClick={() => setFilter(f.id)}
                   className={`shrink-0 rounded-full px-3 py-1 text-xs transition-colors ${
@@ -256,7 +256,7 @@ function BatchWizard({
                   }`}
                 >
                   {f.label}
-                </button>
+                </Tap>
               ))}
             </div>
           )}
@@ -687,10 +687,10 @@ function FlowBody({ session, tab, setTab, onClose }: { session: BatchSession; ta
         )}
       </motion.div>
 
-      <button onClick={remove} className="flex w-full items-center justify-center gap-1 py-2 text-xs text-muted">
+      <Tap press={0.97} onClick={remove} className="flex w-full items-center justify-center gap-1 py-2 text-xs text-muted">
         <Icon name="delete" size={16} />
         刪除這次備餐{session.planIds.length ? '（連同排進菜單的餐）' : ''}
-      </button>
+      </Tap>
     </div>
   )
 }
@@ -739,16 +739,16 @@ function Timeline({ flow, session, step }: { flow: BatchFlow; session: BatchSess
                 {recipe && (
                   <>
                     <div className="mt-2 flex gap-3 text-xs text-leaf-dark">
-                      <button onClick={() => setOpenId(expanded ? null : st.key)} className="flex items-center gap-0.5">
+                      <Tap onClick={() => setOpenId(expanded ? null : st.key)} className="flex items-center gap-0.5">
                         <motion.span animate={{ rotate: expanded ? 180 : 0 }}>
                           <Icon name="expand_more" size={16} />
                         </motion.span>
                         {expanded ? '收起做法' : `${portions} 份的材料與做法`}
-                      </button>
-                      <button onClick={() => openDetail(recipe.id, `flow-${recipe.id}`)} className="flex items-center gap-0.5">
+                      </Tap>
+                      <Tap onClick={() => openDetail(recipe.id, `flow-${recipe.id}`)} className="flex items-center gap-0.5">
                         <Icon name="menu_book" size={14} />
                         食譜
-                      </button>
+                      </Tap>
                     </div>
                     <AnimatePresence initial={false}>
                       {expanded && (

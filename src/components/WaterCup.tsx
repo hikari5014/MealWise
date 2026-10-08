@@ -2,7 +2,7 @@ import { AnimatePresence, motion } from 'framer-motion'
 import { useRef, useState } from 'react'
 import { haptic } from '../lib/feedback'
 import { CountUp } from './Ring'
-import { Sheet } from './ui'
+import { Sheet, Tap } from './ui'
 
 const AMOUNTS = [150, 250, 350, 500]
 
@@ -95,7 +95,7 @@ export function WaterCup({ ml, target, onAdd }: { ml: number; target: number; on
             </motion.button>
           ))}
         </div>
-        <button
+        <Tap
           className="mt-4 w-full rounded-2xl py-3 text-sm text-muted"
           disabled={ml <= 0}
           onClick={() => {
@@ -104,7 +104,7 @@ export function WaterCup({ ml, target, onAdd }: { ml: number; target: number; on
           }}
         >
           記錯了，減 250 ml
-        </button>
+        </Tap>
       </Sheet>
     </>
   )

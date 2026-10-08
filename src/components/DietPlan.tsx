@@ -18,7 +18,7 @@ import { haptic, spring } from '../lib/feedback'
 import { saveMark } from '../lib/hooks'
 import { MEAL_LABEL, MEAL_SLOTS, type Profile } from '../types'
 import { Icon } from './Icon'
-import { Button, Card, Sheet, useToast } from './ui'
+import { Button, Card, Sheet, Tap, useToast } from './ui'
 
 const RULE_STYLE: Record<MealDecision['rule'], string> = {
   normal: 'bg-ink/5 text-muted',
@@ -207,7 +207,7 @@ export function TodayPlanCard({ day, onOpenSettings }: { day: ResolvedDay; onOpe
 export function DietPlanCard({ profile, onOpen }: { profile: Profile; onOpen: () => void }) {
   return (
     <Card>
-      <button onClick={onOpen} className="flex w-full items-center gap-3 text-left">
+      <Tap press={0.97} onClick={onOpen} className="flex w-full items-center gap-3 text-left">
         <span className="grid h-11 w-11 place-items-center rounded-2xl bg-leaf-soft text-leaf-dark">
           <Icon name="tune" size={24} />
         </span>
@@ -216,7 +216,7 @@ export function DietPlanCard({ profile, onOpen }: { profile: Profile; onOpen: ()
           <span className="block truncate text-xs text-muted">{ruleDescription(getPlan(profile))}</span>
         </span>
         <Icon name="chevron_right" size={22} className="text-muted" />
-      </button>
+      </Tap>
     </Card>
   )
 }
@@ -250,7 +250,7 @@ function Chip({ on, onClick, children, tone = 'leaf' }: { on: boolean; onClick: 
 
 function Toggle({ on, onChange, label, sub }: { on: boolean; onChange: (v: boolean) => void; label: string; sub?: string }) {
   return (
-    <button
+    <Tap
       type="button"
       onClick={() => {
         haptic(8)
@@ -269,7 +269,7 @@ function Toggle({ on, onChange, label, sub }: { on: boolean; onChange: (v: boole
           transition={spring}
         />
       </span>
-    </button>
+    </Tap>
   )
 }
 

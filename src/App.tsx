@@ -10,7 +10,7 @@ import { RecipeDetailProvider } from './components/RecipeDetail'
 import { RecipeEditorProvider } from './components/RecipeEditor'
 import { ShareProvider } from './components/Share'
 import { UpdateProvider } from './components/Update'
-import { ToastProvider } from './components/ui'
+import { Tap, ToastProvider } from './components/ui'
 import { haptic, spring } from './lib/feedback'
 import { setCustomRecipes } from './data/recipes'
 import { db } from './db'
@@ -108,7 +108,7 @@ function BottomNav({ tab, onChange }: { tab: TabId; onChange: (t: TabId) => void
         {TABS.map((t) => {
           const active = t.id === tab
           return (
-            <button
+            <Tap
               key={t.id}
               onClick={() => onChange(t.id)}
               aria-current={active ? 'page' : undefined}
@@ -125,7 +125,7 @@ function BottomNav({ tab, onChange }: { tab: TabId; onChange: (t: TabId) => void
                 <Icon name={t.icon} size={24} fill={active} weight={active ? 600 : 400} />
               </motion.span>
               <span className={`relative text-[11px] font-medium ${active ? 'text-leaf-dark' : 'text-muted'}`}>{t.label}</span>
-            </button>
+            </Tap>
           )
         })}
       </div>

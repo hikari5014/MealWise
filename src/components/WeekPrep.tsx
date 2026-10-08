@@ -10,7 +10,7 @@ import { Food } from './Food'
 import { Icon } from './Icon'
 import { useRecipeDetail } from './RecipeDetail'
 import { RecipePhoto } from './RecipePhoto'
-import { CheckButton, Segmented, useToast } from './ui'
+import { CheckButton, Segmented, Tap, useToast } from './ui'
 
 const dayLabel = (d: string) => `${monthDay(d)}（${weekdayLabel(d)}）`
 
@@ -85,7 +85,7 @@ export function WeekPrepView({ weekKey, plans, servings }: { weekKey: string; pl
           <span className="text-ink/70">備餐日</span>
           <div className="-mr-4 flex gap-1.5 overflow-x-auto pr-4">
             {options.map((d) => (
-              <button
+              <Tap
                 key={d}
                 onClick={() => {
                   haptic(6)
@@ -94,7 +94,7 @@ export function WeekPrepView({ weekKey, plans, servings }: { weekKey: string; pl
                 className={`shrink-0 rounded-full px-2.5 py-1 transition-colors ${d === prepDay ? 'bg-leaf text-white' : 'bg-white/70'}`}
               >
                 {monthDay(d)}（{weekdayLabel(d)}）
-              </button>
+              </Tap>
             ))}
           </div>
         </div>
@@ -220,13 +220,13 @@ function StorageGuide({ w }: { w: ReturnType<typeof buildWeekPrep> }) {
   const [open, setOpen] = useState(false)
   return (
     <div className="rounded-3xl bg-white p-4 shadow-card">
-      <button onClick={() => setOpen(!open)} className="flex w-full items-center gap-2 text-left text-sm font-bold">
+      <Tap press={0.97} onClick={() => setOpen(!open)} className="flex w-full items-center gap-2 text-left text-sm font-bold">
         <Icon name="lightbulb" size={20} fill className="text-honey" />
         每道菜的保存與加熱
         <motion.span animate={{ rotate: open ? 180 : 0 }} className="ml-auto text-muted">
           <Icon name="expand_more" size={22} />
         </motion.span>
-      </button>
+      </Tap>
       <AnimatePresence initial={false}>
         {open && (
           <motion.ul
@@ -302,9 +302,9 @@ function Row({
         {from && from.from.length > 1 && <div className="truncate text-[11px] text-muted/80">用在：{from.from.join('、')}</div>}
       </div>
       {onInfo && (
-        <button onClick={onInfo} aria-label="看食譜" className="text-leaf-dark">
+        <Tap onClick={onInfo} aria-label="看食譜" className="text-leaf-dark">
           <Icon name="menu_book" size={20} />
-        </button>
+        </Tap>
       )}
     </li>
   )

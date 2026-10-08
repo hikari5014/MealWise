@@ -16,7 +16,7 @@ import type { IconName } from '../lib/icons'
 import { Food } from './Food'
 import { Icon } from './Icon'
 import { CountUp } from './Ring'
-import { Button, Sheet, useToast } from './ui'
+import { Button, Sheet, Tap, useToast } from './ui'
 
 export const PREF_SETUP = 'health-setup'
 export const PREF_TIP_DISMISSED = 'health-tip-dismissed'
@@ -393,9 +393,9 @@ function GuideSheet({ step, setStep, onSync }: { step: number | null; setStep: (
     <Sheet open={step !== null} onClose={() => setStep(null)} title="連結 Apple 健康">
       <div className="mb-4 flex justify-center gap-1.5">
         {steps.map((_, i) => (
-          <button key={i} onClick={() => go(i)} aria-label={`第 ${i + 1} 步`} className="relative h-2 w-2 rounded-full bg-ink/10">
+          <Tap key={i} onClick={() => go(i)} aria-label={`第 ${i + 1} 步`} className="relative h-2 w-2 rounded-full bg-ink/10">
             {i === cur && <motion.span layoutId="guide-dot" transition={spring} className="absolute -inset-0.5 rounded-full bg-leaf" />}
-          </button>
+          </Tap>
         ))}
       </div>
 
@@ -613,9 +613,9 @@ function PasteSheet({ open, onClose, onHelp }: { open: boolean; onClose: () => v
                 </Button>
               </div>
             )}
-            <button type="button" onClick={onHelp} className="w-full py-2 text-xs text-muted underline">
+            <Tap press={0.97} type="button" onClick={onHelp} className="w-full py-2 text-xs text-muted underline">
               捷徑還沒設定？看教學
-            </button>
+            </Tap>
           </motion.div>
         )}
       </AnimatePresence>
