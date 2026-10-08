@@ -1,0 +1,34 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+  -webkit-tap-highlight-color: transparent;
+  background: #f7f3ec;
+}
+
+body {
+  @apply bg-cream font-sans text-ink antialiased;
+  overscroll-behavior-y: contain;
+}
+
+button {
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* 水杯的波浪 */
+.wave {
+  animation: wave 2.4s linear infinite;
+}
+@keyframes wave {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wave {
+    animation: none;
+  }
+}
