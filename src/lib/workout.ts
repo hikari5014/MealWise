@@ -83,6 +83,29 @@ export function bodyData(ex: Exercise) {
 
 export const exerciseImage = (id: string, frame: number) => `${import.meta.env.BASE_URL}exercises/${id}-${frame}.webp`
 
+/* ───────── 運動排程 ───────── */
+
+/** 月曆上的運動排程：重訓分推、拉；有氧分高強度、輕度 */
+export type TrainType = 'push' | 'pull' | 'hiit' | 'cardio'
+
+export const TRAIN_TYPES: { id: TrainType; label: string; short: string; group: string; image: FoodImage; color: string; soft: string }[] = [
+  { id: 'push', label: '重訓・推', short: '推', group: '重訓日', image: 'rule-training', color: '#e07a5f', soft: '#fbe3dc' },
+  { id: 'pull', label: '重訓・拉', short: '拉', group: '重訓日', image: 'rule-training', color: '#c98b2b', soft: '#fbf0d9' },
+  { id: 'hiit', label: '高強度有氧', short: '強', group: '有氧日', image: 'rule-feast', color: '#d4577a', soft: '#fbe1ea' },
+  { id: 'cardio', label: '輕度有氧', short: '有氧', group: '有氧日', image: 'water', color: '#4f8fbf', soft: '#e1eef8' },
+]
+export const TRAIN_MAP = Object.fromEntries(TRAIN_TYPES.map((t) => [t.id, t])) as Record<TrainType, (typeof TRAIN_TYPES)[number]>
+
+/** 動作庫的訓練類型篩選 */
+export const MOVES: { id: 'push' | 'pull' | 'core' | 'cardio'; label: string }[] = [
+  { id: 'push', label: '推' },
+  { id: 'pull', label: '拉' },
+  { id: 'core', label: '核心' },
+  { id: 'cardio', label: '有氧' },
+]
+/** 排程類型 → 動作庫預設篩選 */
+export const moveFor = (t?: TrainType) => (t === 'push' ? 'push' : t === 'pull' ? 'pull' : t ? 'cardio' : null)
+
 /* ───────── 紀錄 ───────── */
 
 export interface WorkoutSet {
@@ -99,6 +122,8 @@ export interface WorkoutEntry {
 export interface Workout {
   id?: number
   date: string
+  /** 開始時這天排的類型 */
+  type?: TrainType
   startedAt: number
   endedAt?: number
   entries: WorkoutEntry[]

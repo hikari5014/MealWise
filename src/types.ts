@@ -195,4 +195,6 @@ export interface DayMark {
   training?: boolean
   /** 整天禁食 */
   fast?: boolean
+  /** 運動排程：推、拉、高強度有氧、輕度有氧 */
+  train?: 'push' | 'pull' | 'hiit' | 'cardio'
 }

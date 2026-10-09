@@ -88,7 +88,7 @@ export default function App() {
                         {tab === 'today' && <Today profile={profile} onGoPlan={() => go('plan')} />}
                         {tab === 'plan' && <Plan profile={profile} />}
                         {tab === 'lists' && <Lists profile={profile} />}
-                        {tab === 'train' && <Train />}
+                        {tab === 'train' && <Train profile={profile} />}
                         {tab === 'me' && <Me profile={profile} />}
                       </motion.div>
                     </main>

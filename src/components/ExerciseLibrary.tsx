@@ -5,6 +5,7 @@ import { EXERCISES, type Exercise } from '../data/exercises'
 import { db } from '../db'
 import { haptic, spring } from '../lib/feedback'
 import {
+  MOVES,
   BODY_PARTS,
   EQUIP,
   EQUIP_LABEL,
@@ -53,14 +54,21 @@ export function ExerciseLibrary({
   onClose,
   onPick,
   pickLabel,
+  defaultMove = null,
 }: {
   open: boolean
   onClose: () => void
+  /** 打開時預設篩選（推日只看推的動作…） */
+  defaultMove?: Exercise['move'] | null
   /** 有給就是「挑動作」模式 */
   onPick?: (ex: Exercise) => void
   pickLabel?: string
 }) {
   const [part, setPart] = useState<string | null>(null)
+  const [move, setMove] = useState<Exercise['move'] | null>(defaultMove)
+  useEffect(() => {
+    if (open) setMove(defaultMove)
+  }, [open, defaultMove])
   const [equip, setEquip] = useState<string | null>(null)
   const [query, setQuery] = useState('')
   const [detail, setDetail] = useState<Exercise | null>(null)
@@ -70,13 +78,14 @@ export function ExerciseLibrary({
       EXERCISES.filter((ex) => {
         if (q && !`${ex.zh}${ex.en.toLowerCase()}`.includes(q)) return false
         if (equip && ex.equip !== equip) return false
+        if (move && ex.move !== move) return false
         if (part) {
           const muscles = BODY_PARTS.find((p) => p.id === part)!.muscles
           if (!ex.primary.some((m) => muscles.includes(m))) return false
         }
         return true
       }),
-    [q, equip, part],
+    [q, equip, part, move],
   )
   return (
     <>
@@ -88,6 +97,22 @@ export function ExerciseLibrary({
             placeholder="搜尋動作，例如 臥推、深蹲、划船"
             className="w-full rounded-2xl bg-white px-4 py-3 text-sm shadow-card outline-none ring-leaf/40 focus:ring-2"
           />
+          <div className="grid grid-cols-5 gap-1.5">
+            {[{ id: null, label: '全部' }, ...MOVES].map((m) => {
+              const on = move === m.id
+              const color = m.id === 'push' ? '#e07a5f' : m.id === 'pull' ? '#c98b2b' : m.id === 'cardio' ? '#4f8fbf' : m.id === 'core' ? '#5b8c5a' : '#2f2a24'
+              return (
+                <Tap
+                  key={m.id ?? 'all'}
+                  onClick={() => setMove(m.id)}
+                  className="rounded-2xl py-2 text-sm font-medium transition-colors"
+                  style={{ background: on ? color : '#fff', color: on ? '#fff' : color, boxShadow: on ? undefined : '0 1px 3px rgba(0,0,0,.06)' }}
+                >
+                  {m.label}
+                </Tap>
+              )
+            })}
+          </div>
           <div className="-mx-5 flex gap-1.5 overflow-x-auto px-5">
             {[{ id: null, label: '全部部位' }, ...BODY_PARTS].map((p) => (
               <Tap
@@ -119,7 +144,7 @@ export function ExerciseLibrary({
                   <span className="block px-2.5 py-2">
                     <span className="block truncate text-sm font-medium">{ex.zh}</span>
                     <span className="block truncate text-[11px] text-muted">
-                      {EQUIP_LABEL[ex.equip]}・{ex.primary.map((m) => MUSCLE_ZH[m]).join('、')}
+                      {MOVES.find((m) => m.id === ex.move)?.label}・{EQUIP_LABEL[ex.equip]}・{ex.primary.map((m) => MUSCLE_ZH[m]).join('、')}
                     </span>
                   </span>
                 </Tap>

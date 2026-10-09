@@ -3,34 +3,31 @@ import { useLiveQuery } from 'dexie-react-hooks'
 import { useMemo, useState } from 'react'
 import { BodyMap, WEEK_COLORS } from '../components/BodyMap'
 import { ExerciseLibrary } from '../components/ExerciseLibrary'
-import { Food } from '../components/Food'
 import { Icon } from '../components/Icon'
 import { WorkoutSession } from '../components/WorkoutSession'
-import { Button, Tap, useToast } from '../components/ui'
+import { Tap } from '../components/ui'
 import { EXERCISE_MAP } from '../data/exercises'
 import { db } from '../db'
-import { monthDay, todayKey, weekdayLabel, weekStart } from '../lib/date'
-import { haptic, spring } from '../lib/feedback'
+import { addDays, fromKey, monthDay, todayKey, weekdayLabel, weekStart } from '../lib/date'
+import { getPlan } from '../lib/dietPlan'
+import { useMarks } from '../lib/hooks'
+import { DayTraining, TrainBadge } from '../components/TrainSchedule'
+import type { Profile } from '../types'
+import { spring } from '../lib/feedback'
 import { BODY_PARTS, MUSCLE_ZH, doneSets, weeklyBodyData, weeklyMuscles, workoutVolume, type FxMuscle } from '../lib/workout'
 
-export default function Train() {
+export default function Train({ profile }: { profile: Profile }) {
   const today = todayKey()
-  const toast = useToast()
   const workouts = useLiveQuery(() => db.workouts.orderBy('startedAt').reverse().toArray()) ?? []
   const [openId, setOpenId] = useState<number | null>(null)
   const [library, setLibrary] = useState(false)
-  const active = workouts.find((w) => !w.endedAt)
+  const next7 = useMemo(() => Array.from({ length: 7 }, (_, i) => addDays(today, i)), [today])
+  const marks = useMarks(next7)
   const week = useMemo(() => weeklyMuscles(workouts, today), [workouts, today])
   const weekData = useMemo(() => weeklyBodyData(week), [week])
   const untrained = BODY_PARTS.filter((p) => !p.muscles.some((m) => (week[m] ?? 0) > 0))
   const weekCount = workouts.filter((w) => w.endedAt && w.date >= weekStart(today)).length
 
-  const start = async () => {
-    if (active) return setOpenId(active.id!)
-    haptic([8, 24, 8])
-    const id = (await db.workouts.add({ date: today, startedAt: Date.now(), entries: [] })) as number
-    setOpenId(id)
-  }
 
   return (
     <div className="space-y-4">
@@ -39,21 +36,32 @@ export default function Train() {
         <p className="text-xs text-muted">記錄重訓，看看每個動作練到哪裡</p>
       </header>
 
-      <motion.div layout className="overflow-hidden rounded-3xl bg-gradient-to-br from-leaf-soft to-honey-soft p-4 shadow-card">
-        <div className="flex items-center gap-3">
-          <Food id="rule-training" size={52} float />
-          <div className="flex-1">
-            <div className="font-bold">{active ? '訓練進行中' : '今天練一下？'}</div>
-            <div className="text-xs text-ink/70">
-              {active ? `已完成 ${doneSets(active)} 組` : `這週練了 ${weekCount} 次`}
-            </div>
-          </div>
+      <div className="space-y-1">
+        <div className="flex items-baseline justify-between px-1">
+          <span className="font-bold">今天</span>
+          <span className="text-xs text-muted">這週練了 {weekCount} 次</span>
         </div>
-        <Button className="mt-3 flex w-full items-center justify-center gap-1.5" onClick={start}>
-          <Icon name={active ? 'arrow_forward' : 'fitness_center'} size={20} />
-          {active ? '繼續訓練' : '開始訓練'}
-        </Button>
-      </motion.div>
+        <DayTraining date={today} mark={marks[today]} weeklyTraining={getPlan(profile).trainingDays.includes(fromKey(today).getDay())} />
+      </div>
+
+      <section>
+        <div className="mb-2 px-1 text-sm font-bold">接下來 7 天</div>
+        <div className="grid grid-cols-7 gap-1">
+          {next7.map((d) => {
+            const t = marks[d]?.train
+            const done = workouts.some((w) => w.date === d && w.endedAt)
+            return (
+              <div key={d} className="flex flex-col items-center gap-1 rounded-2xl bg-white py-2 shadow-card">
+                <span className="text-[10px] text-muted">{weekdayLabel(d)}</span>
+                <span className="text-sm font-bold">{Number(d.slice(-2))}</span>
+                {t ? <TrainBadge type={t} size="xs" /> : <span className="text-[9px] leading-[14px] text-muted">{marks[d]?.training === false ? '休' : '—'}</span>}
+                {done && <Icon name="check_circle" size={12} fill className="text-leaf-dark" />}
+              </div>
+            )
+          })}
+        </div>
+        <p className="mt-1.5 px-1 text-[11px] text-muted">到「菜單 → 月曆」點日期可以排推、拉、有氧，也能設定每週固定</p>
+      </section>
 
       <section className="rounded-3xl bg-white p-4 shadow-card">
         <div className="mb-2 flex items-center justify-between">
@@ -104,8 +112,9 @@ export default function Train() {
               <motion.li key={w.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ ...spring, delay: Math.min(i, 8) * 0.03 }}>
                 <Tap press={0.98} onClick={() => setOpenId(w.id!)} className="block w-full rounded-2xl bg-white p-3 text-left shadow-card">
                   <span className="flex items-baseline justify-between">
-                    <span className="font-medium">
+                    <span className="flex items-center gap-1.5 font-medium">
                       {monthDay(w.date)}（{weekdayLabel(w.date)}）
+                      {w.type && <TrainBadge type={w.type} />}
                     </span>
                     <span className="text-xs text-muted">
                       {Math.round((w.endedAt! - w.startedAt) / 60000)} 分・{doneSets(w)} 組・{Math.round(workoutVolume(w))} kg
@@ -122,10 +131,7 @@ export default function Train() {
 
       <WorkoutSession
         id={openId}
-        onClose={() => {
-          setOpenId(null)
-          if (active && openId === active.id) toast('訓練會保留，回來可以繼續')
-        }}
+        onClose={() => setOpenId(null)}
       />
       <ExerciseLibrary open={library} onClose={() => setLibrary(false)} />
     </div>

@@ -8,6 +8,10 @@ import { MEAL_LABEL, MEAL_SLOTS, type MealSlot, type Profile } from '../types'
 import { RuleBadge } from './DietPlan'
 import { Icon } from './Icon'
 import { Button, Sheet, Tap } from './ui'
+import { DayTraining, TrainBadge } from './TrainSchedule'
+import { TRAIN_MAP } from '../lib/workout'
+import { db } from '../db'
+import { useLiveQuery } from 'dexie-react-hooks'
 
 const WEEK = ['一', '二', '三', '四', '五', '六', '日']
 
@@ -28,6 +32,12 @@ export function MonthCalendar({ profile, onGoDay }: { profile: Profile; onGoDay:
   const cells = useMemo(() => Array.from({ length: 42 }, (_, i) => addDays(first, i)), [first])
   const marks = useMarks(cells)
   const plans = usePlans(cells)
+  const doneDays = new Set(
+    useLiveQuery(
+      () => db.workouts.where('date').between(cells[0], cells[cells.length - 1], true, true).filter((w) => !!w.endedAt).toArray(),
+      [cells[0]],
+    )?.map((w) => w.date) ?? [],
+  )
   const plan = getPlan(profile)
   const m = fromKey(month)
 
@@ -118,7 +128,12 @@ export function MonthCalendar({ profile, onGoDay }: { profile: Profile; onGoDay:
                 <span className="relative mt-0.5 flex h-4 items-center gap-0.5">
                   {mark?.feast && <Icon name="celebration" size={13} fill className="text-tomato" />}
                   {mark?.fast && <Icon name="no_meals" size={13} className="text-ink/60" />}
-                  {training && !mark?.feast && !mark?.fast && <Icon name="fitness_center" size={12} className="text-leaf" />}
+                  {mark?.train ? (
+                    <TrainBadge type={mark.train} size="xs" />
+                  ) : (
+                    training && !mark?.feast && !mark?.fast && <Icon name="fitness_center" size={12} className="text-leaf" />
+                  )}
+                  {doneDays.has(d) && <Icon name="check_circle" size={12} fill className="text-leaf-dark" />}
                 </span>
                 {count > 0 && (
                   <span className="absolute bottom-1 flex gap-0.5">
@@ -134,9 +149,15 @@ export function MonthCalendar({ profile, onGoDay }: { profile: Profile; onGoDay:
       </div>
 
       <div className="flex flex-wrap justify-center gap-3 text-[11px] text-muted">
+        {(['push', 'pull', 'hiit', 'cardio'] as const).map((t) => (
+          <span key={t} className="flex items-center gap-1">
+            <TrainBadge type={t} size="xs" />
+            {TRAIN_MAP[t].label.replace('重訓・', '')}
+          </span>
+        ))}
         <span className="flex items-center gap-1">
-          <Icon name="fitness_center" size={13} className="text-leaf" />
-          運動日
+          <Icon name="check_circle" size={13} fill className="text-leaf-dark" />
+          已訓練
         </span>
         <span className="flex items-center gap-1">
           <Icon name="celebration" size={13} fill className="text-tomato" />
@@ -151,7 +172,7 @@ export function MonthCalendar({ profile, onGoDay }: { profile: Profile; onGoDay:
           已排菜單
         </span>
       </div>
-      <p className="text-center text-xs text-muted">點日期可以標記大餐、運動日或禁食日</p>
+      <p className="text-center text-xs text-muted">點日期可以排運動（推、拉、有氧）、標記大餐或禁食日</p>
 
       <DaySheet date={selected} profile={profile} onClose={() => setSelected(null)} onGoDay={onGoDay} />
     </div>
@@ -187,14 +208,8 @@ function DaySheet({
   return (
     <Sheet open={date !== null} onClose={onClose} title={`${monthDay(d)}（${weekdayLabel(d)}）`}>
       <div className="space-y-4">
-        <div className="grid grid-cols-2 gap-2">
-          <ToggleTile
-            on={day.training}
-            icon="fitness_center"
-            label="運動日"
-            sub={mark?.training === undefined ? '依每週設定' : '這天特別設定'}
-            onClick={() => saveMark(d, { training: !day.training })}
-          />
+        <DayTraining date={d} mark={mark} weeklyTraining={plan.trainingDays.includes(fromKey(d).getDay())} />
+        <div className="grid grid-cols-1 gap-2">
           <ToggleTile
             on={!!mark?.fast}
             icon="no_meals"

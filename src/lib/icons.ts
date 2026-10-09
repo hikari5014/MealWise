@@ -48,6 +48,7 @@ export const ICON_NAMES = [
   'hourglass_top',
   'image',
   'info',
+  'keyboard_double_arrow_down',
   'kitchen',
   'lightbulb',
   'link',

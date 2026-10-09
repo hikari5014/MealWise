@@ -27,6 +27,7 @@ import { EatOutView } from '../components/EatOut'
 import { MEAL_LABEL, MEAL_SLOTS, type MealSlot, type PlanEntry, type Profile } from '../types'
 import { Art } from '../components/Art'
 import { usePantryPlan } from '../components/PantryPlan'
+import { DayTraining, TrainBadge } from '../components/TrainSchedule'
 
 export default function Plan({ profile }: { profile: Profile }) {
   const [view, setView] = useState<'week' | 'month' | 'library' | 'eatout'>('week')
@@ -182,10 +183,16 @@ function Week({ profile, focus }: { profile: Profile; focus: string | null }) {
                   <span key={i} className={`h-1 w-1 rounded-full ${active ? 'bg-white' : 'bg-leaf/60'}`} />
                 ))}
               </span>
-              {(r.feastMeal || r.training || r.fastDay) && (
-                <span className={`relative mt-1 ${active ? 'text-white' : r.feastMeal ? 'text-tomato' : r.fastDay ? 'text-ink/50' : 'text-leaf'}`}>
-                  <Icon name={r.feastMeal ? 'celebration' : r.fastDay ? 'no_meals' : 'fitness_center'} size={13} fill={!!r.feastMeal} />
+              {marks[d]?.train && !r.feastMeal ? (
+                <span className="relative mt-1">
+                  <TrainBadge type={marks[d]!.train!} size="xs" />
                 </span>
+              ) : (
+                (r.feastMeal || r.training || r.fastDay) && (
+                  <span className={`relative mt-1 ${active ? 'text-white' : r.feastMeal ? 'text-tomato' : r.fastDay ? 'text-ink/50' : 'text-leaf'}`}>
+                    <Icon name={r.feastMeal ? 'celebration' : r.fastDay ? 'no_meals' : 'fitness_center'} size={13} fill={!!r.feastMeal} />
+                  </span>
+                )
               )}
             </Tap>
           )
@@ -255,6 +262,7 @@ function Week({ profile, focus }: { profile: Profile; focus: string | null }) {
               飲食計劃
             </Tap>
           </div>
+          <DayTraining compact date={day} mark={marks[day]} weeklyTraining={resolved.training} />
           {MEAL_SLOTS.map((meal) => (
             <section key={meal}>
               <h2 className="mb-2 flex items-center gap-2 px-1 font-bold">

@@ -73,7 +73,17 @@ export const useMarks = (dates: string[]) =>
 export const saveMark = async (date: string, patch: Partial<DayMark>) => {
   const cur = (await db.days.get(date)) ?? { date }
   const next = { ...cur, ...patch, date }
-  const empty = !next.feast && next.training === undefined && !next.fast
+  const empty = !next.feast && next.training === undefined && !next.fast && !next.train
   if (empty) await db.days.delete(date)
   else await db.days.put(next)
+}
+
+/**
+ * 設定運動排程。'rest'＝這天不運動；null＝回到每週固定設定。
+ * repeatWeeks > 0 時，之後幾週的同一天也一起設定。
+ */
+export const saveTrain = async (date: string, t: DayMark['train'] | 'rest' | null, repeatWeeks = 0) => {
+  const patch: Partial<DayMark> =
+    t === null ? { train: undefined, training: undefined } : t === 'rest' ? { train: undefined, training: false } : { train: t, training: true }
+  for (let i = 0; i <= repeatWeeks; i++) await saveMark(addDays(date, i * 7), patch)
 }

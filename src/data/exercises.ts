@@ -11,6 +11,8 @@ export interface Exercise {
   secondary: FxMuscle[]
   level: 'beginner' | 'intermediate' | 'expert'
   compound: boolean
+  /** 推、拉、核心、有氧（依 free-exercise-db 的 force 欄位） */
+  move: 'push' | 'pull' | 'core' | 'cardio'
   /** 一句話動作要點 */
   cue: string
   /** 原文步驟（英文） */
@@ -39,7 +41,8 @@ export const EXERCISES: Exercise[] = [
    "After a brief pause, push the bar back to the starting position as you breathe out. Focus on pushing the bar using your chest muscles. Lock your arms and squeeze your chest in the contracted position at the top of the motion, hold for a second and then start coming down slowly again. Tip: Ideally, lowering the weight should take about twice as long as raising it.",
    "Repeat the movement for the prescribed amount of repetitions.",
    "When you are done, place the bar back in the rack."
-  ]
+  ],
+  "move": "push"
  },
  {
   "id": "barbell-incline-bench-press-medium-grip",
@@ -62,7 +65,8 @@ export const EXERCISES: Exercise[] = [
    "After a second pause, bring the bar back to the starting position as you breathe out and push the bar using your chest muscles. Lock your arms in the contracted position, squeeze your chest, hold for a second and then start coming down slowly again. Tip: it should take at least twice as long to go down than to come up.",
    "Repeat the movement for the prescribed amount of repetitions.",
    "When you are done, place the bar back in the rack."
-  ]
+  ],
+  "move": "push"
  },
  {
   "id": "decline-barbell-bench-press",
@@ -86,7 +90,8 @@ export const EXERCISES: Exercise[] = [
    "After a second pause, bring the bar back to the starting position as you breathe out and push the bar using your chest muscles. Lock your arms and squeeze your chest in the contracted position, hold for a second and then start coming down slowly again. Tip: It should take at least twice as long to go down than to come up).",
    "Repeat the movement for the prescribed amount of repetitions.",
    "When you are done, place the bar back in the rack."
-  ]
+  ],
+  "move": "push"
  },
  {
   "id": "dumbbell-bench-press",
@@ -109,7 +114,8 @@ export const EXERCISES: Exercise[] = [
    "Once at shoulder width, rotate your wrists forward so that the palms of your hands are facing away from you. The dumbbells should be just to the sides of your chest, with your upper arm and forearm creating a 90 degree angle. Be sure to maintain full control of the dumbbells at all times. This will be your starting position.",
    "Then, as you breathe out, use your chest to push the dumbbells up. Lock your arms at the top of the lift and squeeze your chest, hold for a second and then begin coming down slowly. Tip: Ideally, lowering the weight should take about twice as long as raising it.",
    "Repeat the movement for the prescribed amount of repetitions of your training program."
-  ]
+  ],
+  "move": "push"
  },
  {
   "id": "incline-dumbbell-press",
@@ -134,7 +140,8 @@ export const EXERCISES: Exercise[] = [
    "Lock your arms at the top, hold for a second, and then start slowly lowering the weight. Tip Ideally, lowering the weights should take about twice as long as raising them.",
    "Repeat the movement for the prescribed amount of repetitions.",
    "When you are done, place the dumbbells back on your thighs and then on the floor. This is the safest manner to release the dumbbells."
-  ]
+  ],
+  "move": "push"
  },
  {
   "id": "dumbbell-flyes",
@@ -154,7 +161,8 @@ export const EXERCISES: Exercise[] = [
    "With a slight bend on your elbows in order to prevent stress at the biceps tendon, lower your arms out at both sides in a wide arc until you feel a stretch on your chest. Breathe in as you perform this portion of the movement. Tip: Keep in mind that throughout the movement, the arms should remain stationary; the movement should only occur at the shoulder joint.",
    "Return your arms back to the starting position as you squeeze your chest muscles and breathe out. Tip: Make sure to use the same arc of motion used to lower the weights.",
    "Hold for a second at the contracted position and repeat the movement for the prescribed amount of repetitions."
-  ]
+  ],
+  "move": "push"
  },
  {
   "id": "incline-dumbbell-flyes",
@@ -177,7 +185,8 @@ export const EXERCISES: Exercise[] = [
    "As you breathe in, start to slowly lower the arms to the side while keeping the arms extended and while rotating the wrists until the palms of the hand are facing each other. Tip: At the end of the movement the arms will be by your side with the palms facing the ceiling.",
    "As you exhale start to bring the dumbbells back up to the starting position by reversing the motion and rotating the hands so that the pinky fingers are next to each other again. Tip: Keep in mind that the movement will only happen at the shoulder joint and at the wrist. There is no motion that happens at the elbow joint.",
    "Repeat for the recommended amount of repetitions."
-  ]
+  ],
+  "move": "push"
  },
  {
   "id": "cable-crossover",
@@ -199,7 +208,8 @@ export const EXERCISES: Exercise[] = [
    "With a slight bend on your elbows in order to prevent stress at the biceps tendon, extend your arms to the side (straight out at both sides) in a wide arc until you feel a stretch on your chest. Breathe in as you perform this portion of the movement. Tip: Keep in mind that throughout the movement, the arms and torso should remain stationary; the movement should only occur at the shoulder joint.",
    "Return your arms back to the starting position as you breathe out. Make sure to use the same arc of motion used to lower the weights.",
    "Hold for a second at the starting position and repeat the movement for the prescribed amount of repetitions."
-  ]
+  ],
+  "move": "push"
  },
  {
   "id": "butterfly",
@@ -219,7 +229,8 @@ export const EXERCISES: Exercise[] = [
    "Push the handles together slowly as you squeeze your chest in the middle. Breathe out during this part of the motion and hold the contraction for a second.",
    "Return back to the starting position slowly as you inhale until your chest muscles are fully stretched.",
    "Repeat for the recommended amount of repetitions."
-  ]
+  ],
+  "move": "pull"
  },
  {
   "id": "machine-bench-press",
@@ -244,7 +255,8 @@ export const EXERCISES: Exercise[] = [
    "Push the handles away from you as you flex your pecs and you breathe out. Hold the contraction for a second before going back to the starting position.",
    "Repeat for the recommended amount of reps.",
    "When finished step on the lever again and slowly get the handles back to their original place."
-  ]
+  ],
+  "move": "push"
  },
  {
   "id": "leverage-chest-press",
@@ -266,7 +278,8 @@ export const EXERCISES: Exercise[] = [
    "Your chest and head should be up and your shoulder blades retracted. This will be your starting position.",
    "Press the handles forward by extending through the elbow.",
    "After a brief pause at the top, return the weight just above the start position, keeping tension on the muscles by not returning the weight to the stops until the set is complete."
-  ]
+  ],
+  "move": "push"
  },
  {
   "id": "smith-machine-bench-press",
@@ -289,7 +302,8 @@ export const EXERCISES: Exercise[] = [
    "After a second pause, bring the bar back to the starting position as you breathe out and push the bar using your chest muscles. Lock your arms in the contracted position, hold for a second and then start coming down slowly again. Tip: It should take at least twice as long to go down than to come up.",
    "Repeat the movement for the prescribed amount of repetitions.",
    "When you are done, lock the bar back in the rack."
-  ]
+  ],
+  "move": "push"
  },
  {
   "id": "pushups",
@@ -311,7 +325,8 @@ export const EXERCISES: Exercise[] = [
    "Next, lower yourself downward until your chest almost touches the floor as you inhale.",
    "Now breathe out and press your upper body back up to the starting position while squeezing your chest.",
    "After a brief pause at the top contracted position, you can begin to lower yourself downward again for as many repetitions as needed."
-  ]
+  ],
+  "move": "push"
  },
  {
   "id": "dips-chest-version",
@@ -333,7 +348,8 @@ export const EXERCISES: Exercise[] = [
    "While breathing in, lower yourself slowly with your torso leaning forward around 30 degrees or so and your elbows flared out slightly until you feel a slight stretch in the chest.",
    "Once you feel the stretch, use your chest to bring your body back to the starting position as you breathe out. Tip: Remember to squeeze the chest at the top of the movement for a second.",
    "Repeat the movement for the prescribed amount of repetitions."
-  ]
+  ],
+  "move": "push"
  },
  {
   "id": "barbell-squat",
@@ -359,7 +375,8 @@ export const EXERCISES: Exercise[] = [
    "Begin to slowly lower the bar by bending the knees and hips as you maintain a straight posture with the head up. Continue down until the angle between the upper leg and the calves becomes slightly less than 90-degrees. Inhale as you perform this portion of the movement. Tip: If you performed the exercise correctly, the front of the knees should make an imaginary straight line with the toes that is perpendicular to the front. If your knees are past that imaginary line (if they are past your toes) then you are placing undue stress on the knee and the exercise has been performed incorrectly.",
    "Begin to raise the bar as you exhale by pushing the floor with the heel of your foot as you straighten the legs again and go back to the starting position.",
    "Repeat for the recommended amount of repetitions."
-  ]
+  ],
+  "move": "push"
  },
  {
   "id": "front-barbell-squat",
@@ -384,7 +401,8 @@ export const EXERCISES: Exercise[] = [
    "Begin to slowly lower the bar by bending the knees as you maintain a straight posture with the head up. Continue down until the angle between the upper leg and the calves becomes slightly less than 90-degrees (which is the point in which the upper legs are below parallel to the floor). Inhale as you perform this portion of the movement. Tip: If you performed the exercise correctly, the front of the knees should make an imaginary straight line with the toes that is perpendicular to the front. If your knees are past that imaginary line (if they are past your toes) then you are placing undue stress on the knee and the exercise has been performed incorrectly.",
    "Begin to raise the bar as you exhale by pushing the floor mainly with the middle of your foot as you straighten the legs again and go back to the starting position.",
    "Repeat for the recommended amount of repetitions."
-  ]
+  ],
+  "move": "push"
  },
  {
   "id": "smith-machine-squat",
@@ -410,7 +428,8 @@ export const EXERCISES: Exercise[] = [
    "Begin to slowly lower the bar by bending the knees as you maintain a straight posture with the head up. Continue down until the angle between the upper leg and the calves becomes slightly less than 90-degrees (which is the point in which the upper legs are below parallel to the floor). Inhale as you perform this portion of the movement. Tip: If you performed the exercise correctly, the front of the knees should make an imaginary straight line with the toes that is perpendicular to the front. If your knees are past that imaginary line (if they are past your toes) then you are placing undue stress on the knee and the exercise has been performed incorrectly.",
    "Begin to raise the bar as you exhale by pushing the floor with the heel of your foot as you straighten the legs again and go back to the starting position.",
    "Repeat for the recommended amount of repetitions."
-  ]
+  ],
+  "move": "push"
  },
  {
   "id": "leg-press",
@@ -434,7 +453,8 @@ export const EXERCISES: Exercise[] = [
    "As you inhale, slowly lower the platform until your upper and lower legs make a 90-degree angle.",
    "Pushing mainly with the heels of your feet and using the quadriceps go back to the starting position as you exhale.",
    "Repeat for the recommended amount of repetitions and ensure to lock the safety pins properly once you are done. You do not want that platform falling on you fully loaded."
-  ]
+  ],
+  "move": "push"
  },
  {
   "id": "hack-squat",
@@ -460,7 +480,8 @@ export const EXERCISES: Exercise[] = [
    "Begin to slowly lower the unit by bending the knees as you maintain a straight posture with the head up (back on the pad at all times). Continue down until the angle between the upper leg and the calves becomes slightly less than 90-degrees (which is the point in which the upper legs are below parallel to the floor). Inhale as you perform this portion of the movement. Tip: If you performed the exercise correctly, the front of the knees should make an imaginary straight line with the toes that is perpendicular to the front. If your knees are past that imaginary line (if they are past your toes) then you are placing undue stress on the knee and the exercise has been performed incorrectly.",
    "Begin to raise the unit as you exhale by pushing the floor with mainly with the heel of your foot as you straighten the legs again and go back to the starting position.",
    "Repeat for the recommended amount of repetitions."
-  ]
+  ],
+  "move": "push"
  },
  {
   "id": "goblet-squat",
@@ -483,7 +504,8 @@ export const EXERCISES: Exercise[] = [
    "Stand holding a light kettlebell by the horns close to your chest. This will be your starting position.",
    "Squat down between your legs until your hamstrings are on your calves. Keep your chest and head up and your back straight.",
    "At the bottom position, pause and use your elbows to push your knees out. Return to the starting position, and repeat for 10-20 repetitions."
-  ]
+  ],
+  "move": "push"
  },
  {
   "id": "dumbbell-lunges",
@@ -506,7 +528,8 @@ export const EXERCISES: Exercise[] = [
    "Step forward with your right leg around 2 feet or so from the foot being left stationary behind and lower your upper body down, while keeping the torso upright and maintaining balance. Inhale as you go down. Note: As in the other exercises, do not allow your knee to go forward beyond your toes as you come down, as this will put undue stress on the knee joint. Make sure that you keep your front shin perpendicular to the ground.",
    "Using mainly the heel of your foot, push up and go back to the starting position as you exhale.",
    "Repeat the movement for the recommended amount of repetitions and then perform with the left leg."
-  ]
+  ],
+  "move": "push"
  },
  {
   "id": "barbell-lunge",
@@ -530,7 +553,8 @@ export const EXERCISES: Exercise[] = [
    "Step away from the rack and step forward with your right leg and squat down through your hips, while keeping the torso upright and maintaining balance. Inhale as you go down. Note: Do not allow your knee to go forward beyond your toes as you come down, as this will put undue stress on the knee joint. li>",
    "Using mainly the heel of your foot, push up and go back to the starting position as you exhale.",
    "Repeat the movement for the recommended amount of repetitions and then perform with the left leg."
-  ]
+  ],
+  "move": "push"
  },
  {
   "id": "bodyweight-squat",
@@ -551,7 +575,8 @@ export const EXERCISES: Exercise[] = [
    "Stand with your feet shoulder width apart. You can place your hands behind your head. This will be your starting position.",
    "Begin the movement by flexing your knees and hips, sitting back with your hips.",
    "Continue down to full depth if you are able,and quickly reverse the motion until you return to the starting position. As you squat, keep your head and chest up and push your knees out."
-  ]
+  ],
+  "move": "push"
  },
  {
   "id": "leg-extensions",
@@ -570,7 +595,8 @@ export const EXERCISES: Exercise[] = [
    "Using your quadriceps, extend your legs to the maximum as you exhale. Ensure that the rest of the body remains stationary on the seat. Pause a second on the contracted position.",
    "Slowly lower the weight back to the original position as you inhale, ensuring that you do not go past the 90-degree angle limit.",
    "Repeat for the recommended amount of times."
-  ]
+  ],
+  "move": "push"
  },
  {
   "id": "lying-leg-curls",
@@ -589,7 +615,8 @@ export const EXERCISES: Exercise[] = [
    "Keeping the torso flat on the bench, ensure your legs are fully stretched and grab the side handles of the machine. Position your toes straight (or you can also use any of the other two stances described on the foot positioning section). This will be your starting position.",
    "As you exhale, curl your legs up as far as possible without lifting the upper legs from the pad. Once you hit the fully contracted position, hold it for a second.",
    "As you inhale, bring the legs back to the initial position. Repeat for the recommended amount of repetitions."
-  ]
+  ],
+  "move": "pull"
  },
  {
   "id": "seated-leg-curl",
@@ -609,7 +636,8 @@ export const EXERCISES: Exercise[] = [
    "As you exhale, pull the machine lever as far as possible to the back of your thighs by flexing at the knees. Keep your torso stationary at all times. Hold the contracted position for a second.",
    "Slowly return to the starting position as you breathe in.",
    "Repeat for the recommended amount of repetitions."
-  ]
+  ],
+  "move": "pull"
  },
  {
   "id": "romanian-deadlift",
@@ -633,7 +661,8 @@ export const EXERCISES: Exercise[] = [
    "Keeping your back and arms completely straight at all times, use your hips to lift the bar as you exhale. Tip: The movement should not be fast but steady and under control.",
    "Once you are standing completely straight up, lower the bar by pushing the hips back, only slightly bending the knees, unlike when squatting. Tip: Take a deep breath at the start of the movement and keep your chest up. Hold your breath as you lower and exhale as you complete the movement.",
    "Repeat for the recommended amount of repetitions."
-  ]
+  ],
+  "move": "pull"
  },
  {
   "id": "stiff-legged-barbell-deadlift",
@@ -656,7 +685,8 @@ export const EXERCISES: Exercise[] = [
    "Keeping the knees stationary, lower the barbell to over the top of your feet by bending at the hips while keeping your back straight. Keep moving forward as if you were going to pick something from the floor until you feel a stretch on the hamstrings. Inhale as you perform this movement.",
    "Start bringing your torso up straight again by extending your hips until you are back at the starting position. Exhale as you perform this movement.",
    "Repeat for the recommended amount of repetitions."
-  ]
+  ],
+  "move": "pull"
  },
  {
   "id": "barbell-deadlift",
@@ -685,7 +715,8 @@ export const EXERCISES: Exercise[] = [
    "While holding the bar, start the lift by pushing with your legs while simultaneously getting your torso to the upright position as you breathe out. In the upright position, stick your chest out and contract the back by bringing the shoulder blades back. Think of how the soldiers in the military look when they are in standing in attention.",
    "Go back to the starting position by bending at the knees while simultaneously leaning the torso forward at the waist while keeping the back straight. When the weights on the bar touch the floor you are back at the starting position and ready to perform another repetition.",
    "Perform the amount of repetitions prescribed in the program."
-  ]
+  ],
+  "move": "pull"
  },
  {
   "id": "sumo-deadlift",
@@ -712,7 +743,8 @@ export const EXERCISES: Exercise[] = [
    "Take a breath, and then lower your hips, looking forward with your head with your chest up. Drive through the floor, spreading your feet apart, with your weight on the back half of your feet. Extend through the hips and knees.",
    "As the bar passes through the knees, lean back and drive the hips into the bar, pulling your shoulder blades together.",
    "Return the weight to the ground by bending at the hips and controlling the weight on the way down."
-  ]
+  ],
+  "move": "pull"
  },
  {
   "id": "barbell-hip-thrust",
@@ -733,7 +765,8 @@ export const EXERCISES: Exercise[] = [
    "Begin seated on the ground with a bench directly behind you. Have a loaded barbell over your legs. Using a fat bar or having a pad on the bar can greatly reduce the discomfort caused by this exercise.",
    "Roll the bar so that it is directly above your hips, and lean back against the bench so that your shoulder blades are near the top of it.",
    "Begin the movement by driving through your feet, extending your hips vertically through the bar. Your weight should be supported by your shoulder blades and your feet. Extend as far as possible, then reverse the motion to return to the starting position."
-  ]
+  ],
+  "move": "push"
  },
  {
   "id": "barbell-glute-bridge",
@@ -754,7 +787,8 @@ export const EXERCISES: Exercise[] = [
    "Begin seated on the ground with a loaded barbell over your legs. Using a fat bar or having a pad on the bar can greatly reduce the discomfort caused by this exercise. Roll the bar so that it is directly above your hips, and lay down flat on the floor.",
    "Begin the movement by driving through with your heels, extending your hips vertically through the bar. Your weight should be supported by your upper back and the heels of your feet.",
    "Extend as far as possible, then reverse the motion to return to the starting position."
-  ]
+  ],
+  "move": "push"
  },
  {
   "id": "butt-lift-bridge",
@@ -774,7 +808,8 @@ export const EXERCISES: Exercise[] = [
    "Lie flat on the floor on your back with the hands by your side and your knees bent. Your feet should be placed around shoulder width. This will be your starting position.",
    "Pushing mainly with your heels, lift your hips off the floor while keeping your back straight. Breathe out as you perform this part of the motion and hold at the top for a second.",
    "Slowly go back to the starting position as you breathe in."
-  ]
+  ],
+  "move": "push"
  },
  {
   "id": "standing-calf-raises",
@@ -794,7 +829,8 @@ export const EXERCISES: Exercise[] = [
    "Raise your heels as you breathe out by extending your ankles as high as possible and flexing your calf. Ensure that the knee is kept stationary at all times. There should be no bending at any time. Hold the contracted position by a second before you start to go back down.",
    "Go back slowly to the starting position as you breathe in by lowering your heels as you bend the ankles until calves are stretched.",
    "Repeat for the recommended amount of repetitions."
-  ]
+  ],
+  "move": "push"
  },
  {
   "id": "seated-calf-raise",
@@ -815,7 +851,8 @@ export const EXERCISES: Exercise[] = [
    "Slowly lower your heels by bending at the ankles until the calves are fully stretched. Inhale as you perform this movement.",
    "Raise the heels by extending the ankles as high as possible as you contract the calves and breathe out. Hold the top contraction for a second.",
    "Repeat for the recommended amount of repetitions."
-  ]
+  ],
+  "move": "push"
  },
  {
   "id": "thigh-adductor",
@@ -837,7 +874,8 @@ export const EXERCISES: Exercise[] = [
    "Slowly press against the machine with your legs to move them towards each other while exhaling.",
    "Feel the contraction for a second and begin to move your legs back to the starting position while breathing in. Note: Remember to keep your upper body stationary and avoid fast jerking motions in order to prevent any injuries from occurring.",
    "Repeat for the recommended amount of repetitions."
-  ]
+  ],
+  "move": "pull"
  },
  {
   "id": "thigh-abductor",
@@ -858,7 +896,8 @@ export const EXERCISES: Exercise[] = [
    "Slowly press against the machine with your legs to move them away from each other while exhaling.",
    "Feel the contraction for a second and begin to move your legs back to the starting position while breathing in. Note: Remember to keep your upper body stationary to prevent any injuries from occurring.",
    "Repeat for the recommended amount of repetitions."
-  ]
+  ],
+  "move": "push"
  },
  {
   "id": "split-squat-with-dumbbells",
@@ -880,7 +919,8 @@ export const EXERCISES: Exercise[] = [
    "Hold a dumbbell in each hand, letting them hang at the sides. This will be your starting position.",
    "Begin by descending, flexing your knee and hip to lower your body down. Maintain good posture througout the movement. Keep the front knee in line with the foot as you perform the exercise.",
    "At the bottom of the movement, drive through the heel to extend the knee and hip to return to the starting position."
-  ]
+  ],
+  "move": "push"
  },
  {
   "id": "dumbbell-step-ups",
@@ -903,7 +943,8 @@ export const EXERCISES: Exercise[] = [
    "Place the right foot on the elevated platform. Step on the platform by extending the hip and the knee of your right leg. Use the heel mainly to lift the rest of your body up and place the foot of the left leg on the platform as well. Breathe out as you execute the force required to come up.",
    "Step down with the left leg by flexing the hip and knee of the right leg as you inhale. Return to the original standing position by placing the right foot of to next to the left foot on the initial position.",
    "Repeat with the right leg for the recommended amount of repetitions and then perform with the left leg."
-  ]
+  ],
+  "move": "push"
  },
  {
   "id": "kettlebell-one-legged-deadlift",
@@ -924,7 +965,8 @@ export const EXERCISES: Exercise[] = [
    "Hold a kettlebell by the handle in one hand. Stand on one leg, on the same side that you hold the kettlebell.",
    "Keeping that knee slightly bent, perform a stiff legged deadlift by bending at the hip, extending your free leg behind you for balance.",
    "Continue lowering the kettlebell until you are parallel to the ground, and then return to the upright position."
-  ]
+  ],
+  "move": "pull"
  },
  {
   "id": "pullups",
@@ -947,7 +989,8 @@ export const EXERCISES: Exercise[] = [
    "Pull your torso up until the bar touches your upper chest by drawing the shoulders and the upper arms down and back. Exhale as you perform this portion of the movement. Tip: Concentrate on squeezing the back muscles once you reach the full contracted position. The upper torso should remain stationary as it moves through space and only the arms should move. The forearms should do no other work other than hold the bar.",
    "After a second on the contracted position, start to inhale and slowly lower your torso back to the starting position when your arms are fully extended and the lats are fully stretched.",
    "Repeat this motion for the prescribed amount of repetitions."
-  ]
+  ],
+  "move": "pull"
  },
  {
   "id": "chin-up",
@@ -971,7 +1014,8 @@ export const EXERCISES: Exercise[] = [
    "As you breathe out, pull your torso up until your head is around the level of the pull-up bar. Concentrate on using the biceps muscles in order to perform the movement. Keep the elbows close to your body. Tip: The upper torso should remain stationary as it moves through space and only the arms should move. The forearms should do no other work other than hold the bar.",
    "After a second of squeezing the biceps in the contracted position, slowly lower your torso back to the starting position; when your arms are fully extended. Breathe in as you perform this portion of the movement.",
    "Repeat this motion for the prescribed amount of repetitions."
-  ]
+  ],
+  "move": "pull"
  },
  {
   "id": "wide-grip-lat-pulldown",
@@ -996,7 +1040,8 @@ export const EXERCISES: Exercise[] = [
    "As you breathe out, bring the bar down until it touches your upper chest by drawing the shoulders and the upper arms down and back. Tip: Concentrate on squeezing the back muscles once you reach the full contracted position. The upper torso should remain stationary and only the arms should move. The forearms should do no other work except for holding the bar; therefore do not try to pull down the bar using the forearms.",
    "After a second at the contracted position squeezing your shoulder blades together, slowly raise the bar back to the starting position when your arms are fully extended and the lats are fully stretched. Inhale during this portion of the movement.",
    "Repeat this motion for the prescribed amount of repetitions."
-  ]
+  ],
+  "move": "pull"
  },
  {
   "id": "close-grip-front-lat-pulldown",
@@ -1021,7 +1066,8 @@ export const EXERCISES: Exercise[] = [
    "As you breathe out, bring the bar down until it touches your upper chest by drawing the shoulders and the upper arms down and back. Tip: Concentrate on squeezing the back muscles once you reach the full contracted position. The upper torso should remain stationary (only the arms should move). The forearms should do no other work except for holding the bar; therefore do not try to pull the bar down using the forearms.",
    "After a second in the contracted position, while squeezing your shoulder blades together, slowly raise the bar back to the starting position when your arms are fully extended and the lats are fully stretched. Inhale during this portion of the movement.",
    "6. Repeat this motion for the prescribed amount of repetitions."
-  ]
+  ],
+  "move": "pull"
  },
  {
   "id": "seated-cable-rows",
@@ -1045,7 +1091,8 @@ export const EXERCISES: Exercise[] = [
    "With your arms extended pull back until your torso is at a 90-degree angle from your legs. Your back should be slightly arched and your chest should be sticking out. You should be feeling a nice stretch on your lats as you hold the bar in front of you. This is the starting position of the exercise.",
    "Keeping the torso stationary, pull the handles back towards your torso while keeping the arms close to it until you touch the abdominals. Breathe out as you perform that movement. At that point you should be squeezing your back muscles hard. Hold that contraction for a second and slowly go back to the original position while breathing in.",
    "Repeat for the recommended amount of repetitions."
-  ]
+  ],
+  "move": "pull"
  },
  {
   "id": "bent-over-barbell-row",
@@ -1068,7 +1115,8 @@ export const EXERCISES: Exercise[] = [
    "Now, while keeping the torso stationary, breathe out and lift the barbell to you. Keep the elbows close to the body and only use the forearms to hold the weight. At the top contracted position, squeeze the back muscles and hold for a brief pause.",
    "Then inhale and slowly lower the barbell back to the starting position.",
    "Repeat for the recommended amount of repetitions."
-  ]
+  ],
+  "move": "pull"
  },
  {
   "id": "one-arm-dumbbell-row",
@@ -1094,7 +1142,8 @@ export const EXERCISES: Exercise[] = [
    "Lower the resistance straight down to the starting position. Breathe in as you perform this step.",
    "Repeat the movement for the specified amount of repetitions.",
    "Switch sides and repeat again with the other arm."
-  ]
+  ],
+  "move": "pull"
  },
  {
   "id": "t-bar-row-with-handle",
@@ -1117,7 +1166,8 @@ export const EXERCISES: Exercise[] = [
    "Assume a wide stance with your hips back and your chest up. Your arms should be extended. This will be your starting position.",
    "Pull the weight to your upper abdomen by retracting the shoulder blades and flexing the elbows. Do not jerk the weight or cheat during the movement.",
    "After a brief pause, return to the starting position."
-  ]
+  ],
+  "move": "pull"
  },
  {
   "id": "lying-t-bar-row",
@@ -1141,7 +1191,8 @@ export const EXERCISES: Exercise[] = [
    "As you exhale slowly pull the weight up and squeeze your back at the top of the movement. Tip: Keep the upper arms as close to the torso as possible throughout the movement in order to better engage the back muscles. Also, do not lift your body off of the pad at any time and refrain from using the biceps to lift the weight.",
    "After a second contraction at the top of the movement, as you inhale, slowly go back down to the starting position.",
    "Repeat for the recommended amount of repetitions."
-  ]
+  ],
+  "move": "pull"
  },
  {
   "id": "straight-arm-pulldown",
@@ -1161,7 +1212,8 @@ export const EXERCISES: Exercise[] = [
    "While keeping the arms straight, pull the bar down by contracting the lats until your hands are next to the side of the thighs. Breathe out as you perform this step.",
    "While keeping the arms straight, go back to the starting position while breathing in.",
    "Repeat for the recommended amount of repetitions."
-  ]
+  ],
+  "move": "pull"
  },
  {
   "id": "hyperextensions-back-extensions",
@@ -1185,7 +1237,8 @@ export const EXERCISES: Exercise[] = [
    "Start bending forward slowly at the waist as far as you can while keeping your back flat. Inhale as you perform this movement. Keep moving forward until you feel a nice stretch on the hamstrings and you can no longer keep going without a rounding of the back. Tip: Never round the back as you perform this exercise. Also, some people can go farther than others. The key thing is that you go as far as your body allows you to without rounding the back.",
    "Slowly raise your torso back to the initial position as you inhale. Tip: Avoid the temptation to arch your back past a straight line. Also, do not swing the torso at any time in order to protect the back from injury.",
    "Repeat for the recommended amount of repetitions."
-  ]
+  ],
+  "move": "pull"
  },
  {
   "id": "leverage-high-row",
@@ -1206,7 +1259,8 @@ export const EXERCISES: Exercise[] = [
    "Pull the handles towards your torso, retracting your shoulder blades as you flex the elbow.",
    "Pause at the bottom of the motion, and then slowly return the handles to the starting position.",
    "For multiple repetitions, avoid completely returning the weight to the stops to keep tension on the muscles being worked."
-  ]
+  ],
+  "move": "pull"
  },
  {
   "id": "reverse-flyes",
@@ -1227,7 +1281,8 @@ export const EXERCISES: Exercise[] = [
    "The arms should be elevated until they are parallel to the floor.",
    "Feel the contraction and slowly lower the weights back down to the starting position while inhaling.",
    "Repeat for the recommended amount of repetitions."
-  ]
+  ],
+  "move": "pull"
  },
  {
   "id": "face-pull",
@@ -1245,7 +1300,8 @@ export const EXERCISES: Exercise[] = [
   "cue": "繩索拉向臉，手肘高、往兩側打開",
   "steps": [
    "Facing a high pulley with a rope or dual handles attached, pull the weight directly towards your face, separating your hands as you do so. Keep your upper arms parallel to the ground."
-  ]
+  ],
+  "move": "pull"
  },
  {
   "id": "inverted-row",
@@ -1267,7 +1323,8 @@ export const EXERCISES: Exercise[] = [
    "Begin by flexing the elbow, pulling your chest towards the bar. Retract your shoulder blades as you perform the movement.",
    "Pause at the top of the motion, and return yourself to the start position.",
    "Repeat for the desired number of repetitions."
-  ]
+  ],
+  "move": "pull"
  },
  {
   "id": "barbell-shoulder-press",
@@ -1290,7 +1347,8 @@ export const EXERCISES: Exercise[] = [
    "Lower the bar down to the shoulders slowly as you inhale.",
    "Lift the bar back up to the starting position as you exhale.",
    "Repeat for the recommended amount of repetitions."
-  ]
+  ],
+  "move": "push"
  },
  {
   "id": "dumbbell-shoulder-press",
@@ -1313,7 +1371,8 @@ export const EXERCISES: Exercise[] = [
    "Now, exhale and push the dumbbells upward until they touch at the top.",
    "Then, after a brief pause at the top contracted position, slowly lower the weights back down to the starting position while inhaling.",
    "Repeat for the recommended amount of repetitions."
-  ]
+  ],
+  "move": "push"
  },
  {
   "id": "seated-dumbbell-press",
@@ -1336,7 +1395,8 @@ export const EXERCISES: Exercise[] = [
    "As you exhale, push the dumbbells up until they touch at the top.",
    "After a second pause, slowly come down back to the starting position as you inhale.",
    "Repeat for the recommended amount of repetitions."
-  ]
+  ],
+  "move": "push"
  },
  {
   "id": "arnold-dumbbell-press",
@@ -1358,7 +1418,8 @@ export const EXERCISES: Exercise[] = [
    "Continue lifting the dumbbells until your arms are extended above you in straight arm position. Breathe out as you perform this portion of the movement.",
    "After a second pause at the top, begin to lower the dumbbells to the original position by rotating the palms of your hands towards you. Tip: The left arm will be rotated in a counter clockwise manner while the right one will be rotated clockwise. Breathe in as you perform this portion of the movement.",
    "Repeat for the recommended amount of repetitions."
-  ]
+  ],
+  "move": "push"
  },
  {
   "id": "side-lateral-raise",
@@ -1377,7 +1438,8 @@ export const EXERCISES: Exercise[] = [
    "While maintaining the torso in a stationary position (no swinging), lift the dumbbells to your side with a slight bend on the elbow and the hands slightly tilted forward as if pouring water in a glass. Continue to go up until you arms are parallel to the floor. Exhale as you execute this movement and pause for a second at the top.",
    "Lower the dumbbells back down slowly to the starting position as you inhale.",
    "Repeat for the recommended amount of repetitions."
-  ]
+  ],
+  "move": "push"
  },
  {
   "id": "front-dumbbell-raise",
@@ -1396,7 +1458,8 @@ export const EXERCISES: Exercise[] = [
    "While maintaining the torso stationary (no swinging), lift the left dumbbell to the front with a slight bend on the elbow and the palms of the hands always facing down. Continue to go up until you arm is slightly above parallel to the floor. Exhale as you execute this portion of the movement and pause for a second at the top. Inhale after the second pause.",
    "Now lower the dumbbell back down slowly to the starting position as you simultaneously lift the right dumbbell.",
    "Continue alternating in this fashion until all of the recommended amount of repetitions have been performed for each arm."
-  ]
+  ],
+  "move": "push"
  },
  {
   "id": "cable-seated-lateral-raise",
@@ -1421,7 +1484,8 @@ export const EXERCISES: Exercise[] = [
    "While keeping the arms stationary, raise the upper arms to the sides until they are parallel to the floor and at shoulder height. Exhale during the execution of this movement and hold the contraction for a second.",
    "Slowly lower your arms to the starting position as you inhale.",
    "Repeat for the recommended amount of repetitions. Tip: Maintain upper arms perpendicular to torso and a fixed elbow position (10 degree to 30 degree angle) throughout exercise."
-  ]
+  ],
+  "move": "pull"
  },
  {
   "id": "reverse-machine-flyes",
@@ -1440,7 +1504,8 @@ export const EXERCISES: Exercise[] = [
    "In a semicircular motion, pull your hands out to your side and back, contracting your rear delts.",
    "Keep your arms slightly bent throughout the movement, with all of the motion occurring at the shoulder joint.",
    "Pause at the rear of the movement, and slowly return the weight to the starting position."
-  ]
+  ],
+  "move": "pull"
  },
  {
   "id": "machine-shoulder-military-press",
@@ -1462,7 +1527,8 @@ export const EXERCISES: Exercise[] = [
    "Now lift the handles as you exhale and you extend the arms fully. At the top of the position make sure that you hold the contraction for a second.",
    "Lower the handles slowly back to the starting position as you inhale.",
    "Repeat for the recommended amount of repetitions."
-  ]
+  ],
+  "move": "push"
  },
  {
   "id": "upright-barbell-row",
@@ -1483,7 +1549,8 @@ export const EXERCISES: Exercise[] = [
    "Now exhale and use the sides of your shoulders to lift the bar, raising your elbows up and to the side. Keep the bar close to your body as you raise it. Continue to lift the bar until it nearly touches your chin. Tip: Your elbows should drive the motion, and should always be higher than your forearms. Remember to keep your torso stationary and pause for a second at the top of the movement.",
    "Lower the bar back down slowly to the starting position. Inhale as you perform this portion of the movement.",
    "Repeat for the recommended amount of repetitions."
-  ]
+  ],
+  "move": "pull"
  },
  {
   "id": "barbell-shrug",
@@ -1502,7 +1569,8 @@ export const EXERCISES: Exercise[] = [
    "Raise your shoulders up as far as you can go as you breathe out and hold the contraction for a second. Tip: Refrain from trying to lift the barbell by using your biceps.",
    "Slowly return to the starting position as you breathe in.",
    "Repeat for the recommended amount of repetitions."
-  ]
+  ],
+  "move": "pull"
  },
  {
   "id": "dumbbell-shrug",
@@ -1521,7 +1589,8 @@ export const EXERCISES: Exercise[] = [
    "Lift the dumbbells by elevating the shoulders as high as possible while you exhale. Hold the contraction at the top for a second. Tip: The arms should remain extended at all times. Refrain from using the biceps to help lift the dumbbells. Only the shoulders should be moving up and down.",
    "Lower the dumbbells back to the original position.",
    "Repeat for the recommended amount of repetitions."
-  ]
+  ],
+  "move": "pull"
  },
  {
   "id": "smith-machine-overhead-shoulder-press",
@@ -1543,7 +1612,8 @@ export const EXERCISES: Exercise[] = [
    "Slowly begin to lower the barbell until it is level with your chin while inhaling.",
    "Then lift the barbell back to the starting position using your shoulders while exhaling.",
    "Repeat for the recommended amount of repetitions."
-  ]
+  ],
+  "move": "push"
  },
  {
   "id": "barbell-curl",
@@ -1565,7 +1635,8 @@ export const EXERCISES: Exercise[] = [
    "Continue the movement until your biceps are fully contracted and the bar is at shoulder level. Hold the contracted position for a second and squeeze the biceps hard.",
    "Slowly begin to bring the bar back to starting position as your breathe in.",
    "Repeat for the recommended amount of repetitions."
-  ]
+  ],
+  "move": "pull"
  },
  {
   "id": "dumbbell-bicep-curl",
@@ -1586,7 +1657,8 @@ export const EXERCISES: Exercise[] = [
    "Now, keeping the upper arms stationary, exhale and curl the weights while contracting your biceps. Continue to raise the weights until your biceps are fully contracted and the dumbbells are at shoulder level. Hold the contracted position for a brief pause as you squeeze your biceps.",
    "Then, inhale and slowly begin to lower the dumbbells back to the starting position.",
    "Repeat for the recommended amount of repetitions."
-  ]
+  ],
+  "move": "pull"
  },
  {
   "id": "hammer-curls",
@@ -1606,7 +1678,8 @@ export const EXERCISES: Exercise[] = [
    "Now, while holding your upper arm stationary, exhale and curl the weight forward while contracting the biceps. Continue to raise the weight until the biceps are fully contracted and the dumbbell is at shoulder level. Hold the contracted position for a brief moment as you squeeze the biceps. Tip: Focus on keeping the elbow stationary and only moving your forearm.",
    "After the brief pause, inhale and slowly begin the lower the dumbbells back down to the starting position.",
    "Repeat for the recommended amount of repetitions."
-  ]
+  ],
+  "move": "pull"
  },
  {
   "id": "preacher-curl",
@@ -1626,7 +1699,8 @@ export const EXERCISES: Exercise[] = [
    "As you breathe in, slowly lower the bar until your upper arm is extended and the biceps is fully stretched.",
    "As you exhale, use the biceps to curl the weight up until your biceps is fully contracted and the bar is at shoulder height. Squeeze the biceps hard and hold this position for a second.",
    "Repeat for the recommended amount of repetitions."
-  ]
+  ],
+  "move": "pull"
  },
  {
   "id": "concentration-curls",
@@ -1648,7 +1722,8 @@ export const EXERCISES: Exercise[] = [
    "While holding the upper arm stationary, curl the weights forward while contracting the biceps as you breathe out. Only the forearms should move. Continue the movement until your biceps are fully contracted and the dumbbells are at shoulder level. Tip: At the top of the movement make sure that the little finger of your arm is higher than your thumb. This guarantees a good contraction. Hold the contracted position for a second as you squeeze the biceps.",
    "Slowly begin to bring the dumbbells back to starting position as your breathe in. Caution: Avoid swinging motions at any time.",
    "Repeat for the recommended amount of repetitions. Then repeat the movement with the left arm."
-  ]
+  ],
+  "move": "pull"
  },
  {
   "id": "cable-hammer-curls-rope-attachment",
@@ -1669,7 +1744,8 @@ export const EXERCISES: Exercise[] = [
    "Using your biceps, pull your arms up as you exhale until your biceps touch your forearms. Tip: Remember to keep the elbows in and your upper arms stationary.",
    "After a 1 second contraction where you squeeze your biceps, slowly start to bring the weight back to the original position.",
    "Repeat for the recommended amount of repetitions."
-  ]
+  ],
+  "move": "pull"
  },
  {
   "id": "ez-bar-curl",
@@ -1689,7 +1765,8 @@ export const EXERCISES: Exercise[] = [
    "Continue to raise the weight until your biceps are fully contracted and the bar is at shoulder level. Hold the top contracted position for a moment and squeeze the biceps.",
    "Then inhale and slowly lower the bar back to the starting position.",
    "Repeat for the recommended amount of repetitions."
-  ]
+  ],
+  "move": "pull"
  },
  {
   "id": "incline-dumbbell-curl",
@@ -1708,7 +1785,8 @@ export const EXERCISES: Exercise[] = [
    "While holding the upper arm stationary, curl the weights forward while contracting the biceps as you breathe out. Only the forearms should move. Continue the movement until your biceps are fully contracted and the dumbbells are at shoulder level. Hold the contracted position for a second.",
    "Slowly begin to bring the dumbbells back to starting position as your breathe in.",
    "Repeat for the recommended amount of repetitions."
-  ]
+  ],
+  "move": "pull"
  },
  {
   "id": "standing-biceps-cable-curl",
@@ -1727,7 +1805,8 @@ export const EXERCISES: Exercise[] = [
    "While holding the upper arms stationary, curl the weights while contracting the biceps as you breathe out. Only the forearms should move. Continue the movement until your biceps are fully contracted and the bar is at shoulder level. Hold the contracted position for a second as you squeeze the muscle.",
    "Slowly begin to bring the curl bar back to starting position as your breathe in.",
    "Repeat for the recommended amount of repetitions."
-  ]
+  ],
+  "move": "pull"
  },
  {
   "id": "triceps-pushdown",
@@ -1747,7 +1826,8 @@ export const EXERCISES: Exercise[] = [
    "Using the triceps, bring the bar down until it touches the front of your thighs and the arms are fully extended perpendicular to the floor. The upper arms should always remain stationary next to your torso and only the forearms should move. Exhale as you perform this movement.",
    "After a second hold at the contracted position, bring the bar slowly up to the starting point. Breathe in as you perform this step.",
    "Repeat for the recommended amount of repetitions."
-  ]
+  ],
+  "move": "push"
  },
  {
   "id": "triceps-pushdown-rope-attachment",
@@ -1767,7 +1847,8 @@ export const EXERCISES: Exercise[] = [
    "Using the triceps, bring the rope down as you bring each side of the rope to the side of your thighs. At the end of the movement the arms are fully extended and perpendicular to the floor. The upper arms should always remain stationary next to your torso and only the forearms should move. Exhale as you perform this movement.",
    "After holding for a second, at the contracted position, bring the rope slowly up to the starting point. Breathe in as you perform this step.",
    "Repeat for the recommended amount of repetitions."
-  ]
+  ],
+  "move": "push"
  },
  {
   "id": "ez-bar-skullcrusher",
@@ -1788,7 +1869,8 @@ export const EXERCISES: Exercise[] = [
    "Keeping the upper arms stationary, lower the bar by allowing the elbows to flex. Inhale as you perform this portion of the movement. Pause once the bar is directly above the forehead.",
    "Lift the bar back to the starting position by extending the elbow and exhaling.",
    "Repeat."
-  ]
+  ],
+  "move": "push"
  },
  {
   "id": "lying-triceps-press",
@@ -1808,7 +1890,8 @@ export const EXERCISES: Exercise[] = [
    "As you breathe in, slowly lower the weight until the bar lightly touches your forehead while keeping the upper arms and elbows stationary.",
    "At that point, use the triceps to bring the weight back up to the starting position as you breathe out.",
    "Repeat for the recommended amount of repetitions."
-  ]
+  ],
+  "move": "push"
  },
  {
   "id": "standing-dumbbell-triceps-extension",
@@ -1828,7 +1911,8 @@ export const EXERCISES: Exercise[] = [
    "Keeping your upper arms close to your head with elbows in and perpendicular to the floor, lower the resistance in a semicircular motion behind your head until your forearms touch your biceps. Tip: The upper arms should remain stationary and only the forearms should move. Breathe in as you perform this step.",
    "Go back to the starting position by using the triceps to raise the dumbbell. Breathe out as you perform this step.",
    "Repeat for the recommended amount of repetitions."
-  ]
+  ],
+  "move": "push"
  },
  {
   "id": "bench-dips",
@@ -1850,7 +1934,8 @@ export const EXERCISES: Exercise[] = [
    "Slowly lower your body as you inhale by bending at the elbows until you lower yourself far enough to where there is an angle slightly smaller than 90 degrees between the upper arm and the forearm. Tip: Keep the elbows as close as possible throughout the movement. Forearms should always be pointing down.",
    "Using your triceps to bring your torso up again, lift yourself back to the starting position.",
    "Repeat for the recommended amount of repetitions."
-  ]
+  ],
+  "move": "push"
  },
  {
   "id": "dips-triceps-version",
@@ -1872,7 +1957,8 @@ export const EXERCISES: Exercise[] = [
    "Now, inhale and slowly lower yourself downward. Your torso should remain upright and your elbows should stay close to your body. This helps to better focus on tricep involvement. Lower yourself until there is a 90 degree angle formed between the upper arm and forearm.",
    "Then, exhale and push your torso back up using your triceps to bring your body back to the starting position.",
    "Repeat the movement for the prescribed amount of repetitions."
-  ]
+  ],
+  "move": "push"
  },
  {
   "id": "close-grip-barbell-bench-press",
@@ -1895,7 +1981,8 @@ export const EXERCISES: Exercise[] = [
    "After a second pause, bring the bar back to the starting position as you breathe out and push the bar using your triceps muscles. Lock your arms in the contracted position, hold for a second and then start coming down slowly again. Tip: It should take at least twice as long to go down than to come up.",
    "Repeat the movement for the prescribed amount of repetitions.",
    "When you are done, place the bar back in the rack."
-  ]
+  ],
+  "move": "push"
  },
  {
   "id": "tricep-dumbbell-kickback",
@@ -1914,7 +2001,8 @@ export const EXERCISES: Exercise[] = [
    "Now, while keeping your upper arms stationary, exhale and use your triceps to lift the weights until the arm is fully extended. Focus on moving the forearm.",
    "After a brief pause at the top contraction, inhale and slowly lower the dumbbells back down to the starting position.",
    "Repeat the movement for the prescribed amount of repetitions."
-  ]
+  ],
+  "move": "push"
  },
  {
   "id": "cable-rope-overhead-triceps-extension",
@@ -1934,7 +2022,8 @@ export const EXERCISES: Exercise[] = [
    "Slowly lower the rope behind your head as you hold the upper arms stationary. Inhale as you perform this movement and pause when your triceps are fully stretched.",
    "Return to the starting position by flexing your triceps as you breathe out.",
    "Repeat for the recommended amount of repetitions."
-  ]
+  ],
+  "move": "push"
  },
  {
   "id": "crunches",
@@ -1955,7 +2044,8 @@ export const EXERCISES: Exercise[] = [
    "Continue to push down as hard as you can with your lower back as you contract your abdominals and exhale. Your shoulders should come up off the floor only about four inches, and your lower back should remain on the floor. At the top of the movement, contract your abdominals hard and keep the contraction for a second. Tip: Focus on slow, controlled movement - don't cheat yourself by using momentum.",
    "After the one second contraction, begin to come down slowly again to the starting position as you inhale.",
    "Repeat for the recommended amount of repetitions."
-  ]
+  ],
+  "move": "core"
  },
  {
   "id": "plank",
@@ -1972,7 +2062,8 @@ export const EXERCISES: Exercise[] = [
   "steps": [
    "Get into a prone position on the floor, supporting your weight on your toes and your forearms. Your arms are bent and directly below the shoulder.",
    "Keep your body straight at all times, and hold this position as long as possible. To increase difficulty, an arm or leg can be raised."
-  ]
+  ],
+  "move": "core"
  },
  {
   "id": "hanging-leg-raise",
@@ -1991,7 +2082,8 @@ export const EXERCISES: Exercise[] = [
    "Raise your legs until the torso makes a 90-degree angle with the legs. Exhale as you perform this movement and hold the contraction for a second or so.",
    "Go back slowly to the starting position as you breathe in.",
    "Repeat for the recommended amount of repetitions."
-  ]
+  ],
+  "move": "core"
  },
  {
   "id": "cable-crunch",
@@ -2012,7 +2104,8 @@ export const EXERCISES: Exercise[] = [
    "With the hips stationary, flex the waist as you contract the abs so that the elbows travel towards the middle of the thighs. Exhale as you perform this portion of the movement and hold the contraction for a second.",
    "Slowly return to the starting position as you inhale. Tip: Make sure that you keep constant tension on the abs throughout the movement. Also, do not choose a weight so heavy that the lower back handles the brunt of the work.",
    "Repeat for the recommended amount of repetitions."
-  ]
+  ],
+  "move": "core"
  },
  {
   "id": "russian-twist",
@@ -2034,7 +2127,8 @@ export const EXERCISES: Exercise[] = [
    "Twist your torso to the right side until your arms are parallel with the floor while breathing out.",
    "Hold the contraction for a second and move back to the starting position while breathing out. Now move to the opposite side performing the same techniques you applied to the right side.",
    "Repeat for the recommended amount of repetitions."
-  ]
+  ],
+  "move": "core"
  },
  {
   "id": "ab-roller",
@@ -2055,7 +2149,8 @@ export const EXERCISES: Exercise[] = [
    "Now place the ab roller on the floor in front of you so that you are on all your hands and knees (as in a kneeling push up position). This will be your starting position.",
    "Slowly roll the ab roller straight forward, stretching your body into a straight position. Tip: Go down as far as you can without touching the floor with your body. Breathe in during this portion of the movement.",
    "After a pause at the stretched position, start pulling yourself back to the starting position as you breathe out. Tip: Go slowly and keep your abs tight at all times."
-  ]
+  ],
+  "move": "core"
  },
  {
   "id": "air-bike",
@@ -2076,7 +2171,8 @@ export const EXERCISES: Exercise[] = [
    "Go back to the initial position as you breathe in.",
    "Crunch to the opposite side as you cycle your legs and bring closer your left elbow to your right knee and exhale.",
    "Continue alternating in this manner until all of the recommended repetitions for each side have been completed."
-  ]
+  ],
+  "move": "core"
  },
  {
   "id": "sit-up",
@@ -2096,7 +2192,8 @@ export const EXERCISES: Exercise[] = [
    "Elevate your upper body so that it creates an imaginary V-shape with your thighs. Breathe out when performing this part of the exercise.",
    "Once you feel the contraction for a second, lower your upper body back down to the starting position while inhaling.",
    "Repeat for the recommended amount of repetitions."
-  ]
+  ],
+  "move": "core"
  },
  {
   "id": "mountain-climbers",
@@ -2117,7 +2214,8 @@ export const EXERCISES: Exercise[] = [
   "steps": [
    "Begin in a pushup position, with your weight supported by your hands and toes. Flexing the knee and hip, bring one leg until the knee is approximately under the hip. This will be your starting position.",
    "Explosively reverse the positions of your legs, extending the bent leg until the leg is straight and supported by the toe, and bringing the other foot up with the hip and knee flexed. Repeat in an alternating fashion for 20-30 seconds."
-  ]
+  ],
+  "move": "cardio"
  },
  {
   "id": "side-bridge",
@@ -2133,7 +2231,8 @@ export const EXERCISES: Exercise[] = [
   "level": "beginner",
   "compound": false,
   "cue": "側躺用手肘撐起，身體一直線",
-  "steps": []
+  "steps": [],
+  "move": "core"
  },
  {
   "id": "decline-crunch",
@@ -2154,7 +2253,8 @@ export const EXERCISES: Exercise[] = [
    "Continue to push down as hard as you can with your lower back as you contract your abdominals and exhale. Your shoulders should come up off the bench only about four inches, and your lower back should remain on the bench. At the top of the movement, contract your abdominals hard and keep the contraction for a second. Tip: Focus on slow, controlled movement - don't cheat yourself by using momentum.",
    "After the one second contraction, begin to come down slowly again to the starting position as you inhale.",
    "Repeat for the recommended amount of repetitions."
-  ]
+  ],
+  "move": "core"
  },
  {
   "id": "flat-bench-lying-leg-raise",
@@ -2173,7 +2273,8 @@ export const EXERCISES: Exercise[] = [
    "Place your hands either under your glutes with your palms down or by the sides holding on to the bench. This will be your starting position.",
    "As you keep your legs extended, straight as possible with your knees slightly bent but locked raise your legs until they make a 90-degree angle with the floor. Exhale as you perform this portion of the movement and hold the contraction at the top for a second.",
    "Now, as you inhale, slowly lower your legs back down to the starting position."
-  ]
+  ],
+  "move": "core"
  },
  {
   "id": "dead-bug",
@@ -2195,7 +2296,8 @@ export const EXERCISES: Exercise[] = [
    "Maintain the position of your lumbar and pelvis as you perform the movement, as your back is going to want to arch.",
    "Stay tight and return the working leg to the starting position.",
    "Repeat on the opposite side, alternating until the set is complete."
-  ]
+  ],
+  "move": "core"
  },
  {
   "id": "one-arm-kettlebell-swings",
@@ -2214,7 +2316,8 @@ export const EXERCISES: Exercise[] = [
   "level": "intermediate",
   "compound": true,
   "cue": "用髖部往前頂的力量把壺鈴擺起，不是用手舉",
-  "steps": []
+  "steps": [],
+  "move": "pull"
  },
  {
   "id": "star-jump",
@@ -2237,7 +2340,8 @@ export const EXERCISES: Exercise[] = [
    "Begin in a relaxed stance with your feet shoulder width apart and hold your arms close to the body.",
    "To initiate the move, squat down halfway and explode back up as high as possible. Fully extend your entire body, spreading your legs and arms away from the body.",
    "As you land, bring your limbs back in and absorb your impact through the legs."
-  ]
+  ],
+  "move": "cardio"
  },
  {
   "id": "farmers-walk",
@@ -2262,7 +2366,8 @@ export const EXERCISES: Exercise[] = [
    "There are various implements that can be used for the farmers walk. These can also be performed with heavy dumbbells or short bars if these implements aren't available. Begin by standing between the implements.",
    "After gripping the handles, lift them up by driving through your heels, keeping your back straight and your head up.",
    "Walk taking short, quick steps, and don't forget to breathe. Move for a given distance, typically 50-100 feet, as fast as possible."
-  ]
+  ],
+  "move": "core"
  },
  {
   "id": "rowing-stationary",
@@ -2287,7 +2392,8 @@ export const EXERCISES: Exercise[] = [
    "To begin, seat yourself on the rower. Make sure that your heels are resting comfortably against the base of the foot pedals and that the straps are secured. Select the program that you wish to use, if applicable. Sit up straight and bend forward at the hips.",
    "There are three phases of movement when using a rower. The first phase is when you come forward on the rower. Your knees are bent and against your chest. Your upper body is leaning slightly forward while still maintaining good posture. Next, push against the foot pedals and extend your legs while bringing your hands to your upper abdominal area, squeezing your shoulders back as you do so. To avoid straining your back, use primarily your leg and hip muscles.",
    "The recovery phase simply involves straightening your arms, bending the knees, and bringing your body forward again as you transition back into the first phase."
-  ]
+  ],
+  "move": "cardio"
  },
  {
   "id": "jogging-treadmill",
@@ -2307,7 +2413,8 @@ export const EXERCISES: Exercise[] = [
   "steps": [
    "To begin, step onto the treadmill and select the desired option from the menu. Most treadmills have a manual setting, or you can select a program to run. Typically, you can enter your age and weight to estimate the amount of calories burned during exercise. Elevation can be adjusted to change the intensity of the workout.",
    "Treadmills offer convenience, cardiovascular benefits, and usually have less impact than jogging outside. A 150 lb person will burn almost 250 calories jogging for 30 minutes, compared to more than 450 calories running. Maintain proper posture as you jog, and only hold onto the handles when necessary, such as when dismounting or checking your heart rate."
-  ]
+  ],
+  "move": "cardio"
  },
  {
   "id": "bicycling-stationary",
@@ -2328,7 +2435,8 @@ export const EXERCISES: Exercise[] = [
   "steps": [
    "To begin, seat yourself on the bike and adjust the seat to your height.",
    "Select the desired option from the menu. You may have to start pedaling to turn it on. You can use the manual setting, or you can select a program to use. Typically, you can enter your age and weight to estimate the amount of calories burned during exercise. The level of resistance can be changed throughout the workout. The handles can be used to monitor your heart rate to help you stay at an appropriate intensity."
-  ]
+  ],
+  "move": "cardio"
  },
  {
   "id": "elliptical-trainer",
@@ -2349,7 +2457,8 @@ export const EXERCISES: Exercise[] = [
   "steps": [
    "To begin, step onto the elliptical and select the desired option from the menu. Most ellipticals have a manual setting, or you can select a program to run. Typically, you can enter your age and weight to estimate the amount of calories burned during exercise. Elevation can be adjusted to change the intensity of the workout.",
    "The handles can be used to monitor your heart rate to help you stay at an appropriate intensity."
-  ]
+  ],
+  "move": "cardio"
  },
  {
   "id": "rope-jumping",
@@ -2369,7 +2478,8 @@ export const EXERCISES: Exercise[] = [
   "steps": [
    "Hold an end of the rope in each hand. Position the rope behind you on the ground. Raise your arms up and turn the rope over your head bringing it down in front of you. When it reaches the ground, jump over it. Find a good turning pace that can be maintained. Different speeds and techniques can be used to introduce variation.",
    "Rope jumping is exciting, challenges your coordination, and requires a lot of energy. A 150 lb person will burn about 350 calories jumping rope for 30 minutes, compared to over 450 calories running."
-  ]
+  ],
+  "move": "cardio"
  },
  {
   "id": "box-jump-multiple-response",
@@ -2393,7 +2503,8 @@ export const EXERCISES: Exercise[] = [
    "Assume a relaxed stance facing the box or platform approximately an arm's length away. Arms should be down at the sides and legs slightly bent.",
    "Using the arms to aid in the initial burst, jump upward and forward, landing with feet simultaneously on top of the box or platform.",
    "Immediately drop or jump back down to the original starting place; then repeat the sequence."
-  ]
+  ],
+  "move": "cardio"
  }
 ] as Exercise[]
 

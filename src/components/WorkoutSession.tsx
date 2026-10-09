@@ -5,7 +5,7 @@ import { EXERCISE_MAP, type Exercise } from '../data/exercises'
 import { db } from '../db'
 import { haptic, spring } from '../lib/feedback'
 import { saveMark } from '../lib/hooks'
-import { EQUIP_LABEL, doneSets, isBodyweight, isCardio, lastSetsOf, workoutVolume, type Workout, type WorkoutSet } from '../lib/workout'
+import { EQUIP_LABEL, TRAIN_MAP, moveFor, doneSets, isBodyweight, isCardio, lastSetsOf, workoutVolume, type Workout, type WorkoutSet } from '../lib/workout'
 import { ExerciseAnim, ExerciseDetail, ExerciseLibrary } from './ExerciseLibrary'
 import { Icon } from './Icon'
 import { Button, CheckButton, Sheet, Tap, useToast } from './ui'
@@ -76,7 +76,7 @@ export function WorkoutSession({ id, onClose }: { id: number | null; onClose: ()
 
   return (
     <>
-      <Sheet open={!!id && !!w} onClose={onClose} title={w?.endedAt ? `${w.date.slice(5).replace('-', '/')} 的訓練` : '訓練中'}>
+      <Sheet open={!!id && !!w} onClose={onClose} title={w ? `${w.endedAt ? `${w.date.slice(5).replace('-', '/')} ` : ''}${w.type ? TRAIN_MAP[w.type].label.replace('重訓・', '') + '日' : ''}${w.endedAt ? '訓練' : '訓練中'}` : ''}>
         {w && (
           <div className="space-y-4 pb-16">
             <div className="grid grid-cols-3 gap-2 text-center">
@@ -116,9 +116,10 @@ export function WorkoutSession({ id, onClose }: { id: number | null; onClose: ()
                         <Icon name="delete" size={18} />
                       </Tap>
                     </div>
-                    <div className="grid grid-cols-[28px_1fr_1fr_36px] items-center gap-x-2 gap-y-1.5 text-center text-[11px] text-muted">
+                    <div className="grid grid-cols-[22px_1fr_22px_1fr_34px] items-center gap-x-1.5 gap-y-1.5 text-center text-[11px] text-muted">
                       <span>組</span>
                       <span>{cardio ? '' : isBodyweight(ex) ? '加重 kg' : '重量 kg'}</span>
+                      <span />
                       <span>{cardio ? '分鐘' : '次數'}</span>
                       <span>完成</span>
                       {e.sets.map((s, si) => (
@@ -128,6 +129,13 @@ export function WorkoutSession({ id, onClose }: { id: number | null; onClose: ()
                           set={s}
                           cardio={cardio}
                           onChange={(patch) => update((x) => Object.assign(x.entries[ei].sets[si], patch))}
+                          canApply={!cardio && si < e.sets.length - 1}
+                          onApply={() => {
+                            const later = e.sets.length - si - 1
+                            haptic([6, 20, 6])
+                            update((x) => x.entries[ei].sets.forEach((t, k) => k > si && !t.done && (t.w = s.w)))
+                            toast(`已把 ${s.w} kg 套用到後面 ${later} 組`)
+                          }}
                           onDone={() => {
                             const done = !s.done
                             update((x) => (x.entries[ei].sets[si].done = done))
@@ -211,17 +219,40 @@ export function WorkoutSession({ id, onClose }: { id: number | null; onClose: ()
           </div>
         )}
       </Sheet>
-      <ExerciseLibrary open={adding} onClose={() => setAdding(false)} onPick={addExercise} />
+      <ExerciseLibrary open={adding} onClose={() => setAdding(false)} onPick={addExercise} defaultMove={moveFor(w?.type)} />
       <ExerciseDetail ex={detail} onClose={() => setDetail(null)} />
     </>
   )
 }
 
-function SetRow({ n, set, cardio, onChange, onDone }: { n: number; set: WorkoutSet; cardio: boolean; onChange: (p: Partial<WorkoutSet>) => void; onDone: () => void }) {
+function SetRow({
+  n,
+  set,
+  cardio,
+  onChange,
+  onDone,
+  canApply,
+  onApply,
+}: {
+  n: number
+  set: WorkoutSet
+  cardio: boolean
+  onChange: (p: Partial<WorkoutSet>) => void
+  onDone: () => void
+  canApply: boolean
+  onApply: () => void
+}) {
   return (
     <>
       <span className={`text-sm font-bold ${set.done ? 'text-leaf' : 'text-ink/60'}`}>{n}</span>
       {cardio ? <span /> : <NumberField value={set.w} step={2.5} onChange={(v) => onChange({ w: v })} done={set.done} />}
+      {canApply ? (
+        <Tap onClick={onApply} aria-label="重量套用到後面各組" title="套用到後面各組" className="grid h-8 w-[22px] place-items-center rounded-lg text-leaf-dark">
+          <Icon name="keyboard_double_arrow_down" size={18} />
+        </Tap>
+      ) : (
+        <span />
+      )}
       <NumberField value={set.r} step={1} onChange={(v) => onChange({ r: v })} done={set.done} />
       <span className="flex justify-center">
         <CheckButton checked={set.done} onToggle={onDone} size={30} />
