@@ -23,12 +23,13 @@ import { getTaste, useRecipesVersion } from '../lib/recipeStore'
 import type { IconName } from '../lib/icons'
 import { CUISINES, type Cuisine } from '../data/cuisine'
 import { MealTitle } from './Today'
+import { EatOutView } from '../components/EatOut'
 import { MEAL_LABEL, MEAL_SLOTS, type MealSlot, type PlanEntry, type Profile } from '../types'
 import { Art } from '../components/Art'
 import { usePantryPlan } from '../components/PantryPlan'
 
 export default function Plan({ profile }: { profile: Profile }) {
-  const [view, setView] = useState<'week' | 'month' | 'library'>('week')
+  const [view, setView] = useState<'week' | 'month' | 'library' | 'eatout'>('week')
   const [focus, setFocus] = useState<string | null>(null)
   return (
     <div className="space-y-4">
@@ -42,7 +43,8 @@ export default function Plan({ profile }: { profile: Profile }) {
         options={[
           { value: 'week', label: '週', icon: 'calendar_month' },
           { value: 'month', label: '月曆', icon: 'calendar_view_month' },
-          { value: 'library', label: '食譜庫', icon: 'menu_book' },
+          { value: 'library', label: '食譜', icon: 'menu_book' },
+          { value: 'eatout', label: '外食', icon: 'restaurant' },
         ]}
       />
       <motion.div
@@ -62,6 +64,7 @@ export default function Plan({ profile }: { profile: Profile }) {
           />
         )}
         {view === 'library' && <Library profile={profile} />}
+        {view === 'eatout' && <EatOutView />}
       </motion.div>
     </div>
   )

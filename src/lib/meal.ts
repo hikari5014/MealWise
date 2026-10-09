@@ -44,7 +44,7 @@ export const fitsProfile = (recipe: Recipe, profile?: Profile) => {
 }
 
 export const recipesFor = (meal: MealSlot | null, profile?: Profile) =>
-  RECIPES.filter((r) => (meal ? r.meals.includes(meal) : true) && fitsProfile(r, profile))
+  RECIPES.filter((r) => !r.eatout && (meal ? r.meals.includes(meal) : true) && fitsProfile(r, profile))
 
 /** 越符合口味偏好分數越高：最愛 +4、喜歡的料理國家 +2、喜歡的菜色類型 +1 */
 export const tasteScore = (recipe: Recipe, profile?: Profile) => {

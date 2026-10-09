@@ -57,6 +57,12 @@ export default defineConfig({
         globIgnores: ['photos/**'],
         runtimeCaching: [
           {
+            // 外食資料每天更新：有網路就拿最新的，沒網路用上次存的
+            urlPattern: ({ url }) => url.pathname.endsWith('/eatout/data.json'),
+            handler: 'NetworkFirst',
+            options: { cacheName: 'eatout-data', networkTimeoutSeconds: 4, expiration: { maxEntries: 2 } },
+          },
+          {
             urlPattern: ({ url }) => url.pathname.includes('/photos/'),
             handler: 'CacheFirst',
             options: { cacheName: 'recipe-photos', expiration: { maxEntries: 300 } },

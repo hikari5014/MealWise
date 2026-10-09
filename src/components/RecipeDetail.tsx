@@ -202,6 +202,28 @@ function Detail({ recipe, layoutId, onClose }: Opened & { onClose: () => void })
             ))}
           </div>
 
+          {recipe.eatout && (
+            <section className="space-y-1 rounded-3xl bg-white p-4 text-sm shadow-card">
+              <div className="flex items-center gap-1.5 font-bold">
+                <Icon name="restaurant" size={18} className="text-leaf-dark" />
+                外食・{recipe.eatout.brand || '一般小吃'}
+              </div>
+              {recipe.eatout.serving && <div className="text-muted">份量：{recipe.eatout.serving}</div>}
+              {(recipe.eatout.sugar !== undefined || recipe.eatout.sodium !== undefined) && (
+                <div className="text-muted">
+                  {recipe.eatout.sugar !== undefined && `糖 ${recipe.eatout.sugar}g `}
+                  {recipe.eatout.sodium !== undefined && `鈉 ${recipe.eatout.sodium}mg`}
+                </div>
+              )}
+              {recipe.eatout.source && (
+                <a href={recipe.eatout.source} target="_blank" rel="noreferrer" className="flex items-center gap-1 text-xs text-muted underline">
+                  <Icon name="open_in_new" size={13} />
+                  營養資料來源
+                </a>
+              )}
+            </section>
+          )}
+
           {recipe.ingredients.length > 0 && (
           <section>
             <h2 className="mb-2 font-bold">食材（1 人份）</h2>
@@ -252,6 +274,7 @@ function Detail({ recipe, layoutId, onClose }: Opened & { onClose: () => void })
           {recipeAvoidTags(recipe).length > 0 && (
             <p className="text-xs text-muted">含：{recipeAvoidTags(recipe).map((t) => AVOID_ITEM_MAP[t]?.label).join('、')}</p>
           )}
+          {!recipe.eatout && (
           <motion.button
             whileTap={{ scale: 0.97 }}
             onClick={() => openBatch(recipe)}
@@ -266,6 +289,7 @@ function Detail({ recipe, layoutId, onClose }: Opened & { onClose: () => void })
             </span>
             <Icon name="chevron_right" size={22} className="text-muted" />
           </motion.button>
+          )}
 
           <div className="flex flex-wrap gap-2">
             <motion.button

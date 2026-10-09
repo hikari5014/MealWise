@@ -23,6 +23,7 @@ import Onboarding from './pages/Onboarding'
 import Plan from './pages/Plan'
 import Today from './pages/Today'
 import { PantryPlanProvider } from './components/PantryPlan'
+import { EatOutPickerProvider } from './components/EatOut'
 
 const TABS = [
   { id: 'today', label: '今天', icon: 'restaurant' },
@@ -67,6 +68,7 @@ export default function App() {
               <BatchCookProvider>
               <ComposerProvider>
               <PantryPlanProvider>
+              <EatOutPickerProvider>
                 {profile === undefined ? (
                   <Splash />
                 ) : profile === null ? (
@@ -90,6 +92,7 @@ export default function App() {
                     <BottomNav tab={tab} onChange={go} />
                   </>
                 )}
+              </EatOutPickerProvider>
               </PantryPlanProvider>
               </ComposerProvider>
               </BatchCookProvider>

@@ -19,7 +19,7 @@ export function AvoidPicker({ profile, onChange }: { profile: Profile; onChange:
   const selected = new Set(profile.avoid)
   const openIndex = AVOID_GROUPS.findIndex((g) => g.id === openId)
   const openGroup = AVOID_GROUPS[openIndex]
-  const remaining = RECIPES.filter((r) => fitsProfile(r, profile)).length
+  const remaining = RECIPES.filter((r) => !r.eatout && fitsProfile(r, profile)).length
 
   const toggleItem = (id: string) => {
     const next = new Set(selected)

@@ -5,6 +5,7 @@ import { fitsRule, MEAL_RULE_ICON, MEAL_RULE_LABEL, type MealDecision } from '..
 import { recipesFor, tasteScore } from '../lib/meal'
 import { useRecipesVersion } from '../lib/recipeStore'
 import { MEAL_LABEL, type MealSlot, type Profile, type Recipe } from '../types'
+import { Food } from './Food'
 import { Icon } from './Icon'
 import { RecipeThumb, useRecipeDetail } from './RecipeDetail'
 import { RecipePhoto } from './RecipePhoto'
@@ -21,6 +22,7 @@ export function RecipePicker({
   title,
   rule,
   onEatOut,
+  onChain,
 }: {
   open: boolean
   onClose: () => void
@@ -33,6 +35,8 @@ export function RecipePicker({
   rule?: MealDecision['rule']
   /** 有提供就顯示「外食・大餐」入口 */
   onEatOut?: () => void
+  /** 從外食天地挑 */
+  onChain?: () => void
 }) {
   const [query, setQuery] = useState('')
   const [allMeals, setAllMeals] = useState(false)
@@ -76,6 +80,25 @@ export function RecipePicker({
           </span>
           <Icon name="smart_toy" size={22} className="text-tomato" />
         </motion.button>
+      )}
+      {onChain && !query && (
+        <Tap
+          press={0.97}
+          onClick={() => {
+            close()
+            onChain()
+          }}
+          className="-mt-2 mb-4 flex w-full items-center gap-3 rounded-3xl bg-white p-3 text-left shadow-card"
+        >
+          <span className="grid h-11 w-11 place-items-center rounded-2xl bg-leaf-soft">
+            <Food id="rice-ball" size={30} />
+          </span>
+          <span className="flex-1">
+            <span className="block font-bold">連鎖店・便利商店</span>
+            <span className="block text-xs text-ink/70">從外食天地找，營養用官方公布的數字</span>
+          </span>
+          <Icon name="chevron_right" size={22} className="text-muted" />
+        </Tap>
       )}
 
       {rule && rule !== 'normal' && rule !== 'skip' && rule !== 'feast' && !allMeals && (

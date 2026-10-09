@@ -20,9 +20,11 @@ import { actions, useLogs, useMarks, usePlans, useRecent, useWater } from '../li
 import { macroTargets, PORTIONS, sumNutrition } from '../lib/meal'
 import { MEAL_COLOR, MEAL_IMAGE, MEAL_LABEL, MEAL_SLOTS, type LogEntry, type MealSlot, type PlanEntry, type Profile } from '../types'
 import { Art } from '../components/Art'
+import { useEatOutPicker } from '../components/EatOut'
 
 export default function Today({ profile, onGoPlan }: { profile: Profile; onGoPlan: () => void }) {
   const date = todayKey()
+  const openChain = useEatOutPicker()
   const dates = useMemo(() => [date], [date])
   const plans = usePlans(dates)
   const logs = useLogs(dates)
@@ -213,6 +215,7 @@ export default function Today({ profile, onGoPlan }: { profile: Profile; onGoPla
         recent={recent}
         rule={picking ? day.meals[picking].rule : undefined}
         onEatOut={() => setEatOut(picking)}
+        onChain={() => picking && openChain({ date, meal: picking })}
         onClose={() => setPicking(null)}
         title={picking ? `${MEAL_LABEL[picking]}吃了什麼？` : ''}
         onPick={async (r) => {

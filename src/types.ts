@@ -103,6 +103,8 @@ export interface Recipe {
   /** 依產品標示直接指定的過敏原（補食材名稱判斷不到的） */
   allergenTags?: string[]
   createdAt?: number
+  /** 外食天地的品項（沒有食材與做法） */
+  eatout?: { brandId: string; brand: string; serving?: string; source?: string; sodium?: number; sugar?: number }
 }
 
 export type Goal = 'lose' | 'maintain' | 'gain'

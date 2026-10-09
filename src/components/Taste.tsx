@@ -78,7 +78,7 @@ export function TasteSheet({ open, onClose, profile }: { open: boolean; onClose:
     updateTaste((x) => ({ ...x, cuisines: x.cuisines.includes(c) ? x.cuisines.filter((y) => y !== c) : [...x.cuisines, c] }))
   const toggleKind = (k: Kind) =>
     updateTaste((x) => ({ ...x, kinds: x.kinds.includes(k) ? x.kinds.filter((y) => y !== k) : [...x.kinds, k] }))
-  const matching = RECIPES.filter(
+  const matching = RECIPES.filter((r) => !r.eatout).filter(
     (r) => fitsProfile(r, profile) && ((r.cuisine && t.cuisines.includes(r.cuisine)) || (r.kind && t.kinds.includes(r.kind))),
   ).length
 
