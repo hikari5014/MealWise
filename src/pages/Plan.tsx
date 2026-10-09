@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from 'framer-motion'
-import { useMemo, useState } from 'react'
+import { startTransition, useEffect, useMemo, useRef, useState } from 'react'
 import { RecipePicker } from '../components/RecipePicker'
 import { useBatchCook } from '../components/BatchCook'
 import { copyDay, copyLastWeek, emptySlots, QuickPickSheet } from '../components/QuickPick'
@@ -30,7 +30,14 @@ import { usePantryPlan } from '../components/PantryPlan'
 import { DayTraining, TrainBadge } from '../components/TrainSchedule'
 
 export default function Plan({ profile }: { profile: Profile }) {
-  const [view, setView] = useState<'week' | 'month' | 'library' | 'eatout'>('week')
+  type View = 'week' | 'month' | 'library' | 'eatout'
+  // 分頁按鈕馬上反應；內容在背景慢慢畫，畫的時候也不會擋住點擊
+  const [tab, setTab] = useState<View>('week')
+  const [view, setViewNow] = useState<View>('week')
+  const setView = (v: View) => {
+    setTab(v)
+    startTransition(() => setViewNow(v))
+  }
   const [focus, setFocus] = useState<string | null>(null)
   return (
     <div className="space-y-4">
@@ -39,7 +46,7 @@ export default function Plan({ profile }: { profile: Profile }) {
       </header>
       <Segmented
         id="plan"
-        value={view}
+        value={tab}
         onChange={setView}
         options={[
           { value: 'week', label: '週', icon: 'calendar_month' },
@@ -430,6 +437,17 @@ function Library({ profile }: { profile: Profile }) {
   const taste = getTaste(profile)
   useRecipesVersion()
   const q = query.trim()
+  // 一次只畫一部分，捲到底再補（一次畫 160 張照片卡會讓手機卡住）
+  const [limit, setLimit] = useState(24)
+  const more = useRef<HTMLDivElement>(null)
+  useEffect(() => setLimit(24), [meal, group, query])
+  useEffect(() => {
+    const el = more.current
+    if (!el) return
+    const io = new IntersectionObserver((es) => es.some((e) => e.isIntersecting) && setLimit((n) => n + 24), { rootMargin: '600px' })
+    io.observe(el)
+    return () => io.disconnect()
+  })
   const list = recipesFor(meal === 'all' ? null : meal, profile)
     .filter((r) => !q || r.name.includes(q) || r.tags.some((t) => t.includes(q)))
     .filter((r) =>
@@ -508,7 +526,7 @@ function Library({ profile }: { profile: Profile }) {
         </div>
       )}
       <motion.div key={`${meal}-${group}`} variants={listContainer} initial="hidden" animate="show" className="grid grid-cols-2 gap-3">
-        {list.map((r) => {
+        {list.slice(0, limit).map((r) => {
           const layoutId = `lib-${r.id}`
           return (
             <motion.button
@@ -521,6 +539,7 @@ function Library({ profile }: { profile: Profile }) {
               <motion.div layoutId={layoutId} className="absolute inset-0">
                 <RecipePhoto recipe={r} />
               </motion.div>
+      {list.length > limit && <div ref={more} className="h-10" />}
               <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/10 to-transparent" />
               {taste.favorites.includes(r.id) && (
                 <span className="absolute right-2 top-2 grid h-7 w-7 place-items-center rounded-full bg-white/90 text-tomato shadow">

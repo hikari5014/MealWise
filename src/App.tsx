@@ -1,6 +1,6 @@
 import { motion, MotionConfig } from 'framer-motion'
 import { useLiveQuery } from 'dexie-react-hooks'
-import { useEffect, useMemo, useState } from 'react'
+import { startTransition, useEffect, useMemo, useState } from 'react'
 import { Food } from './components/Food'
 import { HealthSyncProvider } from './components/HealthSync'
 import { Icon } from './components/Icon'
@@ -45,16 +45,21 @@ export default function App() {
     return (customs ?? []).map((r) => `${r.id}:${r.createdAt}`).join()
   }, [customs])
   const [tab, setTab] = useState<TabId>('today')
+  // 底部選單先亮起來，頁面內容在背景畫，畫的時候不會擋住點擊
+  const [navTab, setNavTab] = useState<TabId>('today')
   const [dir, setDir] = useState(0)
 
   const go = (next: TabId) => {
-    if (next === tab) {
+    if (next === navTab) {
       window.scrollTo({ top: 0, behavior: 'smooth' })
       return
     }
     haptic(6)
-    setDir(TABS.findIndex((t) => t.id === next) > TABS.findIndex((t) => t.id === tab) ? 1 : -1)
-    setTab(next)
+    setNavTab(next)
+    startTransition(() => {
+      setDir(TABS.findIndex((t) => t.id === next) > TABS.findIndex((t) => t.id === tab) ? 1 : -1)
+      setTab(next)
+    })
     window.scrollTo({ top: 0 })
   }
 
@@ -92,7 +97,7 @@ export default function App() {
                         {tab === 'me' && <Me profile={profile} />}
                       </motion.div>
                     </main>
-                    <BottomNav tab={tab} onChange={go} />
+                    <BottomNav tab={navTab} onChange={go} />
                   </>
                 )}
               </EatOutPickerProvider>
