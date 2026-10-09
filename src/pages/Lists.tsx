@@ -61,7 +61,7 @@ export default function Lists({ profile }: { profile: Profile }) {
 function Progress({ done, total, doneText }: { done: number; total: number; doneText: string }) {
   const all = total > 0 && done === total
   return (
-    <div className="rounded-3xl bg-white p-4 shadow-card">
+    <div className="rounded-3xl bg-card p-4 shadow-card">
       <div className="mb-2 flex justify-between text-sm">
         <AnimatePresence mode="wait" initial={false}>
           <motion.span
@@ -129,7 +129,7 @@ function Shopping({ weekKey, plans, servings }: { weekKey: string; plans: PlanEn
                     transition={spring}
                     onClick={() => actions.toggleCheck(key, !checked)}
                     className={`flex cursor-pointer items-center gap-3 rounded-2xl p-3 shadow-card transition-colors ${
-                      checked ? 'bg-white/50' : 'bg-white'
+                      checked ? 'bg-card/50' : 'bg-card'
                     }`}
                   >
                     <CheckButton checked={checked} onToggle={() => actions.toggleCheck(key, !checked)} size={26} />

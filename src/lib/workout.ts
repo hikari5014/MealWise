@@ -89,10 +89,10 @@ export const exerciseImage = (id: string, frame: number) => `${import.meta.env.B
 export type TrainType = 'push' | 'pull' | 'hiit' | 'cardio'
 
 export const TRAIN_TYPES: { id: TrainType; label: string; short: string; group: string; image: FoodImage; color: string; soft: string }[] = [
-  { id: 'push', label: '重訓・推', short: '推', group: '重訓日', image: 'rule-training', color: '#e07a5f', soft: '#fbe3dc' },
-  { id: 'pull', label: '重訓・拉', short: '拉', group: '重訓日', image: 'rule-training', color: '#c98b2b', soft: '#fbf0d9' },
-  { id: 'hiit', label: '高強度有氧', short: '強', group: '有氧日', image: 'rule-feast', color: '#d4577a', soft: '#fbe1ea' },
-  { id: 'cardio', label: '輕度有氧', short: '有氧', group: '有氧日', image: 'water', color: '#4f8fbf', soft: '#e1eef8' },
+  { id: 'push', label: '重訓・推', short: '推', group: '重訓日', image: 'rule-training', color: 'rgb(var(--tomato))', soft: 'rgb(var(--tomato-soft))' },
+  { id: 'pull', label: '重訓・拉', short: '拉', group: '重訓日', image: 'rule-training', color: 'rgb(var(--honey-ink))', soft: 'rgb(var(--honey-soft))' },
+  { id: 'hiit', label: '高強度有氧', short: '強', group: '有氧日', image: 'rule-feast', color: 'rgb(var(--rose))', soft: 'rgb(var(--rose-soft))' },
+  { id: 'cardio', label: '輕度有氧', short: '有氧', group: '有氧日', image: 'water', color: 'rgb(var(--sky))', soft: 'rgb(var(--sky-soft))' },
 ]
 export const TRAIN_MAP = Object.fromEntries(TRAIN_TYPES.map((t) => [t.id, t])) as Record<TrainType, (typeof TRAIN_TYPES)[number]>
 

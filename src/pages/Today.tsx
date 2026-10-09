@@ -87,10 +87,10 @@ export default function Today({ profile, onGoPlan }: { profile: Profile; onGoPla
           </div>
         </Ring>
         <div className="flex-1 space-y-3">
-          <MacroBar label="蛋白質" value={total.protein} target={targets.protein} color="#e07a5f" />
-          <MacroBar label="碳水" value={total.carbs} target={targets.carbs} color="#e9b44c" />
-          <MacroBar label="脂肪" value={total.fat} target={targets.fat} color="#5fa8d3" />
-          <MacroBar label="纖維" value={total.fiber} target={targets.fiber} color="#5b8c5a" />
+          <MacroBar label="蛋白質" value={total.protein} target={targets.protein} color="rgb(var(--tomato))" />
+          <MacroBar label="碳水" value={total.carbs} target={targets.carbs} color="rgb(var(--honey))" />
+          <MacroBar label="脂肪" value={total.fat} target={targets.fat} color="rgb(var(--sky))" />
+          <MacroBar label="纖維" value={total.fiber} target={targets.fiber} color="rgb(var(--leaf))" />
         </div>
       </Card>
 
@@ -151,7 +151,7 @@ export default function Today({ profile, onGoPlan }: { profile: Profile; onGoPla
                 onClick={() => setEatOut(meal)}
                 className="mb-2 flex w-full items-center gap-3 rounded-2xl bg-gradient-to-br from-tomato-soft to-honey-soft p-3 text-left shadow-card"
               >
-                <span className="grid h-10 w-10 place-items-center rounded-xl bg-white text-tomato">
+                <span className="grid h-10 w-10 place-items-center rounded-xl bg-card text-tomato">
                   <Icon name="celebration" size={24} fill motion="wiggle" />
                 </span>
                 <span className="flex-1">
@@ -258,7 +258,7 @@ function MealRow({
       exit={{ opacity: 0, x: -40, transition: { duration: 0.18 } }}
       transition={spring}
       className={`relative flex min-h-[72px] items-center gap-3 overflow-hidden rounded-2xl py-3 pl-4 pr-3 shadow-card transition-colors ${
-        done ? 'bg-leaf-soft' : 'bg-white'
+        done ? 'bg-leaf-soft' : 'bg-card'
       }`}
     >
       <RowPhoto recipe={recipe} layoutId={layoutId} dim={done} />
@@ -275,7 +275,7 @@ function MealRow({
             <motion.button
               whileTap={{ scale: 0.9 }}
               onClick={onPortion}
-              className="rounded-full bg-white px-2 py-0.5 text-leaf-dark shadow-sm"
+              className="rounded-full bg-card px-2 py-0.5 text-leaf-dark shadow-sm"
               aria-label="切換份量"
             >
               <AnimatePresence mode="wait" initial={false}>

@@ -147,7 +147,7 @@ function Composer({ open, onClose }: { open: boolean; onClose: () => void }) {
               <div className="flex flex-wrap gap-1 text-[11px] text-ink/70">
                 {preview.cuisine && <span>{CUISINE_LABEL[preview.cuisine]}</span>}
                 {preview.tags.slice(1).map((t) => (
-                  <span key={t} className="rounded-full bg-white/70 px-1.5">
+                  <span key={t} className="rounded-full bg-card/70 px-1.5">
                     {t}
                   </span>
                 ))}
@@ -169,7 +169,7 @@ function Composer({ open, onClose }: { open: boolean; onClose: () => void }) {
                 ['脂肪', n.fat, 'g'],
               ] as const
             ).map(([label, v, u]) => (
-              <div key={label} className="rounded-xl bg-white/70 py-1">
+              <div key={label} className="rounded-xl bg-card/70 py-1">
                 <motion.div key={v} initial={{ y: -6, opacity: 0 }} animate={{ y: 0, opacity: 1 }} className="text-sm font-bold tabular-nums">
                   {v}
                   <span className="text-[10px] font-normal text-muted">{u}</span>
@@ -190,7 +190,7 @@ function Composer({ open, onClose }: { open: boolean; onClose: () => void }) {
                 whileTap={{ scale: 0.9 }}
                 onClick={() => setMethod(m.id)}
                 className={`flex flex-col items-center gap-0.5 rounded-2xl py-2 text-xs transition-colors ${
-                  combo.method === m.id ? 'bg-leaf text-white' : 'bg-white shadow-card'
+                  combo.method === m.id ? 'bg-leaf text-on-leaf' : 'bg-card shadow-card'
                 }`}
               >
                 <Food id={m.image} size={30} />
@@ -230,7 +230,7 @@ function Composer({ open, onClose }: { open: boolean; onClose: () => void }) {
                         animate={{ opacity: 1, x: 0, scale: 1 }}
                         exit={{ opacity: 0, x: 30, transition: { duration: 0.15 } }}
                         transition={spring}
-                        className="flex items-center gap-2 rounded-2xl bg-white px-2.5 py-1.5 text-sm shadow-card"
+                        className="flex items-center gap-2 rounded-2xl bg-card px-2.5 py-1.5 text-sm shadow-card"
                       >
                         <Food id={comp.image} size={26} />
                         <span className="min-w-0 flex-1 truncate">
@@ -259,7 +259,7 @@ function Composer({ open, onClose }: { open: boolean; onClose: () => void }) {
         </AnimatePresence>
 
         {hasMain && (
-          <div className="rounded-3xl bg-white p-4 shadow-card">
+          <div className="rounded-3xl bg-card p-4 shadow-card">
             <Tap press={0.97} onClick={() => setShowSteps(!showSteps)} className="flex w-full items-center gap-2 text-left text-sm font-bold">
               <Icon name="menu_book" size={18} className="text-leaf-dark" />
               自動產生的做法（{steps.length} 步）

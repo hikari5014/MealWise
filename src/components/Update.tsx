@@ -233,7 +233,7 @@ function ChangelogSheet({ open, onClose }: { open: boolean; onClose: () => void 
           >
             <motion.span
               className={`absolute -left-[29px] top-0.5 grid h-4 w-4 place-items-center rounded-full ${
-                e.version === APP_VERSION ? 'bg-leaf' : 'bg-white ring-2 ring-leaf/40'
+                e.version === APP_VERSION ? 'bg-leaf' : 'bg-card ring-2 ring-leaf/40'
               }`}
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}

@@ -30,8 +30,8 @@ import { usePantryPlan } from './PantryPlan'
 
 const STORAGE_STYLE = {
   fridge: 'bg-sky-soft text-sky',
-  freezer: 'bg-[#e4e8fb] text-[#5f6fd3]',
-  fresh: 'bg-honey-soft text-[#a07a20]',
+  freezer: 'bg-frost-soft text-frost',
+  fresh: 'bg-honey-soft text-honey-ink',
 } as const
 
 const dayLabel = (d: string) => `${monthDay(d)}（${weekdayLabel(d)}）`
@@ -240,7 +240,7 @@ function BatchWizard({
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="搜尋菜名"
-              className="min-w-0 flex-1 rounded-2xl bg-white px-4 py-2.5 text-sm shadow-card outline-none ring-leaf/40 focus:ring-2"
+              className="min-w-0 flex-1 rounded-2xl bg-card px-4 py-2.5 text-sm shadow-card outline-none ring-leaf/40 focus:ring-2"
             />
             <Button variant="soft" className="flex items-center gap-1 px-3 text-sm" onClick={suggest}>
               <Icon name="auto_awesome" size={18} />
@@ -254,7 +254,7 @@ function BatchWizard({
                   key={f.id}
                   onClick={() => setFilter(f.id)}
                   className={`shrink-0 rounded-full px-3 py-1 text-xs transition-colors ${
-                    filter === f.id ? 'bg-leaf text-white' : 'bg-leaf-soft/60 text-leaf-dark'
+                    filter === f.id ? 'bg-leaf text-on-leaf' : 'bg-leaf-soft/60 text-leaf-dark'
                   }`}
                 >
                   {f.label}
@@ -316,13 +316,13 @@ function BatchWizard({
               換成備餐的菜
             </Chip>
           </Choice>
-          <div className="rounded-3xl bg-white p-4 shadow-card">
+          <div className="rounded-3xl bg-card p-4 shadow-card">
             <div className="mb-2 flex items-baseline justify-between">
               <span className="font-bold">分配結果</span>
               <span className="text-[11px] text-muted">放不久的排前面</span>
             </div>
             {assignments[0] && assignments[0].date > addDays(startDate, 1) && (
-              <p className="mb-2 rounded-xl bg-honey-soft px-2.5 py-1.5 text-xs text-[#a07a20]">
+              <p className="mb-2 rounded-xl bg-honey-soft px-2.5 py-1.5 text-xs text-honey-ink">
                 {dayLabel(startDate)}到{dayLabel(addDays(assignments[0].date, -1))}都已經排了菜，所以從 {dayLabel(assignments[0].date)} 開始。想取代就選上面的「換成備餐的菜」。
               </p>
             )}
@@ -393,7 +393,7 @@ function Chip({ active, onClick, children }: { active: boolean; onClick: () => v
         haptic(6)
         onClick()
       }}
-      className={`shrink-0 rounded-full px-3 py-1.5 text-xs transition-colors ${active ? 'bg-leaf text-white' : 'bg-white text-ink shadow-card'}`}
+      className={`shrink-0 rounded-full px-3 py-1.5 text-xs transition-colors ${active ? 'bg-leaf text-on-leaf' : 'bg-card text-ink shadow-card'}`}
     >
       {children}
     </motion.button>
@@ -407,7 +407,7 @@ function PickRow({ recipe, ok, n, onChange }: { recipe: Recipe; ok: boolean; n: 
     <motion.li
       layout
       transition={spring}
-      className={`flex items-center gap-3 rounded-2xl p-2 pr-2.5 shadow-card transition-colors ${n ? 'bg-leaf-soft' : 'bg-white'}`}
+      className={`flex items-center gap-3 rounded-2xl p-2 pr-2.5 shadow-card transition-colors ${n ? 'bg-leaf-soft' : 'bg-card'}`}
     >
       <span className="relative h-14 w-14 shrink-0 overflow-hidden rounded-xl">
         <RecipePhoto recipe={recipe} />
@@ -425,7 +425,7 @@ function PickRow({ recipe, ok, n, onChange }: { recipe: Recipe; ok: boolean; n: 
               冷藏 {s.fridgeDays} 天{s.freezeWeeks ? '・可冷凍' : ''}
             </span>
           ) : (
-            <span className="text-[#a07a20]">建議當天現做</span>
+            <span className="text-honey-ink">建議當天現做</span>
           )}
         </div>
         <div className="text-[11px] text-muted">
@@ -437,19 +437,19 @@ function PickRow({ recipe, ok, n, onChange }: { recipe: Recipe; ok: boolean; n: 
           whileTap={{ scale: 0.85 }}
           onClick={() => onChange(3)}
           aria-label={`加入${recipe.name}`}
-          className="grid h-9 w-9 place-items-center rounded-full bg-leaf text-white"
+          className="grid h-9 w-9 place-items-center rounded-full bg-leaf text-on-leaf"
         >
           <Icon name="add" size={22} weight={600} />
         </motion.button>
       ) : (
         <div className="flex items-center gap-1">
-          <motion.button whileTap={{ scale: 0.85 }} onClick={() => onChange(n - 1)} aria-label="少一餐" className="grid h-8 w-8 place-items-center rounded-full bg-white">
+          <motion.button whileTap={{ scale: 0.85 }} onClick={() => onChange(n - 1)} aria-label="少一餐" className="grid h-8 w-8 place-items-center rounded-full bg-card">
             <Icon name="remove" size={18} />
           </motion.button>
           <motion.span key={n} initial={{ scale: 1.4 }} animate={{ scale: 1 }} className="w-9 text-center text-sm font-bold tabular-nums">
             {n}餐
           </motion.span>
-          <motion.button whileTap={{ scale: 0.85 }} onClick={() => onChange(n + 1)} aria-label="多一餐" className="grid h-8 w-8 place-items-center rounded-full bg-white">
+          <motion.button whileTap={{ scale: 0.85 }} onClick={() => onChange(n + 1)} aria-label="多一餐" className="grid h-8 w-8 place-items-center rounded-full bg-card">
             <Icon name="add" size={18} />
           </motion.button>
         </div>
@@ -546,7 +546,7 @@ function FlowBody({ session, tab, setTab, onClose }: { session: BatchSession; ta
               約 {Math.round(flow.totalMinutes / 10) * 10} 分鐘{people > 1 ? `・每餐 ${people} 人份` : ''}
             </div>
           </div>
-          <motion.button whileTap={{ scale: 0.88 }} onClick={copy} aria-label="複製流程" className="grid h-10 w-10 place-items-center rounded-full bg-white/80">
+          <motion.button whileTap={{ scale: 0.88 }} onClick={copy} aria-label="複製流程" className="grid h-10 w-10 place-items-center rounded-full bg-card/80">
             <Icon name="content_copy" size={20} />
           </motion.button>
         </div>
@@ -561,7 +561,7 @@ function FlowBody({ session, tab, setTab, onClose }: { session: BatchSession; ta
             )
           })}
         </div>
-        <div className="mt-3 h-2 overflow-hidden rounded-full bg-white/60">
+        <div className="mt-3 h-2 overflow-hidden rounded-full bg-card/60">
           <motion.div
             className="h-full rounded-full bg-leaf"
             animate={{ width: `${all.length ? (done / all.length) * 100 : 0}%` }}
@@ -585,7 +585,7 @@ function FlowBody({ session, tab, setTab, onClose }: { session: BatchSession; ta
       <motion.div key={tab} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.2 }} className="space-y-4">
         {tab === 'shop' &&
           flow.shopping.map((g) => (
-            <section key={g.section} className="rounded-3xl bg-white p-4 shadow-card">
+            <section key={g.section} className="rounded-3xl bg-card p-4 shadow-card">
               <h3 className="mb-2 flex items-center gap-1.5 text-sm font-bold">
                 <Food id={SECTION_IMAGE[g.section]} size={22} />
                 {SECTION_LABEL[g.section]}
@@ -649,7 +649,7 @@ function FlowBody({ session, tab, setTab, onClose }: { session: BatchSession; ta
                     .map((c) => {
                       const s = step(`box:${c.date}:${c.meal}:${c.recipe.id}`)
                       return (
-                        <li key={c.meal + c.recipe.id} className="flex items-center gap-3 rounded-2xl bg-white p-2 pr-3 shadow-card">
+                        <li key={c.meal + c.recipe.id} className="flex items-center gap-3 rounded-2xl bg-card p-2 pr-3 shadow-card">
                           <span className="relative h-12 w-12 shrink-0 overflow-hidden rounded-xl">
                             <RecipePhoto recipe={c.recipe} />
                           </span>
@@ -663,8 +663,8 @@ function FlowBody({ session, tab, setTab, onClose }: { session: BatchSession; ta
                               </span>
                             </div>
                             <div className={`truncate text-sm font-medium ${s.checked ? 'text-muted line-through' : ''}`}>{c.recipe.name}</div>
-                            {c.thawOn && <div className="text-[11px] text-[#5f6fd3]">{dayLabel(c.thawOn)}晚上移到冷藏退冰</div>}
-                            {c.storage === 'fresh' && <div className="text-[11px] text-[#a07a20]">這道放不久，食材先備好，當天再煮</div>}
+                            {c.thawOn && <div className="text-[11px] text-frost">{dayLabel(c.thawOn)}晚上移到冷藏退冰</div>}
+                            {c.storage === 'fresh' && <div className="text-[11px] text-honey-ink">這道放不久，食材先備好，當天再煮</div>}
                           </div>
                           <CheckButton checked={s.checked} onToggle={s.toggle} size={26} />
                         </li>
@@ -673,7 +673,7 @@ function FlowBody({ session, tab, setTab, onClose }: { session: BatchSession; ta
                 </ul>
               </section>
             ))}
-            <ul className="space-y-2 rounded-3xl bg-white p-4 text-xs leading-relaxed shadow-card">
+            <ul className="space-y-2 rounded-3xl bg-card p-4 text-xs leading-relaxed shadow-card">
               {session.items.map((it) => {
                 const r = RECIPE_MAP[it.recipeId]
                 if (!r) return null
@@ -722,18 +722,18 @@ function Timeline({ flow, session, step }: { flow: BatchFlow; session: BatchSess
               <span className="w-8 shrink-0 pt-2.5 text-right text-[11px] tabular-nums text-muted">{fmtClock(st.at)}</span>
               <span
                 className={`relative z-10 mt-1 grid h-9 w-9 shrink-0 place-items-center rounded-full ${
-                  s.checked ? 'bg-leaf text-white' : st.parallel ? 'bg-honey-soft text-[#a07a20]' : 'bg-white text-leaf-dark shadow-card'
+                  s.checked ? 'bg-leaf text-on-leaf' : st.parallel ? 'bg-honey-soft text-honey-ink' : 'bg-card text-leaf-dark shadow-card'
                 }`}
               >
                 {s.checked || !st.image ? <Icon name={s.checked ? 'check' : st.icon} size={18} weight={600} /> : <Food id={st.image} size={28} />}
               </span>
-              <div className={`min-w-0 flex-1 rounded-2xl p-3 shadow-card transition-colors ${s.checked ? 'bg-white/50' : 'bg-white'}`}>
+              <div className={`min-w-0 flex-1 rounded-2xl p-3 shadow-card transition-colors ${s.checked ? 'bg-card/50' : 'bg-card'}`}>
                 <div className="flex items-start gap-2">
                   <div className="min-w-0 flex-1" onClick={s.toggle}>
                     <div className={`text-sm font-medium ${s.checked ? 'text-muted line-through' : ''}`}>{st.title}</div>
                     <div className="mt-0.5 flex flex-wrap items-center gap-1 text-[11px] text-muted">
                       <Icon name="timer" size={12} />約 {st.minutes} 分
-                      {st.parallel && <span className="rounded-full bg-honey-soft px-1.5 text-[#a07a20]">同時</span>}
+                      {st.parallel && <span className="rounded-full bg-honey-soft px-1.5 text-honey-ink">同時</span>}
                     </div>
                     {st.detail && <div className="mt-1 text-xs text-muted">{st.detail}</div>}
                   </div>
@@ -789,7 +789,7 @@ function Timeline({ flow, session, step }: { flow: BatchFlow; session: BatchSess
 
 function Group({ title, icon, children }: { title: string; icon: Parameters<typeof Icon>[0]['name']; children: ReactNode }) {
   return (
-    <section className="rounded-3xl bg-white p-4 shadow-card">
+    <section className="rounded-3xl bg-card p-4 shadow-card">
       <h3 className="mb-3 flex items-center gap-1.5 text-sm font-bold">
         <Icon name={icon} size={18} className="text-leaf-dark" />
         {title}
@@ -833,13 +833,13 @@ export function BatchSessions() {
             <span className="block font-bold">開始一次備餐</span>
             <span className="block text-xs text-ink/70">選幾道菜 → 自動排好採買、備料、開火順序、分裝</span>
           </span>
-          <span className="flex items-center gap-0.5 rounded-full bg-leaf px-3 py-1.5 text-sm font-medium text-white">
+          <span className="flex items-center gap-0.5 rounded-full bg-leaf px-3 py-1.5 text-sm font-medium text-on-leaf">
             開始
             <Icon name="chevron_right" size={18} />
           </span>
         </span>
       </motion.button>
-      <Tap press={0.98} onClick={openPantry} className="flex w-full items-center gap-3 rounded-3xl bg-white p-3 text-left shadow-card">
+      <Tap press={0.98} onClick={openPantry} className="flex w-full items-center gap-3 rounded-3xl bg-card p-3 text-left shadow-card">
         <Art name="empty-shopping" width={56} className="!mx-0 shrink-0" float={false} />
         <span className="flex-1">
           <span className="block font-bold">用冰箱食材排一週</span>
@@ -853,7 +853,7 @@ export function BatchSessions() {
           layout
           whileTap={{ scale: 0.98 }}
           onClick={() => open(s.id)}
-          className="flex w-full items-center gap-3 rounded-2xl bg-white p-3 text-left shadow-card"
+          className="flex w-full items-center gap-3 rounded-2xl bg-card p-3 text-left shadow-card"
         >
           <span className="flex -space-x-3">
             {s.items.slice(0, 3).map((it) => {

@@ -71,7 +71,7 @@ export function RecipePicker({
           }}
           className="mb-4 flex w-full items-center gap-3 rounded-3xl bg-gradient-to-br from-tomato-soft to-honey-soft p-3 text-left shadow-card"
         >
-          <span className="grid h-11 w-11 place-items-center rounded-2xl bg-white text-tomato">
+          <span className="grid h-11 w-11 place-items-center rounded-2xl bg-card text-tomato">
             <Icon name="ramen_dining" size={26} fill motion="float" />
           </span>
           <span className="flex-1">
@@ -88,7 +88,7 @@ export function RecipePicker({
             close()
             onChain()
           }}
-          className="-mt-2 mb-4 flex w-full items-center gap-3 rounded-3xl bg-white p-3 text-left shadow-card"
+          className="-mt-2 mb-4 flex w-full items-center gap-3 rounded-3xl bg-card p-3 text-left shadow-card"
         >
           <span className="grid h-11 w-11 place-items-center rounded-2xl bg-leaf-soft">
             <Food id="rice-ball" size={30} />
@@ -120,7 +120,7 @@ export function RecipePicker({
                   onPick(r)
                   close()
                 }}
-                className="flex shrink-0 items-center gap-2 rounded-2xl bg-white py-2 pl-2 pr-3 text-sm shadow-card"
+                className="flex shrink-0 items-center gap-2 rounded-2xl bg-card py-2 pl-2 pr-3 text-sm shadow-card"
               >
                 <span className="relative h-8 w-8 overflow-hidden rounded-xl">
                   <RecipePhoto recipe={r} />
@@ -137,7 +137,7 @@ export function RecipePicker({
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="搜尋食譜或標籤，例如：高蛋白"
-          className="w-full rounded-2xl bg-white px-4 py-3 text-sm shadow-card outline-none ring-leaf/40 focus:ring-2"
+          className="w-full rounded-2xl bg-card px-4 py-3 text-sm shadow-card outline-none ring-leaf/40 focus:ring-2"
         />
         {meal && (
           <label className="mt-2 flex items-center gap-2 text-xs text-muted">
@@ -168,7 +168,7 @@ function PickerRow({ recipe, onPick }: { recipe: Recipe; onPick: () => void }) {
   const openDetail = useRecipeDetail()
   const layoutId = `picker-${recipe.id}`
   return (
-    <motion.li variants={listItem} className="flex items-center gap-3 rounded-2xl bg-white p-2 pr-3 shadow-card">
+    <motion.li variants={listItem} className="flex items-center gap-3 rounded-2xl bg-card p-2 pr-3 shadow-card">
       <Tap onClick={() => openDetail(recipe.id, layoutId)} aria-label={`查看${recipe.name}`}>
         <RecipeThumb recipe={recipe} layoutId={layoutId} size={52} />
       </Tap>

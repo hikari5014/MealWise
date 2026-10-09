@@ -5,6 +5,7 @@ import { DietPlanCard, DietPlanSheet } from '../components/DietPlan'
 import { TasteCard, TasteSheet } from '../components/Taste'
 import { Icon } from '../components/Icon'
 import { AboutCard } from '../components/Update'
+import { ThemeCard } from '../components/ThemeCard'
 import { Button, Card, Sheet, Tap, useToast } from '../components/ui'
 import { db } from '../db'
 import { addDays, todayKey, weekdayLabel } from '../lib/date'
@@ -136,6 +137,7 @@ export default function Me({ profile }: { profile: Profile }) {
         </Card>
       )}
 
+      <ThemeCard />
       <AboutCard />
       <TasteSheet open={tasteSheet} onClose={() => setTasteSheet(false)} profile={profile} />
       <DietPlanSheet open={planSheet} onClose={() => setPlanSheet(false)} profile={profile} />

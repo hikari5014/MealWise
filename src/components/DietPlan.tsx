@@ -26,7 +26,7 @@ const RULE_STYLE: Record<MealDecision['rule'], string> = {
   normal: 'bg-ink/5 text-muted',
   lowCarb: 'bg-leaf-soft text-leaf-dark',
   shake: 'bg-sky-soft text-sky',
-  light: 'bg-honey-soft text-[#a07a20]',
+  light: 'bg-honey-soft text-honey-ink',
   skip: 'bg-ink/10 text-ink/60',
   feast: 'bg-tomato text-white',
 }
@@ -129,7 +129,7 @@ function StatusRow({
   tone: 'sky' | 'leaf' | 'ink'
   progress?: number
 }) {
-  const color = { sky: '#5fa8d3', leaf: '#5b8c5a', ink: '#2f2a24' }[tone]
+  const color = { sky: 'rgb(var(--sky))', leaf: 'rgb(var(--leaf))', ink: 'rgb(var(--ink))' }[tone]
   return (
     <div className="mt-3 rounded-2xl bg-cream p-3">
       <div className="flex items-center gap-2">
@@ -172,7 +172,7 @@ export function TodayPlanCard({ day, onOpenSettings }: { day: ResolvedDay; onOpe
             toast(day.training ? '改成休息日' : '改成運動日')
           }}
           className={`flex items-center gap-1.5 rounded-full px-3 py-1.5 text-sm font-medium transition-colors ${
-            day.training ? 'bg-leaf text-white' : 'bg-ink/5 text-muted'
+            day.training ? 'bg-leaf text-on-leaf' : 'bg-ink/5 text-muted'
           }`}
         >
           <Icon name={day.training ? 'directions_run' : 'bedtime'} size={18} fill={day.training} motion={day.training ? 'bounce' : 'none'} />
@@ -242,7 +242,7 @@ function Chip({ on, onClick, children, tone = 'leaf' }: { on: boolean; onClick: 
         onClick()
       }}
       className={`flex items-center gap-1 rounded-full px-3 py-1.5 text-sm transition-colors ${
-        on ? (tone === 'leaf' ? 'bg-leaf text-white' : 'bg-tomato text-white') : 'bg-white text-ink shadow-sm'
+        on ? (tone === 'leaf' ? 'bg-leaf text-on-leaf' : 'bg-tomato text-on-leaf') : 'bg-card text-ink shadow-sm'
       }`}
     >
       {children}
@@ -258,7 +258,7 @@ function Toggle({ on, onChange, label, sub }: { on: boolean; onChange: (v: boole
         haptic(8)
         onChange(!on)
       }}
-      className="flex w-full items-center gap-3 rounded-2xl bg-white p-3 text-left shadow-sm"
+      className="flex w-full items-center gap-3 rounded-2xl bg-card p-3 text-left shadow-sm"
     >
       <span className="flex-1">
         <span className="block text-sm font-medium">{label}</span>
@@ -266,7 +266,7 @@ function Toggle({ on, onChange, label, sub }: { on: boolean; onChange: (v: boole
       </span>
       <span className={`relative h-7 w-12 rounded-full transition-colors ${on ? 'bg-leaf' : 'bg-ink/15'}`}>
         <motion.span
-          className="absolute top-1 h-5 w-5 rounded-full bg-white shadow"
+          className="absolute top-1 h-5 w-5 rounded-full bg-card shadow"
           animate={{ left: on ? 24 : 4 }}
           transition={spring}
         />
@@ -323,7 +323,7 @@ export function DietPlanSheet({ open, onClose, profile }: { open: boolean; onClo
                 exit={{ height: 0, opacity: 0 }}
                 className="overflow-hidden"
               >
-                <div className="flex items-center justify-between rounded-2xl bg-white p-3 shadow-sm">
+                <div className="flex items-center justify-between rounded-2xl bg-card p-3 shadow-sm">
                   <span className="text-sm">進食時段從</span>
                   <span className="flex items-center gap-2">
                     <motion.button
@@ -354,7 +354,7 @@ export function DietPlanSheet({ open, onClose, profile }: { open: boolean; onClo
         <Section icon="restaurant" title="每一餐想怎麼吃">
           <div className="space-y-2">
             {MEAL_SLOTS.map((m) => (
-              <div key={m} className="rounded-2xl bg-white p-3 shadow-sm">
+              <div key={m} className="rounded-2xl bg-card p-3 shadow-sm">
                 <div className="mb-2 text-sm font-medium">{MEAL_LABEL[m]}</div>
                 <div className="flex flex-wrap gap-1.5">
                   {RULES.map((r) => (
@@ -384,7 +384,7 @@ export function DietPlanSheet({ open, onClose, profile }: { open: boolean; onClo
                     set({ trainingDays: on ? plan.trainingDays.filter((d) => d !== i) : [...plan.trainingDays, i] })
                   }}
                   className={`grid h-10 w-10 place-items-center rounded-full text-sm font-medium transition-colors ${
-                    on ? 'bg-leaf text-white shadow-card' : 'bg-white shadow-sm'
+                    on ? 'bg-leaf text-on-leaf shadow-card' : 'bg-card shadow-sm'
                   }`}
                 >
                   {w}
@@ -392,7 +392,7 @@ export function DietPlanSheet({ open, onClose, profile }: { open: boolean; onClo
               )
             })}
           </div>
-          <div className="flex items-center justify-between rounded-2xl bg-white p-3 shadow-sm">
+          <div className="flex items-center justify-between rounded-2xl bg-card p-3 shadow-sm">
             <span className="text-sm">運動日多吃</span>
             <span className="flex items-center gap-2">
               <motion.button
@@ -434,7 +434,7 @@ export function DietPlanSheet({ open, onClose, profile }: { open: boolean; onClo
             onChange={(preLowCarb) => set({ feast: { ...plan.feast, preLowCarb } })}
             label="大餐之前的餐不吃澱粉"
           />
-          <div className="rounded-2xl bg-white p-3 shadow-sm">
+          <div className="rounded-2xl bg-card p-3 shadow-sm">
             <div className="mb-2 text-sm">大餐後至少間隔</div>
             <div className="flex flex-wrap gap-1.5">
               {POST_FAST.map((h) => (

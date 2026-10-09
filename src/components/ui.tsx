@@ -42,7 +42,7 @@ type BtnProps = HTMLMotionProps<'button'> & { variant?: 'primary' | 'soft' | 'gh
 
 export function Button({ variant = 'primary', className = '', onClick, ...rest }: BtnProps) {
   const styles = {
-    primary: 'bg-leaf text-white shadow-card',
+    primary: 'bg-leaf text-on-leaf shadow-card',
     soft: 'bg-leaf-soft text-leaf-dark',
     ghost: 'bg-transparent text-muted',
   }[variant]
@@ -72,16 +72,16 @@ export function CheckButton({ checked, onToggle, size = 32 }: { checked: boolean
         onToggle()
       }}
       whileTap={{ scale: 0.85 }}
-      animate={{ scale: checked ? [1, 1.18, 1] : 1, backgroundColor: checked ? '#5b8c5a' : 'rgba(255,255,255,0.92)' }}
+      animate={{ scale: checked ? [1, 1.18, 1] : 1 }}
       transition={{ duration: 0.32 }}
-      className="grid shrink-0 place-items-center rounded-full border-2 border-leaf"
+      className={`grid shrink-0 place-items-center rounded-full border-2 border-leaf transition-colors duration-300 ${checked ? 'bg-leaf' : 'bg-card/90'}`}
       style={{ width: size, height: size }}
     >
       <svg viewBox="0 0 24 24" width={size * 0.6} height={size * 0.6}>
         <motion.path
           d="M5 12.5l4.5 4.5L19 7.5"
           fill="none"
-          stroke="white"
+          style={{ stroke: 'rgb(var(--on-leaf))' }}
           strokeWidth={3}
           strokeLinecap="round"
           strokeLinejoin="round"
@@ -123,7 +123,7 @@ export function Sheet({
   return (
     <div className={`fixed inset-0 z-40 ${open ? '' : 'pointer-events-none'}`} aria-hidden={!open}>
       <motion.div
-        className="absolute inset-0 bg-ink/30 backdrop-blur-[2px]"
+        className="absolute inset-0 bg-black/40 backdrop-blur-[2px]"
         initial={{ opacity: 0 }}
         animate={{ opacity: open ? 1 : 0 }}
         transition={{ duration: 0.22 }}
@@ -241,7 +241,7 @@ export function Segmented<T extends string>({
           }`}
         >
           {value === o.value && (
-            <motion.span layoutId={`seg-${id}`} transition={spring} className="absolute inset-0 rounded-xl bg-white shadow-card" />
+            <motion.span layoutId={`seg-${id}`} transition={spring} className="absolute inset-0 rounded-xl bg-card shadow-card" />
           )}
           <span className="relative flex items-center justify-center gap-1.5">
             {o.icon && <Icon name={o.icon} size={18} fill={value === o.value} weight={value === o.value ? 600 : 400} />}
@@ -255,7 +255,7 @@ export function Segmented<T extends string>({
 
 /* ── 卡片 ── */
 export function Card({ className = '', ...rest }: HTMLMotionProps<'div'>) {
-  return <motion.div className={`rounded-3xl bg-white p-4 shadow-card ${className}`} {...rest} />
+  return <motion.div className={`rounded-3xl bg-card p-4 shadow-card ${className}`} {...rest} />
 }
 
 /* ── 列表依序淡入 ── */

@@ -31,7 +31,7 @@ function Sparkline({ records }: { records: BodyRecord[] }) {
       <motion.path
         d={d}
         fill="none"
-        stroke="#5b8c5a"
+        style={{ stroke: 'rgb(var(--leaf))' }}
         strokeWidth={3}
         strokeLinecap="round"
         strokeLinejoin="round"
@@ -43,7 +43,7 @@ function Sparkline({ records }: { records: BodyRecord[] }) {
         cx={last[0]}
         cy={last[1]}
         r={5}
-        fill="#5b8c5a"
+        style={{ fill: 'rgb(var(--leaf))' }}
         initial={{ scale: 0 }}
         animate={{ scale: [0, 1.5, 1] }}
         transition={{ delay: 0.85, duration: 0.4 }}
@@ -153,7 +153,7 @@ export function HealthTip() {
 
   if (today && (today.weight !== undefined || today.steps !== undefined)) {
     content = (
-      <motion.div key="today" className="flex items-center gap-3 rounded-3xl bg-white px-4 py-3 shadow-card">
+      <motion.div key="today" className="flex items-center gap-3 rounded-3xl bg-card px-4 py-3 shadow-card">
         <motion.span
           initial={{ rotate: -30, scale: 0 }}
           animate={{ rotate: 0, scale: 1 }}

@@ -107,7 +107,7 @@ function Detail({ recipe, layoutId, onClose }: Opened & { onClose: () => void })
   return (
     <div className="fixed inset-0 z-40">
       <motion.div
-        className="absolute inset-0 bg-ink/30"
+        className="absolute inset-0 bg-black/40"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
@@ -133,7 +133,7 @@ function Detail({ recipe, layoutId, onClose }: Opened & { onClose: () => void })
             whileTap={{ scale: 0.9 }}
             aria-label="關閉"
             onClick={onClose}
-            className="absolute left-4 top-[calc(16px+env(safe-area-inset-top))] grid h-10 w-10 place-items-center rounded-full bg-white/85 shadow-card backdrop-blur"
+            className="absolute left-4 top-[calc(16px+env(safe-area-inset-top))] grid h-10 w-10 place-items-center rounded-full bg-card/85 shadow-card backdrop-blur"
           >
             <Icon name="arrow_back" size={22} weight={500} />
           </motion.button>
@@ -149,7 +149,7 @@ function Detail({ recipe, layoutId, onClose }: Opened & { onClose: () => void })
               if (!fav) toast('加入最愛，排菜單時會優先挑')
             }}
             className={`absolute right-4 top-[calc(16px+env(safe-area-inset-top))] grid h-10 w-10 place-items-center rounded-full shadow-card backdrop-blur ${
-              fav ? 'bg-tomato text-white' : 'bg-white/85 text-tomato'
+              fav ? 'bg-tomato text-white' : 'bg-card/85 text-tomato'
             }`}
           >
             <Icon name="favorite" size={22} fill={fav} />
@@ -162,14 +162,14 @@ function Detail({ recipe, layoutId, onClose }: Opened & { onClose: () => void })
           >
             <h1 className="text-[28px] font-bold leading-tight drop-shadow">{recipe.name}</h1>
             <div className="mt-2 flex flex-wrap gap-1.5 text-xs">
-              <span className="flex items-center gap-1 rounded-full bg-white/20 px-2.5 py-1 backdrop-blur">
+              <span className="flex items-center gap-1 rounded-full bg-card/20 px-2.5 py-1 backdrop-blur">
                 <Icon name="timer" size={14} /> {recipe.minutes} 分鐘
               </span>
-              <span className="rounded-full bg-white/20 px-2.5 py-1 backdrop-blur">
+              <span className="rounded-full bg-card/20 px-2.5 py-1 backdrop-blur">
                 {recipe.meals.map((m) => MEAL_LABEL[m]).join('・')}
               </span>
               {recipe.tags.map((t) => (
-                <span key={t} className="rounded-full bg-white/20 px-2.5 py-1 backdrop-blur">
+                <span key={t} className="rounded-full bg-card/20 px-2.5 py-1 backdrop-blur">
                   {t}
                 </span>
               ))}
@@ -183,7 +183,7 @@ function Detail({ recipe, layoutId, onClose }: Opened & { onClose: () => void })
           animate={{ opacity: 1, y: 0, transition: { delay: 0.12, ...softSpring } }}
           exit={{ opacity: 0, y: 12 }}
         >
-          <div className="grid grid-cols-5 gap-2 rounded-3xl bg-white p-4 text-center shadow-card">
+          <div className="grid grid-cols-5 gap-2 rounded-3xl bg-card p-4 text-center shadow-card">
             {[
               ['熱量', n.kcal, 'kcal'],
               ['蛋白質', n.protein, 'g'],
@@ -203,7 +203,7 @@ function Detail({ recipe, layoutId, onClose }: Opened & { onClose: () => void })
           </div>
 
           {recipe.eatout && (
-            <section className="space-y-1 rounded-3xl bg-white p-4 text-sm shadow-card">
+            <section className="space-y-1 rounded-3xl bg-card p-4 text-sm shadow-card">
               <div className="flex items-center gap-1.5 font-bold">
                 <Icon name="restaurant" size={18} className="text-leaf-dark" />
                 外食・{recipe.eatout.brand || '一般小吃'}
@@ -227,7 +227,7 @@ function Detail({ recipe, layoutId, onClose }: Opened & { onClose: () => void })
           {recipe.ingredients.length > 0 && (
           <section>
             <h2 className="mb-2 font-bold">食材（1 人份）</h2>
-            <ul className="divide-y divide-ink/5 rounded-3xl bg-white px-4 shadow-card">
+            <ul className="divide-y divide-ink/5 rounded-3xl bg-card px-4 shadow-card">
               {recipe.ingredients.map((ing) => (
                 <li key={ing.name} className="flex justify-between py-3 text-sm">
                   <span>{ing.name}</span>
@@ -244,7 +244,7 @@ function Detail({ recipe, layoutId, onClose }: Opened & { onClose: () => void })
             <ol className="space-y-3">
               {recipe.steps.map((s, idx) => (
                 <li key={idx} className="flex gap-3 text-sm leading-relaxed">
-                  <span className="grid h-6 w-6 shrink-0 place-items-center rounded-full bg-leaf text-xs font-bold text-white">
+                  <span className="grid h-6 w-6 shrink-0 place-items-center rounded-full bg-leaf text-xs font-bold text-on-leaf">
                     {idx + 1}
                   </span>
                   <span className="pt-0.5">{s}</span>
@@ -280,7 +280,7 @@ function Detail({ recipe, layoutId, onClose }: Opened & { onClose: () => void })
             onClick={() => openBatch(recipe)}
             className="flex w-full items-center gap-3 rounded-3xl bg-gradient-to-br from-leaf-soft to-honey-soft p-3 text-left shadow-card"
           >
-            <span className="grid h-11 w-11 place-items-center rounded-2xl bg-white text-leaf-dark">
+            <span className="grid h-11 w-11 place-items-center rounded-2xl bg-card text-leaf-dark">
               <Icon name="kitchen" size={24} fill />
             </span>
             <span className="flex-1">
@@ -299,7 +299,7 @@ function Detail({ recipe, layoutId, onClose }: Opened & { onClose: () => void })
                 toggleDislike(recipe.id)
                 toast(disliked ? '已恢復這道食譜' : '之後排菜單不會再出現這道')
               }}
-              className={`flex items-center gap-1 rounded-full px-3 py-1.5 text-xs shadow-sm ${disliked ? 'bg-ink text-cream' : 'bg-white text-muted'}`}
+              className={`flex items-center gap-1 rounded-full px-3 py-1.5 text-xs shadow-sm ${disliked ? 'bg-ink text-cream' : 'bg-card text-muted'}`}
             >
               <Icon name="thumb_down" size={15} fill={disliked} />
               {disliked ? '已設為不想吃' : '不想吃這道'}
@@ -312,7 +312,7 @@ function Detail({ recipe, layoutId, onClose }: Opened & { onClose: () => void })
                     onClose()
                     openEditor(recipe)
                   }}
-                  className="flex items-center gap-1 rounded-full bg-white px-3 py-1.5 text-xs text-leaf-dark shadow-sm"
+                  className="flex items-center gap-1 rounded-full bg-card px-3 py-1.5 text-xs text-leaf-dark shadow-sm"
                 >
                   <Icon name="edit" size={15} />
                   編輯
@@ -331,7 +331,7 @@ function Detail({ recipe, layoutId, onClose }: Opened & { onClose: () => void })
                     toast(`已刪除「${recipe.name}」`, () => saveCustomRecipe(recipe))
                   }}
                   className={`flex items-center gap-1 rounded-full px-3 py-1.5 text-xs shadow-sm ${
-                    confirmDelete ? 'bg-tomato text-white' : 'bg-white text-tomato'
+                    confirmDelete ? 'bg-tomato text-white' : 'bg-card text-tomato'
                   }`}
                 >
                   <Icon name="delete" size={15} />

@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { useMemo, useState } from 'react'
-import { BodyMap, WEEK_COLORS } from '../components/BodyMap'
+import { BodyMap, useBodyPalette } from '../components/BodyMap'
 import { ExerciseLibrary } from '../components/ExerciseLibrary'
 import { Icon } from '../components/Icon'
 import { WorkoutSession } from '../components/WorkoutSession'
@@ -24,6 +24,7 @@ export default function Train({ profile }: { profile: Profile }) {
   const next7 = useMemo(() => Array.from({ length: 7 }, (_, i) => addDays(today, i)), [today])
   const marks = useMarks(next7)
   const week = useMemo(() => weeklyMuscles(workouts, today), [workouts, today])
+  const weekColors = useBodyPalette('week')
   const weekData = useMemo(() => weeklyBodyData(week), [week])
   const untrained = BODY_PARTS.filter((p) => !p.muscles.some((m) => (week[m] ?? 0) > 0))
   const weekCount = workouts.filter((w) => w.endedAt && w.date >= weekStart(today)).length
@@ -51,7 +52,7 @@ export default function Train({ profile }: { profile: Profile }) {
             const t = marks[d]?.train
             const done = workouts.some((w) => w.date === d && w.endedAt)
             return (
-              <div key={d} className="flex flex-col items-center gap-1 rounded-2xl bg-white py-2 shadow-card">
+              <div key={d} className="flex flex-col items-center gap-1 rounded-2xl bg-card py-2 shadow-card">
                 <span className="text-[10px] text-muted">{weekdayLabel(d)}</span>
                 <span className="text-sm font-bold">{Number(d.slice(-2))}</span>
                 {t ? <TrainBadge type={t} size="xs" /> : <span className="text-[9px] leading-[14px] text-muted">{marks[d]?.training === false ? '休' : '—'}</span>}
@@ -63,18 +64,18 @@ export default function Train({ profile }: { profile: Profile }) {
         <p className="mt-1.5 px-1 text-[11px] text-muted">到「菜單 → 月曆」點日期可以排推、拉、有氧，也能設定每週固定</p>
       </section>
 
-      <section className="rounded-3xl bg-white p-4 shadow-card">
+      <section className="rounded-3xl bg-card p-4 shadow-card">
         <div className="mb-2 flex items-center justify-between">
           <span className="font-bold">這 7 天練到的部位</span>
           <span className="flex items-center gap-1 text-[10px] text-muted">
             少
-            {WEEK_COLORS.map((c) => (
+            {weekColors.map((c) => (
               <span key={c} className="h-2.5 w-4 rounded-sm" style={{ background: c }} />
             ))}
             多
           </span>
         </div>
-        <BodyMap data={weekData} colors={WEEK_COLORS} height={190} />
+        <BodyMap data={weekData} colors="week" height={190} />
         <div className="mt-3 flex flex-wrap gap-1.5 text-xs">
           {(Object.entries(week) as [FxMuscle, number][])
             .sort((a, b) => b[1] - a[1])
@@ -85,12 +86,12 @@ export default function Train({ profile }: { profile: Profile }) {
             ))}
         </div>
         {workouts.length > 0 && untrained.length > 0 && (
-          <p className="mt-2 text-xs text-[#a07a20]">這週還沒練到：{untrained.map((p) => p.label).join('、')}</p>
+          <p className="mt-2 text-xs text-honey-ink">這週還沒練到：{untrained.map((p) => p.label).join('、')}</p>
         )}
         {!workouts.length && <p className="mt-2 text-xs text-muted">完成訓練後，這裡會用顏色深淺標出練到的肌群</p>}
       </section>
 
-      <Tap press={0.98} onClick={() => setLibrary(true)} className="flex w-full items-center gap-3 rounded-3xl bg-white p-4 text-left shadow-card">
+      <Tap press={0.98} onClick={() => setLibrary(true)} className="flex w-full items-center gap-3 rounded-3xl bg-card p-4 text-left shadow-card">
         <span className="grid h-11 w-11 place-items-center rounded-2xl bg-leaf-soft text-leaf-dark">
           <Icon name="menu_book" size={24} />
         </span>
@@ -110,7 +111,7 @@ export default function Train({ profile }: { profile: Profile }) {
             .slice(0, 20)
             .map((w, i) => (
               <motion.li key={w.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ ...spring, delay: Math.min(i, 8) * 0.03 }}>
-                <Tap press={0.98} onClick={() => setOpenId(w.id!)} className="block w-full rounded-2xl bg-white p-3 text-left shadow-card">
+                <Tap press={0.98} onClick={() => setOpenId(w.id!)} className="block w-full rounded-2xl bg-card p-3 text-left shadow-card">
                   <span className="flex items-baseline justify-between">
                     <span className="flex items-center gap-1.5 font-medium">
                       {monthDay(w.date)}（{weekdayLabel(w.date)}）

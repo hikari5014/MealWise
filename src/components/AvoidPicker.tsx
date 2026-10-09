@@ -131,7 +131,7 @@ function GroupTile({ group, count, open, onTap }: { group: AvoidGroup; count: nu
       aria-expanded={group.items.length > 1 ? open : undefined}
       aria-pressed={group.items.length === 1 ? all : undefined}
       className={`relative flex flex-col items-center gap-1 rounded-3xl py-3 shadow-card transition-colors ${
-        all ? 'bg-tomato text-white' : some ? 'bg-tomato-soft' : 'bg-white'
+        all ? 'bg-tomato text-white' : some ? 'bg-tomato-soft' : 'bg-card'
       } ${open ? 'ring-2 ring-tomato/60' : ''}`}
     >
       <motion.span animate={controls} className="grid place-items-center">
@@ -147,7 +147,7 @@ function GroupTile({ group, count, open, onTap }: { group: AvoidGroup; count: nu
             exit={{ scale: 0 }}
             transition={bouncy}
             className={`absolute -right-1 -top-1 grid h-6 min-w-6 place-items-center rounded-full px-1.5 text-[11px] font-bold shadow ${
-              all ? 'bg-white text-tomato' : 'bg-tomato text-white'
+              all ? 'bg-card text-tomato' : 'bg-tomato text-white'
             }`}
           >
             {all ? group.items.length === 1 ? <Icon name="close" size={14} weight={700} /> : '全' : count}
@@ -202,7 +202,7 @@ function DetailPanel({
               onAll(!allOn)
             }}
             className={`ml-auto rounded-full px-3 py-1 text-xs font-medium transition-colors ${
-              allOn ? 'bg-tomato text-white' : 'bg-white text-tomato'
+              allOn ? 'bg-tomato text-white' : 'bg-card text-tomato'
             }`}
           >
             {allOn ? '全部取消' : '全部都不吃'}
@@ -243,7 +243,7 @@ function ItemChip({ item, on, onToggle }: { item: AvoidItem; on: boolean; onTogg
         onToggle()
       }}
       className={`flex items-center gap-1.5 rounded-full py-2 pl-2 pr-3 text-sm shadow-sm transition-colors duration-200 ${
-        on ? 'bg-tomato text-white' : 'bg-white'
+        on ? 'bg-tomato text-white' : 'bg-card'
       }`}
     >
       <motion.span animate={controls} className="grid place-items-center">

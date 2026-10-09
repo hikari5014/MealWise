@@ -52,7 +52,7 @@ export default function Onboarding({ initial, onDone }: { initial?: Profile; onD
         value={p.name}
         onChange={(e) => set({ name: e.target.value })}
         placeholder="怎麼稱呼你？（可不填）"
-        className="w-full rounded-2xl bg-white px-4 py-3 shadow-card outline-none ring-leaf/40 focus:ring-2"
+        className="w-full rounded-2xl bg-card px-4 py-3 shadow-card outline-none ring-leaf/40 focus:ring-2"
       />
       {GOALS.map((g) => {
         const active = p.goal === g.value
@@ -65,15 +65,15 @@ export default function Onboarding({ initial, onDone }: { initial?: Profile; onD
               set({ goal: g.value, kcal: suggestKcal(g.value) })
             }}
             className={`relative flex w-full items-center gap-4 rounded-3xl p-4 text-left shadow-card transition-colors ${
-              active ? 'bg-leaf text-white' : 'bg-white'
+              active ? 'bg-leaf text-on-leaf' : 'bg-card'
             }`}
           >
-            <span className={`grid h-12 w-12 place-items-center rounded-2xl ${active ? 'bg-white/20' : 'bg-leaf-soft text-leaf-dark'}`}>
+            <span className={`grid h-12 w-12 place-items-center rounded-2xl ${active ? 'bg-card/20' : 'bg-leaf-soft text-leaf-dark'}`}>
               <Icon name={g.icon} size={28} fill={active} weight={active ? 600 : 400} motion={active ? 'pop' : 'none'} />
             </span>
             <span>
               <span className="block font-bold">{GOAL_LABEL[g.value]}</span>
-              <span className={`text-sm ${active ? 'text-white/80' : 'text-muted'}`}>{g.hint}</span>
+              <span className={`text-sm ${active ? 'text-on-leaf/80' : 'text-muted'}`}>{g.hint}</span>
             </span>
           </motion.button>
         )
@@ -89,7 +89,7 @@ export default function Onboarding({ initial, onDone }: { initial?: Profile; onD
           set({ vegetarian: !p.vegetarian })
         }}
         className={`flex w-full items-center justify-between rounded-3xl p-4 shadow-card transition-colors ${
-          p.vegetarian ? 'bg-leaf text-white' : 'bg-white'
+          p.vegetarian ? 'bg-leaf text-on-leaf' : 'bg-card'
         }`}
       >
         <span className="flex items-center gap-2 font-bold">
@@ -190,7 +190,7 @@ function Stepper({
     }
   }
   return (
-    <div className="flex items-center justify-between rounded-3xl bg-white p-4 shadow-card">
+    <div className="flex items-center justify-between rounded-3xl bg-card p-4 shadow-card">
       <span className="flex items-center gap-2 font-medium">
         <Icon name={icon} size={22} fill className="text-leaf" />
         {label}

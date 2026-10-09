@@ -15,7 +15,7 @@ import {
   exerciseStats,
   isCardio,
 } from '../lib/workout'
-import { BodyMap, LOAD_COLORS } from './BodyMap'
+import { BodyMap, useBodyPalette } from './BodyMap'
 import { Food } from './Food'
 import { Icon } from './Icon'
 import { Button, Sheet, Tap } from './ui'
@@ -31,7 +31,7 @@ export function ExerciseAnim({ ex, className = '', play = true }: { ex: Exercise
     return () => window.clearInterval(t)
   }, [play])
   return (
-    <div className={`relative overflow-hidden bg-white ${className}`}>
+    <div className={`relative overflow-hidden bg-card ${className}`}>
       {[0, 1].map((i) => (
         <motion.img
           key={i}
@@ -95,18 +95,18 @@ export function ExerciseLibrary({
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="搜尋動作，例如 臥推、深蹲、划船"
-            className="w-full rounded-2xl bg-white px-4 py-3 text-sm shadow-card outline-none ring-leaf/40 focus:ring-2"
+            className="w-full rounded-2xl bg-card px-4 py-3 text-sm shadow-card outline-none ring-leaf/40 focus:ring-2"
           />
           <div className="grid grid-cols-5 gap-1.5">
             {[{ id: null, label: '全部' }, ...MOVES].map((m) => {
               const on = move === m.id
-              const color = m.id === 'push' ? '#e07a5f' : m.id === 'pull' ? '#c98b2b' : m.id === 'cardio' ? '#4f8fbf' : m.id === 'core' ? '#5b8c5a' : '#2f2a24'
+              const color = m.id === 'push' ? 'rgb(var(--tomato))' : m.id === 'pull' ? 'rgb(var(--honey-ink))' : m.id === 'cardio' ? 'rgb(var(--sky))' : m.id === 'core' ? 'rgb(var(--leaf))' : 'rgb(var(--ink))'
               return (
                 <Tap
                   key={m.id ?? 'all'}
                   onClick={() => setMove(m.id)}
                   className="rounded-2xl py-2 text-sm font-medium transition-colors"
-                  style={{ background: on ? color : '#fff', color: on ? '#fff' : color, boxShadow: on ? undefined : '0 1px 3px rgba(0,0,0,.06)' }}
+                  style={{ background: on ? color : 'rgb(var(--card))', color: on ? 'rgb(var(--on-leaf))' : color, boxShadow: on ? undefined : '0 1px 3px rgba(0,0,0,.06)' }}
                 >
                   {m.label}
                 </Tap>
@@ -118,7 +118,7 @@ export function ExerciseLibrary({
               <Tap
                 key={p.id ?? 'all'}
                 onClick={() => setPart(p.id)}
-                className={`shrink-0 rounded-full px-3 py-1.5 text-xs transition-colors ${part === p.id ? 'bg-ink text-cream' : 'bg-white text-muted shadow-card'}`}
+                className={`shrink-0 rounded-full px-3 py-1.5 text-xs transition-colors ${part === p.id ? 'bg-ink text-cream' : 'bg-card text-muted shadow-card'}`}
               >
                 {p.label}
               </Tap>
@@ -129,7 +129,7 @@ export function ExerciseLibrary({
               <Tap
                 key={e.id ?? 'all'}
                 onClick={() => setEquip(e.id)}
-                className={`shrink-0 rounded-full px-3 py-1 text-xs transition-colors ${equip === e.id ? 'bg-leaf text-white' : 'bg-leaf-soft/60 text-leaf-dark'}`}
+                className={`shrink-0 rounded-full px-3 py-1 text-xs transition-colors ${equip === e.id ? 'bg-leaf text-on-leaf' : 'bg-leaf-soft/60 text-leaf-dark'}`}
               >
                 {e.label}
               </Tap>
@@ -139,7 +139,7 @@ export function ExerciseLibrary({
           <ul className="grid grid-cols-2 gap-2">
             {list.map((ex, i) => (
               <motion.li key={ex.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ ...spring, delay: Math.min(i, 10) * 0.02 }}>
-                <Tap press={0.96} onClick={() => setDetail(ex)} className="block w-full overflow-hidden rounded-2xl bg-white text-left shadow-card">
+                <Tap press={0.96} onClick={() => setDetail(ex)} className="block w-full overflow-hidden rounded-2xl bg-card text-left shadow-card">
                   <ExerciseAnim ex={ex} play={false} className="aspect-[3/2]" />
                   <span className="block px-2.5 py-2">
                     <span className="block truncate text-sm font-medium">{ex.zh}</span>
@@ -173,6 +173,7 @@ export function ExerciseLibrary({
 
 export function ExerciseDetail({ ex, onClose, actionLabel, onAction }: { ex: Exercise | null; onClose: () => void; actionLabel?: string; onAction?: (ex: Exercise) => void }) {
   const [showSteps, setShowSteps] = useState(false)
+  const load = useBodyPalette('load')
   const workouts = useLiveQuery(() => (ex ? db.workouts.orderBy('startedAt').toArray() : []), [ex?.id]) ?? []
   const stats = useMemo(() => (ex ? exerciseStats(ex.id, workouts) : null), [ex, workouts])
   return (
@@ -182,8 +183,8 @@ export function ExerciseDetail({ ex, onClose, actionLabel, onAction }: { ex: Exe
           <ExerciseAnim ex={ex} className="aspect-[3/2] rounded-3xl shadow-card" />
           <div className="flex flex-wrap items-center gap-1.5 text-xs">
             <span className="rounded-full bg-leaf-soft px-2 py-0.5 text-leaf-dark">{EQUIP_LABEL[ex.equip]}</span>
-            <span className="rounded-full bg-white px-2 py-0.5 text-muted shadow-sm">{LEVEL[ex.level]}</span>
-            {ex.compound && <span className="rounded-full bg-honey-soft px-2 py-0.5 text-[#a07a20]">多關節</span>}
+            <span className="rounded-full bg-card px-2 py-0.5 text-muted shadow-sm">{LEVEL[ex.level]}</span>
+            {ex.compound && <span className="rounded-full bg-honey-soft px-2 py-0.5 text-honey-ink">多關節</span>}
             <span className="text-muted">{ex.en}</span>
           </div>
           <div className="flex items-start gap-2 rounded-2xl bg-honey-soft/60 p-3 text-sm">
@@ -191,29 +192,29 @@ export function ExerciseDetail({ ex, onClose, actionLabel, onAction }: { ex: Exe
             <span>{ex.cue}</span>
           </div>
           {!isCardio(ex) && (
-            <section className="rounded-3xl bg-white p-4 shadow-card">
+            <section className="rounded-3xl bg-card p-4 shadow-card">
               <div className="mb-2 flex items-center justify-between">
                 <span className="text-sm font-bold">受力肌群</span>
                 <span className="flex items-center gap-2 text-[11px] text-muted">
                   <span className="flex items-center gap-1">
-                    <span className="h-2.5 w-2.5 rounded-full" style={{ background: LOAD_COLORS[1] }} />
+                    <span className="h-2.5 w-2.5 rounded-full" style={{ background: load[1] }} />
                     主要
                   </span>
                   <span className="flex items-center gap-1">
-                    <span className="h-2.5 w-2.5 rounded-full" style={{ background: LOAD_COLORS[0] }} />
+                    <span className="h-2.5 w-2.5 rounded-full" style={{ background: load[0] }} />
                     輔助
                   </span>
                 </span>
               </div>
-              <BodyMap data={bodyData(ex)} colors={LOAD_COLORS} />
+              <BodyMap data={bodyData(ex)} colors="load" />
               <div className="mt-3 flex flex-wrap gap-1.5 text-xs">
                 {ex.primary.map((m) => (
-                  <span key={m} className="rounded-full px-2 py-0.5 text-white" style={{ background: LOAD_COLORS[1] }}>
+                  <span key={m} className="rounded-full px-2 py-0.5 text-black/80" style={{ background: load[1] }}>
                     {MUSCLE_ZH[m]}
                   </span>
                 ))}
                 {ex.secondary.map((m) => (
-                  <span key={m} className="rounded-full px-2 py-0.5" style={{ background: LOAD_COLORS[0] }}>
+                  <span key={m} className="rounded-full px-2 py-0.5 text-black/80" style={{ background: load[0] }}>
                     {MUSCLE_ZH[m]}
                   </span>
                 ))}
@@ -221,7 +222,7 @@ export function ExerciseDetail({ ex, onClose, actionLabel, onAction }: { ex: Exe
             </section>
           )}
           {stats && stats.sessions.length > 0 && (
-            <section className="rounded-3xl bg-white p-4 shadow-card">
+            <section className="rounded-3xl bg-card p-4 shadow-card">
               <div className="mb-2 flex items-center gap-1.5 text-sm font-bold">
                 <Food id="rule-training" size={22} />
                 我的紀錄
@@ -246,7 +247,7 @@ export function ExerciseDetail({ ex, onClose, actionLabel, onAction }: { ex: Exe
               </ul>
             </section>
           )}
-          <div className="rounded-3xl bg-white p-4 shadow-card">
+          <div className="rounded-3xl bg-card p-4 shadow-card">
             <Tap press={0.98} onClick={() => setShowSteps(!showSteps)} className="flex w-full items-center gap-2 text-left text-sm font-bold">
               <Icon name="menu_book" size={18} className="text-leaf-dark" />
               詳細步驟（英文原文）

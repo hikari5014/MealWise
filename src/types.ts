@@ -29,8 +29,8 @@ export const MEAL_ICON: Record<MealSlot, IconName> = {
 }
 
 export const MEAL_COLOR: Record<MealSlot, string> = {
-  breakfast: '#e9b44c',
-  lunch: '#e07a5f',
+  breakfast: 'rgb(var(--honey))',
+  lunch: 'rgb(var(--tomato))',
   dinner: '#5f6fd3',
   snack: '#b07d4f',
 }

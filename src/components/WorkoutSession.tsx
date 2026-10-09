@@ -98,7 +98,7 @@ export function WorkoutSession({ id, onClose }: { id: number | null; onClose: ()
                     animate={{ opacity: 1, y: 0, scale: 1 }}
                     exit={{ opacity: 0, x: 40 }}
                     transition={spring}
-                    className="rounded-3xl bg-white p-3 shadow-card"
+                    className="rounded-3xl bg-card p-3 shadow-card"
                   >
                     <div className="mb-2 flex items-center gap-2.5">
                       <Tap press={0.95} onClick={() => setDetail(ex)} aria-label={`看${ex.zh}示範`}>
@@ -174,7 +174,7 @@ export function WorkoutSession({ id, onClose }: { id: number | null; onClose: ()
             <div className="flex items-center gap-2 px-1 text-xs text-muted">
               休息時間
               {REST_OPTIONS.map((r) => (
-                <Tap key={r} onClick={() => setRestFor(r)} className={`rounded-full px-2.5 py-1 ${restFor === r ? 'bg-ink text-cream' : 'bg-white shadow-card'}`}>
+                <Tap key={r} onClick={() => setRestFor(r)} className={`rounded-full px-2.5 py-1 ${restFor === r ? 'bg-ink text-cream' : 'bg-card shadow-card'}`}>
                   {r < 120 ? `${r} 秒` : `${r / 60} 分`}
                 </Tap>
               ))}
@@ -201,10 +201,10 @@ export function WorkoutSession({ id, onClose }: { id: number | null; onClose: ()
                     <span className="relative flex-1 text-sm">
                       休息 <b className="tabular-nums">{fmt(restLeft)}</b>
                     </span>
-                    <Tap onClick={() => setRestEnd((t) => (t ?? Date.now()) + 30000)} className="relative rounded-full bg-white/15 px-2.5 py-1 text-xs">
+                    <Tap onClick={() => setRestEnd((t) => (t ?? Date.now()) + 30000)} className="relative rounded-full bg-card/15 px-2.5 py-1 text-xs">
                       +30 秒
                     </Tap>
-                    <Tap onClick={() => setRestEnd(null)} className="relative rounded-full bg-white/15 px-2.5 py-1 text-xs">
+                    <Tap onClick={() => setRestEnd(null)} className="relative rounded-full bg-card/15 px-2.5 py-1 text-xs">
                       跳過
                     </Tap>
                   </motion.div>
@@ -285,7 +285,7 @@ function NumberField({ value, step, onChange, done }: { value: number; step: num
 
 function Mini({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-2xl bg-white py-2 shadow-card">
+    <div className="rounded-2xl bg-card py-2 shadow-card">
       <div className="text-sm font-bold tabular-nums">{value}</div>
       <div className="text-[10px] text-muted">{label}</div>
     </div>

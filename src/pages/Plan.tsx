@@ -86,7 +86,7 @@ export function WeekSwitcher({ start, onChange }: { start: string; onChange: (s:
         whileTap={{ scale: 0.85 }}
         aria-label="上一週"
         onClick={() => onChange(addDays(start, -7))}
-        className="grid h-9 w-9 place-items-center rounded-full bg-white shadow-card"
+        className="grid h-9 w-9 place-items-center rounded-full bg-card shadow-card"
       >
         <Icon name="chevron_left" size={22} />
       </motion.button>
@@ -98,7 +98,7 @@ export function WeekSwitcher({ start, onChange }: { start: string; onChange: (s:
         whileTap={{ scale: 0.85 }}
         aria-label="下一週"
         onClick={() => onChange(addDays(start, 7))}
-        className="grid h-9 w-9 place-items-center rounded-full bg-white shadow-card"
+        className="grid h-9 w-9 place-items-center rounded-full bg-card shadow-card"
       >
         <Icon name="chevron_right" size={22} />
       </motion.button>
@@ -181,13 +181,13 @@ function Week({ profile, focus }: { profile: Profile; focus: string | null }) {
           return (
             <Tap key={d} onClick={() => select(d)} className="relative flex flex-col items-center rounded-2xl py-2">
               {active && <motion.span layoutId="day-pill" transition={spring} className="absolute inset-0 rounded-2xl bg-leaf shadow-card" />}
-              <span className={`relative text-[11px] ${active ? 'text-white/80' : 'text-muted'}`}>{weekdayLabel(d)}</span>
-              <span className={`relative text-base font-bold ${active ? 'text-white' : d === today ? 'text-leaf' : ''}`}>
+              <span className={`relative text-[11px] ${active ? 'text-on-leaf/80' : 'text-muted'}`}>{weekdayLabel(d)}</span>
+              <span className={`relative text-base font-bold ${active ? 'text-on-leaf' : d === today ? 'text-leaf' : ''}`}>
                 {Number(d.slice(-2))}
               </span>
               <span className="relative mt-0.5 flex h-1.5 gap-0.5">
                 {Array.from({ length: Math.min(count, 4) }).map((_, i) => (
-                  <span key={i} className={`h-1 w-1 rounded-full ${active ? 'bg-white' : 'bg-leaf/60'}`} />
+                  <span key={i} className={`h-1 w-1 rounded-full ${active ? 'bg-card' : 'bg-leaf/60'}`} />
                 ))}
               </span>
               {marks[d]?.train && !r.feastMeal ? (
@@ -196,7 +196,7 @@ function Week({ profile, focus }: { profile: Profile; focus: string | null }) {
                 </span>
               ) : (
                 (r.feastMeal || r.training || r.fastDay) && (
-                  <span className={`relative mt-1 ${active ? 'text-white' : r.feastMeal ? 'text-tomato' : r.fastDay ? 'text-ink/50' : 'text-leaf'}`}>
+                  <span className={`relative mt-1 ${active ? 'text-on-leaf' : r.feastMeal ? 'text-tomato' : r.fastDay ? 'text-ink/50' : 'text-leaf'}`}>
                     <Icon name={r.feastMeal ? 'celebration' : r.fastDay ? 'no_meals' : 'fitness_center'} size={13} fill={!!r.feastMeal} />
                   </span>
                 )
@@ -211,7 +211,7 @@ function Week({ profile, focus }: { profile: Profile; focus: string | null }) {
           <span className="flex items-center justify-center gap-1.5">
             <Icon name="touch_app" size={20} fill motion="pulse" />
             快速挑選
-            {emptyCount > 0 && <span className="rounded-full bg-white/25 px-1.5 text-xs tabular-nums">{emptyCount}</span>}
+            {emptyCount > 0 && <span className="rounded-full bg-card/25 px-1.5 text-xs tabular-nums">{emptyCount}</span>}
           </span>
         </Button>
         <Button variant="soft" className="flex-1" onClick={() => batch.start()}>
@@ -236,7 +236,7 @@ function Week({ profile, focus }: { profile: Profile; focus: string | null }) {
             key={label}
             whileTap={{ scale: 0.92 }}
             onClick={fn}
-            className="flex shrink-0 items-center gap-1 rounded-full bg-white px-3 py-1.5 text-ink/80 shadow-card"
+            className="flex shrink-0 items-center gap-1 rounded-full bg-card px-3 py-1.5 text-ink/80 shadow-card"
           >
             <Icon name={icon} size={16} />
             {label}
@@ -353,7 +353,7 @@ function CopyDaySheet({ open, onClose, from, hasPlans }: { open: boolean; onClos
             <Tap onClick={() => setTargets(options.slice(0, 6))} className="rounded-full bg-leaf-soft px-3 py-1 text-leaf-dark">
               接下來 6 天
             </Tap>
-            <Tap onClick={() => setTargets([])} className="rounded-full bg-white px-3 py-1 text-muted shadow-card">
+            <Tap onClick={() => setTargets([])} className="rounded-full bg-card px-3 py-1 text-muted shadow-card">
               清除
             </Tap>
           </div>
@@ -368,9 +368,9 @@ function CopyDaySheet({ open, onClose, from, hasPlans }: { open: boolean; onClos
                     haptic(6)
                     setTargets((t) => (on ? t.filter((x) => x !== d) : [...t, d]))
                   }}
-                  className={`flex flex-col items-center rounded-2xl py-2 transition-colors ${on ? 'bg-leaf text-white' : 'bg-white shadow-card'}`}
+                  className={`flex flex-col items-center rounded-2xl py-2 transition-colors ${on ? 'bg-leaf text-on-leaf' : 'bg-card shadow-card'}`}
                 >
-                  <span className={`text-[10px] ${on ? 'text-white/80' : 'text-muted'}`}>{weekdayLabel(d)}</span>
+                  <span className={`text-[10px] ${on ? 'text-on-leaf/80' : 'text-muted'}`}>{weekdayLabel(d)}</span>
                   <span className="text-sm font-bold">{Number(d.slice(-2))}</span>
                 </motion.button>
               )
@@ -406,7 +406,7 @@ function PlanRow({ plan, onRemove }: { plan: PlanEntry; onRemove: () => void }) 
           onRemove()
         }
       }}
-      className="relative flex min-h-[72px] touch-pan-y items-center gap-3 overflow-hidden rounded-2xl bg-white py-3 pl-4 pr-2 shadow-card"
+      className="relative flex min-h-[72px] touch-pan-y items-center gap-3 overflow-hidden rounded-2xl bg-card py-3 pl-4 pr-2 shadow-card"
     >
       <RowPhoto recipe={recipe} layoutId={layoutId} />
       <Tap className="relative min-w-0 flex-1 text-left" onClick={() => openDetail(recipe.id, layoutId)}>
@@ -419,7 +419,7 @@ function PlanRow({ plan, onRemove }: { plan: PlanEntry; onRemove: () => void }) 
         whileTap={{ scale: 0.85 }}
         onClick={onRemove}
         aria-label={`移除${recipe.name}`}
-        className="relative grid h-9 w-9 place-items-center rounded-full bg-white/90 text-muted shadow-sm"
+        className="relative grid h-9 w-9 place-items-center rounded-full bg-card/90 text-muted shadow-sm"
       >
         <Icon name="close" size={20} />
       </motion.button>
@@ -476,7 +476,7 @@ function Library({ profile }: { profile: Profile }) {
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="搜尋食譜或標籤"
-          className="min-w-0 flex-1 rounded-2xl bg-white px-4 py-3 text-sm shadow-card outline-none ring-leaf/40 focus:ring-2"
+          className="min-w-0 flex-1 rounded-2xl bg-card px-4 py-3 text-sm shadow-card outline-none ring-leaf/40 focus:ring-2"
         />
         <Button variant="soft" className="flex items-center gap-1 px-3 text-sm" onClick={openComposer}>
           <Icon name="restaurant_menu" size={18} />
@@ -494,7 +494,7 @@ function Library({ profile }: { profile: Profile }) {
             whileTap={{ scale: 0.92 }}
             onClick={() => setMeal(m)}
             className={`shrink-0 rounded-full px-4 py-1.5 text-sm transition-colors ${
-              meal === m ? 'bg-ink text-cream' : 'bg-white text-muted shadow-card'
+              meal === m ? 'bg-ink text-cream' : 'bg-card text-muted shadow-card'
             }`}
           >
             {m === 'all' ? '全部' : MEAL_LABEL[m]}
@@ -508,7 +508,7 @@ function Library({ profile }: { profile: Profile }) {
             whileTap={{ scale: 0.92 }}
             onClick={() => setGroup(g.id)}
             className={`flex shrink-0 items-center gap-1 rounded-full px-3 py-1 text-xs transition-colors ${
-              group === g.id ? 'bg-leaf text-white' : 'bg-leaf-soft/60 text-leaf-dark'
+              group === g.id ? 'bg-leaf text-on-leaf' : 'bg-leaf-soft/60 text-leaf-dark'
             }`}
           >
             {g.icon && <Icon name={g.icon} size={14} fill={group === g.id} />}
@@ -542,12 +542,12 @@ function Library({ profile }: { profile: Profile }) {
       {list.length > limit && <div ref={more} className="h-10" />}
               <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/10 to-transparent" />
               {taste.favorites.includes(r.id) && (
-                <span className="absolute right-2 top-2 grid h-7 w-7 place-items-center rounded-full bg-white/90 text-tomato shadow">
+                <span className="absolute right-2 top-2 grid h-7 w-7 place-items-center rounded-full bg-card/90 text-tomato shadow">
                   <Icon name="favorite" size={16} fill />
                 </span>
               )}
               {r.custom && (
-                <span className="absolute left-2 top-2 rounded-full bg-white/90 px-2 py-0.5 text-[10px] font-medium text-leaf-dark shadow">
+                <span className="absolute left-2 top-2 rounded-full bg-card/90 px-2 py-0.5 text-[10px] font-medium text-leaf-dark shadow">
                   我的
                 </span>
               )}

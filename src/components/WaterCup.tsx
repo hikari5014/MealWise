@@ -53,7 +53,7 @@ export function WaterCup({ ml, target, onAdd }: { ml: number; target: number; on
             transition={{ type: 'spring', stiffness: 70, damping: 14 }}
           >
             <svg className="wave absolute -top-2 left-0 h-3 w-[200%]" viewBox="0 0 120 12" preserveAspectRatio="none">
-              <path d="M0 6 Q15 0 30 6 T60 6 T90 6 T120 6 V12 H0Z" fill="#5fa8d3" />
+              <path d="M0 6 Q15 0 30 6 T60 6 T90 6 T120 6 V12 H0Z" style={{ fill: 'rgb(var(--sky))' }} />
             </svg>
             <div className="h-full w-full bg-sky" />
           </motion.div>
@@ -61,7 +61,7 @@ export function WaterCup({ ml, target, onAdd }: { ml: number; target: number; on
             {bubbles.map((id) => (
               <motion.span
                 key={id}
-                className="absolute left-1/2 h-2 w-2 rounded-full bg-white/80"
+                className="absolute left-1/2 h-2 w-2 rounded-full bg-card/80"
                 initial={{ bottom: 4, x: -4, opacity: 1 }}
                 animate={{ bottom: 80, x: [-4, 2, -6], opacity: 0 }}
                 exit={{ opacity: 0 }}

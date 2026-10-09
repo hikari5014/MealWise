@@ -45,14 +45,14 @@ export function RecipePhoto({
 
   if (failed) {
     return (
-      <div className={`absolute inset-0 grid place-items-center ${className}`} style={{ backgroundColor: recipe.color }}>
+      <div className={`recipe-fallback absolute inset-0 grid place-items-center ${className}`} style={{ backgroundColor: recipe.color }}>
         <Food id={recipe.image} size={size === 'lg' ? 140 : 56} alt={recipe.name} />
       </div>
     )
   }
 
   return (
-    <div className={`absolute inset-0 ${className}`} style={{ backgroundColor: recipe.color }}>
+    <div className={`recipe-fallback-bg absolute inset-0 ${className}`} style={{ backgroundColor: recipe.color }}>
       <motion.img
         src={src}
         referrerPolicy="no-referrer"

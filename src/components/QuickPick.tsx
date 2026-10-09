@@ -131,7 +131,7 @@ export function QuickPickSheet({
               <motion.span
                 key={i}
                 className="h-1.5 flex-1 rounded-full"
-                animate={{ backgroundColor: i < index ? '#5b8c5a' : i === index ? '#e9b44c' : 'rgba(47,42,36,0.1)' }}
+                style={{ backgroundColor: i < index ? 'rgb(var(--leaf))' : i === index ? 'rgb(var(--honey))' : 'rgb(var(--ink) / 0.1)', transition: 'background-color .3s' }}
               />
             ))}
           </div>
@@ -168,7 +168,7 @@ export function QuickPickSheet({
                       {r.nutrition.kcal} kcal・蛋白質 {r.nutrition.protein}g・{r.minutes} 分
                     </div>
                   </div>
-                  <span className="absolute right-3 top-1/2 grid h-9 w-9 -translate-y-1/2 place-items-center rounded-full bg-white/90 text-leaf-dark">
+                  <span className="absolute right-3 top-1/2 grid h-9 w-9 -translate-y-1/2 place-items-center rounded-full bg-card/90 text-leaf-dark">
                     <Icon name="add" size={22} weight={600} />
                   </span>
                 </motion.button>

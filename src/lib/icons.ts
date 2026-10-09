@@ -23,6 +23,7 @@ export const ICON_NAMES = [
   'close',
   'content_copy',
   'content_paste',
+  'contrast',
   'cookie',
   'dark_mode',
   'data_object',

@@ -99,7 +99,7 @@ function GroupTile({ group, count, open, onTap }: { group: Group; count: number;
       transition={bouncy}
       aria-expanded={open}
       className={`relative flex flex-col items-center gap-1 rounded-3xl py-2.5 shadow-card transition-colors ${
-        count ? 'bg-leaf-soft' : 'bg-white'
+        count ? 'bg-leaf-soft' : 'bg-card'
       } ${open ? 'ring-2 ring-leaf/60' : ''}`}
     >
       <motion.span animate={controls} className="grid place-items-center">
@@ -114,7 +114,7 @@ function GroupTile({ group, count, open, onTap }: { group: Group; count: number;
             animate={{ scale: 1, rotate: 0 }}
             exit={{ scale: 0 }}
             transition={bouncy}
-            className="absolute -right-1 -top-1 grid h-6 min-w-6 place-items-center rounded-full bg-leaf px-1.5 text-[11px] font-bold text-white shadow"
+            className="absolute -right-1 -top-1 grid h-6 min-w-6 place-items-center rounded-full bg-leaf px-1.5 text-[11px] font-bold text-on-leaf shadow"
           >
             {count}
           </motion.span>
@@ -171,7 +171,7 @@ function Panel({
           </motion.span>
           <span className="font-bold">{group.label}</span>
           {limits && <span className="text-[11px] text-muted">{limit.label}・{limit.hint}</span>}
-          <motion.button whileTap={{ scale: 0.85 }} onClick={onClose} aria-label="收起" className="ml-auto grid h-8 w-8 place-items-center rounded-full bg-white/80">
+          <motion.button whileTap={{ scale: 0.85 }} onClick={onClose} aria-label="收起" className="ml-auto grid h-8 w-8 place-items-center rounded-full bg-card/80">
             <Icon name="expand_more" size={20} className="rotate-180" />
           </motion.button>
         </div>
@@ -205,7 +205,7 @@ function Panel({
                     haptic(6)
                     setSub(i)
                   }}
-                  className={`relative shrink-0 rounded-full px-3 py-1 text-xs transition-colors ${i === sub ? 'text-white' : 'bg-white/80 text-ink'}`}
+                  className={`relative shrink-0 rounded-full px-3 py-1 text-xs transition-colors ${i === sub ? 'text-on-leaf' : 'bg-card/80 text-ink'}`}
                 >
                   {i === sub && <motion.span layoutId={`sub-pill-${group.id}`} transition={bouncy} className="absolute inset-0 rounded-full bg-leaf" />}
                   <span className="relative">
@@ -264,7 +264,7 @@ function ItemButton({ comp, index, on, no, onTap }: { comp: Comp; index: number;
       <motion.span
         animate={controls}
         className={`flex flex-col items-center gap-0.5 rounded-2xl px-1 py-2 text-[11px] leading-tight shadow-card transition-colors ${
-          on ? 'bg-leaf text-white' : 'bg-white'
+          on ? 'bg-leaf text-on-leaf' : 'bg-card'
         } ${no && !on ? 'opacity-40' : ''}`}
       >
         <Food id={comp.image} size={30} />
@@ -277,7 +277,7 @@ function ItemButton({ comp, index, on, no, onTap }: { comp: Comp; index: number;
             animate={{ scale: 1, rotate: 0 }}
             exit={{ scale: 0 }}
             transition={bouncy}
-            className="absolute -right-1 -top-1 grid h-5 w-5 place-items-center rounded-full bg-white text-leaf shadow"
+            className="absolute -right-1 -top-1 grid h-5 w-5 place-items-center rounded-full bg-card text-leaf shadow"
           >
             <Icon name="check" size={14} weight={700} />
           </motion.span>

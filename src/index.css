@@ -2,9 +2,59 @@
 @tailwind components;
 @tailwind utilities;
 
+/* 顏色變數：數字是 R G B，給 Tailwind 的 bg-leaf/50 這種透明度用 */
+:root {
+  --cream: 247 243 236;
+  --card: 255 255 255;
+  --ink: 47 42 36;
+  --muted: 138 129 120;
+  --leaf: 91 140 90;
+  --leaf-soft: 227 238 223;
+  --leaf-dark: 63 107 62;
+  --on-leaf: 255 255 255;
+  --tomato: 224 122 95;
+  --tomato-soft: 251 229 222;
+  --honey: 233 180 76;
+  --honey-soft: 251 240 217;
+  --honey-ink: 160 122 32;
+  --sky: 95 168 211;
+  --sky-soft: 224 240 249;
+  --frost: 95 111 211;
+  --frost-soft: 228 232 251;
+  --rose: 212 87 122;
+  --rose-soft: 251 225 234;
+  --shadow-card: 0 1px 2px rgba(47, 42, 36, 0.04), 0 4px 16px rgba(47, 42, 36, 0.06);
+  color-scheme: light;
+}
+
+/* 深色主題：參考 Apple Watch Nike 錶面——純黑底、深灰卡片、螢光綠重點色 */
+:root[data-theme='dark'] {
+  --cream: 0 0 0;
+  --card: 28 28 30;
+  --ink: 245 245 247;
+  --muted: 142 142 147;
+  --leaf: 190 242 60;
+  --leaf-soft: 33 44 14;
+  --leaf-dark: 205 255 90;
+  --on-leaf: 10 10 10;
+  --tomato: 255 107 74;
+  --tomato-soft: 58 26 18;
+  --honey: 255 214 10;
+  --honey-soft: 51 43 10;
+  --honey-ink: 255 214 10;
+  --sky: 100 210 255;
+  --sky-soft: 15 42 54;
+  --frost: 142 156 255;
+  --frost-soft: 28 31 58;
+  --rose: 255 55 95;
+  --rose-soft: 58 16 24;
+  --shadow-card: 0 0 0 1px rgba(255, 255, 255, 0.06);
+  color-scheme: dark;
+}
+
 html {
   -webkit-tap-highlight-color: transparent;
-  background: #f7f3ec;
+  background: rgb(var(--cream));
 }
 
 body {
@@ -58,4 +108,10 @@ input:not([type='checkbox']):not([type='radio']):not([type='range']),
 textarea,
 select {
   font-size: max(16px, 1em) !important;
+}
+
+/* 深色主題：照片上的白色漸層、食物插圖背景稍微壓暗，不刺眼 */
+:root[data-theme='dark'] .recipe-fallback,
+:root[data-theme='dark'] .recipe-fallback-bg {
+  background-color: rgb(44 44 46) !important;
 }

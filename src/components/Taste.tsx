@@ -48,7 +48,7 @@ function Tile({ on, label, image, onClick }: { on: boolean; label: string; image
       }}
       aria-pressed={on}
       className={`relative flex flex-col items-center gap-1 rounded-3xl py-3 shadow-card transition-colors ${
-        on ? 'bg-leaf text-white' : 'bg-white'
+        on ? 'bg-leaf text-on-leaf' : 'bg-card'
       }`}
     >
       <motion.span animate={on ? { rotate: [0, -12, 10, 0], scale: [1, 1.2, 1] } : {}} transition={{ duration: 0.45 }}>
@@ -62,7 +62,7 @@ function Tile({ on, label, image, onClick }: { on: boolean; label: string; image
             animate={{ scale: 1 }}
             exit={{ scale: 0 }}
             transition={{ type: 'spring', stiffness: 500, damping: 14 }}
-            className="absolute -right-1 -top-1 grid h-6 w-6 place-items-center rounded-full bg-white text-tomato shadow"
+            className="absolute -right-1 -top-1 grid h-6 w-6 place-items-center rounded-full bg-card text-tomato shadow"
           >
             <Icon name="favorite" size={15} fill />
           </motion.span>
@@ -166,7 +166,7 @@ function RecipeList({
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -20 }}
-                className="flex items-center gap-3 rounded-2xl bg-white p-2 pr-3 shadow-sm"
+                className="flex items-center gap-3 rounded-2xl bg-card p-2 pr-3 shadow-sm"
               >
                 <span className="relative h-10 w-10 shrink-0 overflow-hidden rounded-xl">
                   <RecipePhoto recipe={r} />

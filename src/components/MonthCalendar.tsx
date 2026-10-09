@@ -54,7 +54,7 @@ export function MonthCalendar({ profile, onGoDay }: { profile: Profile; onGoDay:
           whileTap={{ scale: 0.85 }}
           onClick={() => go(-1)}
           aria-label="上個月"
-          className="grid h-9 w-9 place-items-center rounded-full bg-white shadow-card"
+          className="grid h-9 w-9 place-items-center rounded-full bg-card shadow-card"
         >
           <Icon name="chevron_left" size={22} />
         </motion.button>
@@ -65,13 +65,13 @@ export function MonthCalendar({ profile, onGoDay }: { profile: Profile; onGoDay:
           whileTap={{ scale: 0.85 }}
           onClick={() => go(1)}
           aria-label="下個月"
-          className="grid h-9 w-9 place-items-center rounded-full bg-white shadow-card"
+          className="grid h-9 w-9 place-items-center rounded-full bg-card shadow-card"
         >
           <Icon name="chevron_right" size={22} />
         </motion.button>
       </div>
 
-      <div className="rounded-3xl bg-white p-3 shadow-card">
+      <div className="rounded-3xl bg-card p-3 shadow-card">
         <div className="mb-1 grid grid-cols-7 text-center text-[11px] text-muted">
           {WEEK.map((w) => (
             <span key={w}>{w}</span>
@@ -220,7 +220,7 @@ function DaySheet({
           />
         </div>
 
-        <div className="rounded-3xl bg-white p-4 shadow-card">
+        <div className="rounded-3xl bg-card p-4 shadow-card">
           <div className="mb-2 flex items-center gap-1.5 font-bold">
             <Icon name="celebration" size={20} fill className="text-tomato" motion={mark?.feast ? 'wiggle' : 'none'} />
             這天有大餐嗎？
@@ -258,7 +258,7 @@ function DaySheet({
           </AnimatePresence>
         </div>
 
-        <div className="rounded-3xl bg-white p-4 shadow-card">
+        <div className="rounded-3xl bg-card p-4 shadow-card">
           <div className="mb-2 text-sm font-bold">這天會這樣吃</div>
           <ul className="space-y-1.5">
             {MEAL_SLOTS.map((m) => (
@@ -310,7 +310,7 @@ function ToggleTile({
   onClick: () => void
   tone?: 'leaf' | 'ink'
 }) {
-  const bg = tone === 'leaf' ? 'bg-leaf text-white' : 'bg-ink text-cream'
+  const bg = tone === 'leaf' ? 'bg-leaf text-on-leaf' : 'bg-ink text-cream'
   return (
     <motion.button
       whileTap={{ scale: 0.94 }}
@@ -318,7 +318,7 @@ function ToggleTile({
         haptic(on ? 6 : [8, 24, 8])
         onClick()
       }}
-      className={`flex items-center gap-2 rounded-3xl p-3 text-left shadow-card transition-colors ${on ? bg : 'bg-white'}`}
+      className={`flex items-center gap-2 rounded-3xl p-3 text-left shadow-card transition-colors ${on ? bg : 'bg-card'}`}
     >
       <motion.span animate={on ? { scale: [1, 1.3, 1], rotate: [0, -10, 0] } : { scale: 1 }} transition={{ duration: 0.4 }}>
         <Icon name={icon} size={24} fill={on} />

@@ -96,7 +96,7 @@ const IMAGE_BY_KIND: Record<Kind, FoodImage> = {
   snack: 'apple',
 }
 
-const COLORS = ['#fbf0d9', '#e3eedf', '#fbe5de', '#f1ece2', '#e0f0f9']
+const COLORS = ['rgb(var(--honey-soft))', '#e3eedf', '#fbe5de', '#f1ece2', '#e0f0f9']
 
 /** 把一筆（寬鬆的）資料整理成食譜；有問題就丟出看得懂的錯誤 */
 export function normalizeRecipe(raw: Record<string, unknown>, id = newRecipeId()): Recipe {

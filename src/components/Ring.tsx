@@ -20,7 +20,7 @@ export function Ring({
   target,
   size = 148,
   stroke = 14,
-  color = '#5b8c5a',
+  color = 'rgb(var(--leaf))',
   children,
 }: {
   value: number
@@ -43,7 +43,7 @@ export function Ring({
           cy={size / 2}
           r={r}
           fill="none"
-          stroke={over ? '#e07a5f' : color}
+          style={{ stroke: over ? 'rgb(var(--tomato))' : color }}
           strokeWidth={stroke}
           strokeLinecap="round"
           strokeDasharray={c}

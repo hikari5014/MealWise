@@ -57,7 +57,7 @@ export function DayTraining({ date, mark, weeklyTraining, compact = false }: { d
   }
 
   return (
-    <section className={compact ? 'space-y-2' : 'space-y-3 rounded-3xl bg-white p-4 shadow-card'}>
+    <section className={compact ? 'space-y-2' : 'space-y-3 rounded-3xl bg-card p-4 shadow-card'}>
       {!compact && (
         <div className="flex items-center gap-1.5 font-bold">
           <Food id="rule-training" size={24} />
@@ -75,7 +75,7 @@ export function DayTraining({ date, mark, weeklyTraining, compact = false }: { d
                   key={t.id}
                   onClick={() => choose(on ? null : t.id)}
                   className="shrink-0 rounded-full px-2.5 py-1 text-xs transition-colors"
-                  style={{ background: on ? t.color : t.soft, color: on ? '#fff' : t.color }}
+                  style={{ background: on ? t.color : t.soft, color: on ? 'rgb(var(--on-leaf))' : t.color }}
                 >
                   {t.label}
                 </Tap>
@@ -83,7 +83,7 @@ export function DayTraining({ date, mark, weeklyTraining, compact = false }: { d
             })}
             <Tap
               onClick={() => choose(current === 'rest' ? null : 'rest')}
-              className={`shrink-0 rounded-full px-2.5 py-1 text-xs ${current === 'rest' ? 'bg-ink text-cream' : 'bg-white text-muted shadow-card'}`}
+              className={`shrink-0 rounded-full px-2.5 py-1 text-xs ${current === 'rest' ? 'bg-ink text-cream' : 'bg-card text-muted shadow-card'}`}
             >
               休息
             </Tap>
@@ -104,7 +104,7 @@ export function DayTraining({ date, mark, weeklyTraining, compact = false }: { d
                       onClick={() => choose(on ? null : t.id)}
                       animate={{ scale: on ? [1, 1.08, 1] : 1 }}
                       className="flex flex-1 items-center justify-center gap-1 rounded-2xl py-2 text-sm transition-colors"
-                      style={{ background: on ? t.color : t.soft, color: on ? '#fff' : t.color }}
+                      style={{ background: on ? t.color : t.soft, color: on ? 'rgb(var(--on-leaf))' : t.color }}
                     >
                       {on && <Icon name="check" size={16} weight={700} />}
                       {t.label.replace('重訓・', '')}
@@ -128,7 +128,7 @@ export function DayTraining({ date, mark, weeklyTraining, compact = false }: { d
               依每週設定{current === null ? `（${weeklyTraining ? '運動日' : '休息'}）` : ''}
             </Tap>
             <Tap onClick={() => setRepeat(!repeat)} className="ml-auto flex items-center gap-1 text-xs text-muted">
-              <span className={`grid h-4 w-4 place-items-center rounded border ${repeat ? 'border-leaf bg-leaf text-white' : 'border-ink/30'}`}>
+              <span className={`grid h-4 w-4 place-items-center rounded border ${repeat ? 'border-leaf bg-leaf text-on-leaf' : 'border-ink/30'}`}>
                 {repeat && <Icon name="check" size={12} weight={700} />}
               </span>
               每週{weekdayLabel(date)}都這樣
@@ -161,8 +161,8 @@ export function DayTraining({ date, mark, weeklyTraining, compact = false }: { d
         <Tap
           press={0.97}
           onClick={start}
-          className={`flex w-full items-center justify-center gap-1.5 rounded-2xl text-sm font-medium ${workouts.length ? 'py-2 text-muted' : 'py-2.5 text-white'}`}
-          style={{ background: workouts.length ? 'rgba(47,42,36,0.06)' : current ? TRAIN_MAP[current].color : '#5b8c5a' }}
+          className={`flex w-full items-center justify-center gap-1.5 rounded-2xl text-sm font-medium ${workouts.length ? 'py-2 text-muted' : 'py-2.5 text-on-leaf'}`}
+          style={{ background: workouts.length ? 'rgb(var(--ink) / 0.06)' : current ? TRAIN_MAP[current].color : 'rgb(var(--leaf))' }}
         >
           <Icon name={workouts.length ? 'add' : 'fitness_center'} size={18} />
           {workouts.length ? '再開一次' : date === today ? '開始' : '補記'}

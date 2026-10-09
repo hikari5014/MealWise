@@ -172,7 +172,7 @@ function PantrySheet({ open, onClose, profile }: { open: boolean; onClose: () =>
                           animate={{ opacity: 1, x: 0 }}
                           exit={{ opacity: 0, x: 24, transition: { duration: 0.15 } }}
                           transition={spring}
-                          className="flex items-center gap-2 rounded-2xl bg-white px-2.5 py-1.5 shadow-card"
+                          className="flex items-center gap-2 rounded-2xl bg-card px-2.5 py-1.5 shadow-card"
                         >
                           <Food id={c.image} size={26} />
                           <span className="min-w-0 flex-1 truncate text-sm">{c.name}</span>
@@ -184,7 +184,7 @@ function PantrySheet({ open, onClose, profile }: { open: boolean; onClose: () =>
                                 <Tap
                                   key={a.value}
                                   onClick={() => setPantry({ ...pantry, [id]: a.value })}
-                                  className={`rounded-full px-2 py-0.5 text-[11px] transition-colors ${pantry[id] === a.value ? 'bg-leaf text-white' : 'bg-cream text-muted'}`}
+                                  className={`rounded-full px-2 py-0.5 text-[11px] transition-colors ${pantry[id] === a.value ? 'bg-leaf text-on-leaf' : 'bg-cream text-muted'}`}
                                 >
                                   {a.label}
                                 </Tap>
@@ -212,7 +212,7 @@ function PantrySheet({ open, onClose, profile }: { open: boolean; onClose: () =>
 
       {step === 'how' && (
         <div className="space-y-4">
-          <Tap press={0.98} onClick={() => setStep('fridge')} className="flex w-full items-center gap-2 rounded-2xl bg-white p-3 text-left shadow-card">
+          <Tap press={0.98} onClick={() => setStep('fridge')} className="flex w-full items-center gap-2 rounded-2xl bg-card p-3 text-left shadow-card">
             <span className="flex -space-x-2">
               {owned.slice(0, 6).map((id) => (
                 <span key={id} className="grid h-8 w-8 place-items-center rounded-full border-2 border-white bg-cream">
@@ -241,14 +241,14 @@ function PantrySheet({ open, onClose, profile }: { open: boolean; onClose: () =>
             <div className="mb-1.5 px-1 text-sm font-medium">每一餐怎麼吃</div>
             <div className="space-y-2">
               {(['breakfast', 'lunch', 'dinner'] as MealSlot[]).map((m) => (
-                <div key={m} className="flex items-center gap-2 rounded-2xl bg-white p-2 pl-3 shadow-card">
+                <div key={m} className="flex items-center gap-2 rounded-2xl bg-card p-2 pl-3 shadow-card">
                   <span className="w-10 text-sm">{MEAL_LABEL[m]}</span>
                   <div className="flex flex-1 gap-1">
                     {(['off', 'batch', 'fresh'] as Mode[]).map((mode) => (
                       <Tap
                         key={mode}
                         onClick={() => setModes({ ...modes, [m]: mode })}
-                        className={`relative flex-1 rounded-xl py-1.5 text-xs transition-colors ${modes[m] === mode ? 'text-white' : 'text-muted'}`}
+                        className={`relative flex-1 rounded-xl py-1.5 text-xs transition-colors ${modes[m] === mode ? 'text-on-leaf' : 'text-muted'}`}
                       >
                         {modes[m] === mode && (
                           <motion.span layoutId={`mode-${m}`} transition={spring} className={`absolute inset-0 rounded-xl ${mode === 'off' ? 'bg-ink/40' : mode === 'batch' ? 'bg-leaf' : 'bg-honey'}`} />
@@ -273,7 +273,7 @@ function PantrySheet({ open, onClose, profile }: { open: boolean; onClose: () =>
           <div className="rounded-3xl bg-gradient-to-br from-leaf-soft to-honey-soft p-4">
             <div className="font-bold">
               排了 {result.plans.length}／{result.slots} 餐
-              {result.plans.length < result.slots && <span className="ml-1 text-xs font-normal text-[#a07a20]">食材不太夠，剩下的餐可以補買或自己排</span>}
+              {result.plans.length < result.slots && <span className="ml-1 text-xs font-normal text-honey-ink">食材不太夠，剩下的餐可以補買或自己排</span>}
             </div>
             <div className="mt-0.5 text-xs text-ink/70">
               用到家裡 {result.used.length} 樣食材・要補買 {result.shopping.length} 樣
@@ -324,13 +324,13 @@ function PantrySheet({ open, onClose, profile }: { open: boolean; onClose: () =>
                   <h3 className="mb-2 px-1 text-sm font-bold">每天吃什麼</h3>
                   <ul className="space-y-1">
                     {[...new Set(result.plans.map((p) => p.date))].map((d) => (
-                      <li key={d} className="flex gap-2 rounded-2xl bg-white px-3 py-2 text-xs shadow-card">
+                      <li key={d} className="flex gap-2 rounded-2xl bg-card px-3 py-2 text-xs shadow-card">
                         <span className="w-[74px] shrink-0 text-muted">{dayLabel(d)}</span>
                         <span className="flex min-w-0 flex-1 flex-wrap gap-1">
                           {result.plans
                             .filter((p) => p.date === d)
                             .map((p) => (
-                              <span key={p.meal} className={`truncate rounded-full px-2 py-0.5 ${p.kind === 'batch' ? 'bg-leaf-soft text-leaf-dark' : 'bg-honey-soft text-[#a07a20]'}`}>
+                              <span key={p.meal} className={`truncate rounded-full px-2 py-0.5 ${p.kind === 'batch' ? 'bg-leaf-soft text-leaf-dark' : 'bg-honey-soft text-honey-ink'}`}>
                                 {MEAL_LABEL[p.meal]}・{(p.kind === 'batch' ? result.batch.find((b) => b.recipe.id === p.recipeId)?.recipe : result.fresh.find((f) => f.recipe.id === p.recipeId)?.recipe)?.name}
                               </span>
                             ))}
@@ -357,7 +357,7 @@ function PantrySheet({ open, onClose, profile }: { open: boolean; onClose: () =>
                     const list = result.shopping.filter((s) => s.reason === reason)
                     if (!list.length) return null
                     return (
-                      <section key={reason} className="rounded-3xl bg-white p-4 shadow-card">
+                      <section key={reason} className="rounded-3xl bg-card p-4 shadow-card">
                         <h3 className="mb-2 text-sm font-bold">{reason === 'missing' ? '家裡沒有，要買' : '家裡有，但可能不夠'}</h3>
                         <ul className="space-y-2">
                           {list.map((s) => (
@@ -412,7 +412,7 @@ function Row({ label, children }: { label: string; children: ReactNode }) {
 
 function Chip({ on, onClick, children }: { on: boolean; onClick: () => void; children: ReactNode }) {
   return (
-    <Tap onClick={onClick} className={`rounded-full px-3 py-1.5 text-xs transition-colors ${on ? 'bg-leaf text-white' : 'bg-white shadow-card'}`}>
+    <Tap onClick={onClick} className={`rounded-full px-3 py-1.5 text-xs transition-colors ${on ? 'bg-leaf text-on-leaf' : 'bg-card shadow-card'}`}>
       {children}
     </Tap>
   )
@@ -436,7 +436,7 @@ function Section({ title, sub, image, children }: { title: string; sub: string; 
 function DishRow({ recipe, title, sub, onOpen }: { recipe: Parameters<typeof RecipePhoto>[0]['recipe']; title: string; sub: string; onOpen: () => void }) {
   return (
     <li>
-      <Tap press={0.98} onClick={onOpen} className="flex w-full items-center gap-3 rounded-2xl bg-white p-2 pr-3 text-left shadow-card">
+      <Tap press={0.98} onClick={onOpen} className="flex w-full items-center gap-3 rounded-2xl bg-card p-2 pr-3 text-left shadow-card">
         <span className="relative h-12 w-12 shrink-0 overflow-hidden rounded-xl">
           <RecipePhoto recipe={recipe} />
         </span>

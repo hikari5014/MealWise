@@ -16,8 +16,8 @@ const dayLabel = (d: string) => `${monthDay(d)}（${weekdayLabel(d)}）`
 
 const STORAGE_STYLE = {
   fridge: 'bg-sky-soft text-sky',
-  freezer: 'bg-[#e4e8fb] text-[#5f6fd3]',
-  fresh: 'bg-honey-soft text-[#a07a20]',
+  freezer: 'bg-frost-soft text-frost',
+  fresh: 'bg-honey-soft text-honey-ink',
 } as const
 
 /** 「清單」頁：把這週菜單轉成一次備餐的流程 */
@@ -77,7 +77,7 @@ export function WeekPrepView({ weekKey, plans, servings }: { weekKey: string; pl
               {w.fresh.length ? `・${w.fresh.length} 餐建議當天現做` : ''}
             </div>
           </div>
-          <motion.button whileTap={{ scale: 0.88 }} onClick={copy} aria-label="複製備餐清單" className="grid h-10 w-10 place-items-center rounded-full bg-white/80">
+          <motion.button whileTap={{ scale: 0.88 }} onClick={copy} aria-label="複製備餐清單" className="grid h-10 w-10 place-items-center rounded-full bg-card/80">
             <Icon name="content_copy" size={20} />
           </motion.button>
         </div>
@@ -91,14 +91,14 @@ export function WeekPrepView({ weekKey, plans, servings }: { weekKey: string; pl
                   haptic(6)
                   setPrepDay(d)
                 }}
-                className={`shrink-0 rounded-full px-2.5 py-1 transition-colors ${d === prepDay ? 'bg-leaf text-white' : 'bg-white/70'}`}
+                className={`shrink-0 rounded-full px-2.5 py-1 transition-colors ${d === prepDay ? 'bg-leaf text-on-leaf' : 'bg-card/70'}`}
               >
                 {monthDay(d)}（{weekdayLabel(d)}）
               </Tap>
             ))}
           </div>
         </div>
-        <div className="mt-3 h-2 overflow-hidden rounded-full bg-white/60">
+        <div className="mt-3 h-2 overflow-hidden rounded-full bg-card/60">
           <motion.div
             className="h-full rounded-full bg-leaf"
             animate={{ width: `${allKeys.length ? (done / allKeys.length) * 100 : 0}%` }}
@@ -188,7 +188,7 @@ export function WeekPrepView({ weekKey, plans, servings }: { weekKey: string; pl
                     const k = `c:${c.date}:${c.meal}:${c.recipe.id}`
                     const s = step(k)
                     return (
-                      <motion.li key={k} layout transition={spring} className="flex items-center gap-3 rounded-2xl bg-white p-2 pr-3 shadow-card">
+                      <motion.li key={k} layout transition={spring} className="flex items-center gap-3 rounded-2xl bg-card p-2 pr-3 shadow-card">
                         <span className="relative h-12 w-12 shrink-0 overflow-hidden rounded-xl">
                           <RecipePhoto recipe={c.recipe} />
                         </span>
@@ -200,7 +200,7 @@ export function WeekPrepView({ weekKey, plans, servings }: { weekKey: string; pl
                             </span>
                           </div>
                           <div className={`truncate text-sm font-medium ${s.checked ? 'text-muted line-through' : ''}`}>{c.recipe.name}</div>
-                          {c.thawOn && <div className="text-[11px] text-[#5f6fd3]">{dayLabel(c.thawOn)}晚上移到冷藏退冰</div>}
+                          {c.thawOn && <div className="text-[11px] text-frost">{dayLabel(c.thawOn)}晚上移到冷藏退冰</div>}
                         </div>
                         {c.storage !== 'fresh' && <CheckButton checked={s.checked} onToggle={s.toggle} size={26} />}
                       </motion.li>
@@ -219,7 +219,7 @@ export function WeekPrepView({ weekKey, plans, servings }: { weekKey: string; pl
 function StorageGuide({ w }: { w: ReturnType<typeof buildWeekPrep> }) {
   const [open, setOpen] = useState(false)
   return (
-    <div className="rounded-3xl bg-white p-4 shadow-card">
+    <div className="rounded-3xl bg-card p-4 shadow-card">
       <Tap press={0.97} onClick={() => setOpen(!open)} className="flex w-full items-center gap-2 text-left text-sm font-bold">
         <Icon name="lightbulb" size={20} fill className="text-honey" />
         每道菜的保存與加熱
@@ -256,13 +256,13 @@ function StorageGuide({ w }: { w: ReturnType<typeof buildWeekPrep> }) {
 
 function Step({ n, title, sub, children }: { n: number; title: string; sub: string; children: ReactNode }) {
   return (
-    <section className="rounded-3xl bg-white p-4 shadow-card">
+    <section className="rounded-3xl bg-card p-4 shadow-card">
       <div className="mb-3 flex items-center gap-2">
         <motion.span
           initial={{ scale: 0, rotate: -30 }}
           animate={{ scale: 1, rotate: 0 }}
           transition={{ type: 'spring', stiffness: 500, damping: 14, delay: n * 0.05 }}
-          className="grid h-7 w-7 place-items-center rounded-full bg-leaf text-sm font-bold text-white"
+          className="grid h-7 w-7 place-items-center rounded-full bg-leaf text-sm font-bold text-on-leaf"
         >
           {n}
         </motion.span>

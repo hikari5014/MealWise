@@ -202,7 +202,7 @@ function RecipeEditor({ open, recipe, onClose }: { open: boolean; recipe?: Recip
           {mode === 'form' ? (
             <motion.div key="form" initial={{ opacity: 0, x: -12 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -12 }} className="space-y-4">
               {/* 照片預覽 */}
-              <div className="relative h-36 overflow-hidden rounded-3xl bg-white shadow-card">
+              <div className="relative h-36 overflow-hidden rounded-3xl bg-card shadow-card">
                 {preview ? (
                   <RecipePhoto key={draft.photoUrl} recipe={preview} />
                 ) : (
@@ -261,7 +261,7 @@ function RecipeEditor({ open, recipe, onClose }: { open: boolean; recipe?: Recip
                       ['fiber', '纖維', 'g'],
                     ] as const
                   ).map(([k, label, unit]) => (
-                    <label key={k} className="rounded-2xl bg-white p-2 text-center shadow-sm">
+                    <label key={k} className="rounded-2xl bg-card p-2 text-center shadow-sm">
                       <input
                         inputMode="numeric"
                         value={draft[k]}
@@ -292,7 +292,7 @@ function RecipeEditor({ open, recipe, onClose }: { open: boolean; recipe?: Recip
                   <Tap
                     type="button"
                     onClick={() => set({ vegetarian: !draft.vegetarian })}
-                    className={`w-full rounded-2xl px-4 py-3 text-left shadow-sm transition-colors ${draft.vegetarian ? 'bg-leaf text-white' : 'bg-white'}`}
+                    className={`w-full rounded-2xl px-4 py-3 text-left shadow-sm transition-colors ${draft.vegetarian ? 'bg-leaf text-on-leaf' : 'bg-card'}`}
                   >
                     {draft.vegetarian ? '是（蛋奶素）' : '否'}
                   </Tap>
@@ -312,7 +312,7 @@ function RecipeEditor({ open, recipe, onClose }: { open: boolean; recipe?: Recip
                           animate={{ opacity: 1, y: 0 }}
                           exit={{ opacity: 0, x: -20 }}
                           transition={spring}
-                          className="rounded-2xl bg-white p-2 shadow-sm"
+                          className="rounded-2xl bg-card p-2 shadow-sm"
                         >
                           <div className="flex gap-2">
                             <input
@@ -480,7 +480,7 @@ function RecipeEditor({ open, recipe, onClose }: { open: boolean; recipe?: Recip
   )
 }
 
-const inputCls = 'w-full rounded-2xl bg-white px-4 py-3 shadow-sm outline-none ring-leaf/40 focus:ring-2'
+const inputCls = 'w-full rounded-2xl bg-card px-4 py-3 shadow-sm outline-none ring-leaf/40 focus:ring-2'
 
 function Field({ label, children }: { label: string; children: ReactNode }) {
   return (
@@ -507,7 +507,7 @@ function Chips<T extends string>({ options, value, onToggle }: { options: { id: 
               haptic(6)
               onToggle(o.id)
             }}
-            className={`rounded-full px-3 py-1.5 text-sm transition-colors ${on ? 'bg-leaf text-white' : 'bg-white shadow-sm'}`}
+            className={`rounded-full px-3 py-1.5 text-sm transition-colors ${on ? 'bg-leaf text-on-leaf' : 'bg-card shadow-sm'}`}
           >
             {o.label}
           </motion.button>

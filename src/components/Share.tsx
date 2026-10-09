@@ -175,10 +175,10 @@ function ShareSheet({ target, onClose }: { target: ShareTarget | null; onClose: 
           value={title}
           onChange={(e) => setTitle(e.target.value.slice(0, 30))}
           placeholder="幫這份菜單取個名字"
-          className="w-full rounded-2xl bg-white px-4 py-3 text-sm shadow-card outline-none ring-leaf/40 focus:ring-2"
+          className="w-full rounded-2xl bg-card px-4 py-3 text-sm shadow-card outline-none ring-leaf/40 focus:ring-2"
         />
 
-        <div className="relative mx-auto aspect-square w-64 rounded-[32px] bg-white p-5 shadow-card">
+        <div className="relative mx-auto aspect-square w-64 rounded-[32px] bg-card p-5 shadow-card">
           <AnimatePresence mode="popLayout" initial={false}>
             {svg && count > 0 && (
               <motion.div
@@ -194,7 +194,7 @@ function ShareSheet({ target, onClose }: { target: ShareTarget | null; onClose: 
           </AnimatePresence>
           {count > 0 && (
             <motion.div
-              className="absolute left-1/2 top-1/2 grid h-14 w-14 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-2xl bg-white shadow"
+              className="absolute left-1/2 top-1/2 grid h-14 w-14 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-2xl bg-card shadow"
               initial={{ scale: 0, rotate: -30 }}
               animate={{ scale: 1, rotate: 0 }}
               transition={{ type: 'spring', stiffness: 500, damping: 14, delay: 0.3 }}
@@ -403,7 +403,7 @@ function Scanner({ onClose, onResult }: { onClose: () => void; onResult: (plan: 
                 animate={{ scale: 1, opacity: 1 }}
                 transition={{ type: 'spring', stiffness: 500, damping: 14 }}
               >
-                <span className="grid h-20 w-20 place-items-center rounded-full bg-leaf text-white shadow-xl">
+                <span className="grid h-20 w-20 place-items-center rounded-full bg-leaf text-on-leaf shadow-xl">
                   <Icon name="check" size={48} weight={700} />
                 </span>
               </motion.span>
@@ -417,11 +417,11 @@ function Scanner({ onClose, onResult }: { onClose: () => void; onResult: (plan: 
           whileTap={{ scale: 0.88 }}
           onClick={onClose}
           aria-label="關閉"
-          className="grid h-11 w-11 place-items-center rounded-full bg-white/15 backdrop-blur"
+          className="grid h-11 w-11 place-items-center rounded-full bg-card/15 backdrop-blur"
         >
           <Icon name="close" size={24} />
         </motion.button>
-        <div className="flex items-center gap-1.5 rounded-full bg-white/15 px-4 py-2 text-sm backdrop-blur">
+        <div className="flex items-center gap-1.5 rounded-full bg-card/15 px-4 py-2 text-sm backdrop-blur">
           <Icon name="qr_code_scanner" size={18} />
           掃描好食光菜單
         </div>
@@ -455,7 +455,7 @@ function Scanner({ onClose, onResult }: { onClose: () => void; onResult: (plan: 
         <motion.button
           whileTap={{ scale: 0.94 }}
           onClick={() => fileInput.current?.click()}
-          className="mx-auto flex items-center gap-2 rounded-full bg-white/15 px-5 py-3 text-sm font-medium backdrop-blur"
+          className="mx-auto flex items-center gap-2 rounded-full bg-card/15 px-5 py-3 text-sm font-medium backdrop-blur"
         >
           <Icon name="photo_library" size={20} />
           從相簿選擇圖片
@@ -515,7 +515,7 @@ function ImportSheet({ plan, onClose, onDone }: { plan: SharedPlan | null; onClo
       {plan && (
         <div className="space-y-4">
           <motion.div
-            className="flex items-center gap-3 rounded-3xl bg-white p-4 shadow-card"
+            className="flex items-center gap-3 rounded-3xl bg-card p-4 shadow-card"
             initial={{ y: 12, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={spring}

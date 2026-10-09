@@ -12,8 +12,8 @@ import { Button, Segmented, Sheet, useToast } from './ui'
 
 const STORAGE_STYLE = {
   fridge: 'bg-sky-soft text-sky',
-  freezer: 'bg-[#e4e8fb] text-[#5f6fd3]',
-  fresh: 'bg-honey-soft text-[#a07a20]',
+  freezer: 'bg-frost-soft text-frost',
+  fresh: 'bg-honey-soft text-honey-ink',
 } as const
 
 /** 把一道食譜放大成 N 份：份量、做法提醒、分裝、保存，還能直接排進菜單 */
@@ -65,7 +65,7 @@ export function BatchSheet({ recipe, onClose }: { recipe: Recipe | null; onClose
           </div>
         </div>
 
-        <div className="flex items-center justify-between rounded-3xl bg-white p-4 shadow-card">
+        <div className="flex items-center justify-between rounded-3xl bg-card p-4 shadow-card">
           <span className="font-medium">要做幾份？</span>
           <span className="flex items-center gap-3">
             <motion.button
@@ -92,7 +92,7 @@ export function BatchSheet({ recipe, onClose }: { recipe: Recipe | null; onClose
 
         {storage.makeFresh && (
           <p className="flex items-start gap-2 rounded-2xl bg-honey-soft p-3 text-sm">
-            <Icon name="warning" size={18} fill className="mt-0.5 text-[#a07a20]" />
+            <Icon name="warning" size={18} fill className="mt-0.5 text-honey-ink" />
             這道不適合整份預做：{storage.tip}
           </p>
         )}
@@ -112,7 +112,7 @@ export function BatchSheet({ recipe, onClose }: { recipe: Recipe | null; onClose
           <ol className="mb-3 space-y-2 text-sm">
             {recipe.steps.map((s, i) => (
               <li key={i} className="flex gap-2">
-                <span className="grid h-5 w-5 shrink-0 place-items-center rounded-full bg-leaf text-[11px] font-bold text-white">{i + 1}</span>
+                <span className="grid h-5 w-5 shrink-0 place-items-center rounded-full bg-leaf text-[11px] font-bold text-on-leaf">{i + 1}</span>
                 {s}
               </li>
             ))}
@@ -141,7 +141,7 @@ export function BatchSheet({ recipe, onClose }: { recipe: Recipe | null; onClose
                   initial={{ opacity: 0, x: 12 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ ...spring, delay: i * 0.03 }}
-                  className="flex items-center justify-between rounded-xl bg-white px-3 py-2 text-sm shadow-sm"
+                  className="flex items-center justify-between rounded-xl bg-card px-3 py-2 text-sm shadow-sm"
                 >
                   <span>
                     第 {i + 1} 盒・{monthDay(d)}（{weekdayLabel(d)}）
@@ -173,7 +173,7 @@ export function BatchSheet({ recipe, onClose }: { recipe: Recipe | null; onClose
                   key={m}
                   whileTap={{ scale: 0.9 }}
                   onClick={() => setMeal(m)}
-                  className={`rounded-full px-3 py-1.5 text-sm transition-colors ${meal === m ? 'bg-leaf text-white' : 'bg-white shadow-sm'}`}
+                  className={`rounded-full px-3 py-1.5 text-sm transition-colors ${meal === m ? 'bg-leaf text-on-leaf' : 'bg-card shadow-sm'}`}
                 >
                   {MEAL_LABEL[m]}
                 </motion.button>
@@ -193,7 +193,7 @@ export function BatchSheet({ recipe, onClose }: { recipe: Recipe | null; onClose
 
 function Section({ icon, title, children }: { icon: Parameters<typeof Icon>[0]['name']; title: string; children: React.ReactNode }) {
   return (
-    <section className="rounded-3xl bg-white p-4 shadow-card">
+    <section className="rounded-3xl bg-card p-4 shadow-card">
       <h3 className="mb-2 flex items-center gap-1.5 font-bold">
         <Icon name={icon} size={20} fill className="text-leaf" />
         {title}

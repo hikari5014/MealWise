@@ -147,7 +147,7 @@ export function AiEstimateSheet({
             <input
               value={result.name}
               onChange={(e) => setResult({ ...result, name: e.target.value })}
-              className="w-full rounded-2xl bg-white px-4 py-3 font-bold shadow-card outline-none ring-leaf/40 focus:ring-2"
+              className="w-full rounded-2xl bg-card px-4 py-3 font-bold shadow-card outline-none ring-leaf/40 focus:ring-2"
             />
             <div className="grid grid-cols-5 gap-2">
               {FIELDS.map((f, i) => (
@@ -156,7 +156,7 @@ export function AiEstimateSheet({
                   initial={{ y: 12, opacity: 0 }}
                   animate={{ y: 0, opacity: 1 }}
                   transition={{ type: 'spring', stiffness: 500, damping: 16, delay: i * 0.05 }}
-                  className="rounded-2xl bg-white p-2 text-center shadow-card"
+                  className="rounded-2xl bg-card p-2 text-center shadow-card"
                 >
                   <input
                     inputMode="numeric"
@@ -199,7 +199,7 @@ export function AiEstimateSheet({
               value={desc}
               onChange={(e) => setDesc(e.target.value)}
               placeholder="例如：火鍋吃到飽，吃了兩盤肉"
-              className="w-full rounded-2xl bg-white px-4 py-3 text-sm shadow-card outline-none ring-leaf/40 focus:ring-2"
+              className="w-full rounded-2xl bg-card px-4 py-3 text-sm shadow-card outline-none ring-leaf/40 focus:ring-2"
             />
 
             <StepTitle n={2} text="複製提示詞，和照片一起貼給 AI" />
@@ -207,7 +207,7 @@ export function AiEstimateSheet({
               <Icon name={copied ? 'check' : 'content_copy'} size={20} motion={copied ? 'pop' : 'none'} />
               {copied ? '已複製，去貼給 AI 吧' : '複製提示詞'}
             </Button>
-            <details className="rounded-2xl bg-white p-3 text-xs text-muted shadow-sm">
+            <details className="rounded-2xl bg-card p-3 text-xs text-muted shadow-sm">
               <summary className="cursor-pointer">看提示詞內容</summary>
               <pre className="mt-2 whitespace-pre-wrap font-sans">{buildPrompt(desc)}</pre>
             </details>
@@ -223,7 +223,7 @@ export function AiEstimateSheet({
               onBlur={() => reply.trim() && apply(reply)}
               rows={2}
               placeholder="或在這裡長按貼上"
-              className="w-full rounded-2xl bg-white p-3 text-sm shadow-card outline-none ring-leaf/40 focus:ring-2"
+              className="w-full rounded-2xl bg-card p-3 text-sm shadow-card outline-none ring-leaf/40 focus:ring-2"
             />
             <AnimatePresence>
               {error && (
@@ -249,7 +249,7 @@ export function AiEstimateSheet({
                       haptic(8)
                       setResult({ name: desc.trim() || p.label, nutrition: p.n })
                     }}
-                    className="rounded-2xl bg-white py-3 text-center shadow-sm"
+                    className="rounded-2xl bg-card py-3 text-center shadow-sm"
                   >
                     <div className="text-sm font-medium">{p.label}</div>
                     <div className="text-xs tabular-nums text-muted">約 {p.kcal} kcal</div>
@@ -267,7 +267,7 @@ export function AiEstimateSheet({
 function StepTitle({ n, text }: { n: number; text: string }) {
   return (
     <div className="flex items-center gap-2 text-sm font-bold">
-      <span className="grid h-6 w-6 place-items-center rounded-full bg-leaf text-xs text-white">{n}</span>
+      <span className="grid h-6 w-6 place-items-center rounded-full bg-leaf text-xs text-on-leaf">{n}</span>
       {text}
     </div>
   )

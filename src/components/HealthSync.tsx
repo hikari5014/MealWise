@@ -127,7 +127,7 @@ function CopyChip({ text, label }: { text: string; label?: string }) {
           window.setTimeout(() => setDone(false), 1400)
         }
       }}
-      className="inline-flex items-center gap-1 rounded-full bg-white px-3 py-1 text-xs font-medium text-leaf-dark shadow-sm"
+      className="inline-flex items-center gap-1 rounded-full bg-card px-3 py-1 text-xs font-medium text-leaf-dark shadow-sm"
     >
       <motion.span
         key={done ? 'ok' : 'copy'}
@@ -149,7 +149,7 @@ function ActionBlock({ icon, color, title, lines }: { icon: IconName; color: str
   return (
     <motion.div
       variants={{ hidden: { opacity: 0, y: 14, scale: 0.95 }, show: { opacity: 1, y: 0, scale: 1, transition: spring } }}
-      className="rounded-2xl bg-white p-3 shadow-card"
+      className="rounded-2xl bg-card p-3 shadow-card"
     >
       <div className="flex items-center gap-2 text-sm font-bold">
         <span className="grid h-7 w-7 place-items-center rounded-lg text-white" style={{ backgroundColor: color }}>
@@ -205,7 +205,7 @@ const STEPS = (onSync: () => void): Step[] => [
           <motion.span
             animate={{ y: [0, -6, 0] }}
             transition={{ repeat: Infinity, duration: 1.6 }}
-            className="grid h-14 w-14 place-items-center rounded-2xl bg-white text-[#ff375f] shadow-card"
+            className="grid h-14 w-14 place-items-center rounded-2xl bg-card text-rose shadow-card"
           >
             <Icon name="favorite" size={32} fill />
           </motion.span>
@@ -215,7 +215,7 @@ const STEPS = (onSync: () => void): Step[] => [
           <motion.span
             animate={{ rotate: [0, -10, 10, 0] }}
             transition={{ repeat: Infinity, duration: 2 }}
-            className="grid h-14 w-14 place-items-center rounded-2xl bg-white text-[#5f6fd3] shadow-card"
+            className="grid h-14 w-14 place-items-center rounded-2xl bg-card text-frost shadow-card"
           >
             <Icon name="auto_awesome" size={32} fill />
           </motion.span>
@@ -247,7 +247,7 @@ const STEPS = (onSync: () => void): Step[] => [
           <li>
             點最上面的名稱，改成：
             <div className="mt-2 flex items-center gap-2">
-              <span className="rounded-xl bg-white px-3 py-1.5 font-bold shadow-sm">{SHORTCUT_NAME}</span>
+              <span className="rounded-xl bg-card px-3 py-1.5 font-bold shadow-sm">{SHORTCUT_NAME}</span>
               <CopyChip text={SHORTCUT_NAME} />
             </div>
           </li>
@@ -271,7 +271,7 @@ const STEPS = (onSync: () => void): Step[] => [
         <Blocks>
           <ActionBlock
             icon="favorite"
-            color="#ff375f"
+            color="rgb(var(--rose))"
             title="尋找健康樣本"
             lines={['類型：體重', '排序方式：開始日期・最新到最舊', '限制：開啟，1 個樣本']}
           />
@@ -288,7 +288,7 @@ const STEPS = (onSync: () => void): Step[] => [
     body: (
       <div className="space-y-3 text-sm leading-relaxed">
         <p>加入「文字」動作，貼上這段：</p>
-        <div className="rounded-2xl bg-white p-3 text-xs shadow-sm">
+        <div className="rounded-2xl bg-card p-3 text-xs shadow-sm">
           <code className="break-all">{SHORTCUT_TEMPLATE}</code>
           <div className="mt-2">
             <CopyChip text={SHORTCUT_TEMPLATE} label="複製範本" />
@@ -300,7 +300,7 @@ const STEPS = (onSync: () => void): Step[] => [
         <Blocks>
           <ActionBlock
             icon="edit"
-            color="#e9b44c"
+            color="rgb(var(--honey))"
             title="文字"
             lines={[
               <span key="t">
@@ -320,10 +320,10 @@ const STEPS = (onSync: () => void): Step[] => [
       <div className="space-y-3 text-sm leading-relaxed">
         <p>最後加入「拷貝到剪貼簿」，然後點右上角「完成」。整個捷徑長這樣：</p>
         <Blocks>
-          <ActionBlock icon="favorite" color="#ff375f" title="尋找健康樣本" lines={['體重・最新 1 個']} />
+          <ActionBlock icon="favorite" color="rgb(var(--rose))" title="尋找健康樣本" lines={['體重・最新 1 個']} />
           <ActionBlock
             icon="edit"
-            color="#e9b44c"
+            color="rgb(var(--honey))"
             title="文字"
             lines={[
               <span key="t">
@@ -331,7 +331,7 @@ const STEPS = (onSync: () => void): Step[] => [
               </span>,
             ]}
           />
-          <ActionBlock icon="content_paste" color="#5fa8d3" title="拷貝到剪貼簿" />
+          <ActionBlock icon="content_paste" color="rgb(var(--sky))" title="拷貝到剪貼簿" />
         </Blocks>
       </div>
     ),
@@ -423,7 +423,7 @@ function GuideSheet({ step, setStep, onSync }: { step: number | null; setStep: (
                 initial={{ scale: 0, rotate: -40 }}
                 animate={{ scale: 1, rotate: 0 }}
                 transition={{ type: 'spring', stiffness: 500, damping: 13, delay: 0.05 }}
-                className="grid h-12 w-12 place-items-center rounded-2xl bg-white text-2xl shadow-card"
+                className="grid h-12 w-12 place-items-center rounded-2xl bg-card text-2xl shadow-card"
               >
                 <Icon name={s.icon} size={26} fill className="text-leaf" />
               </motion.span>
@@ -456,22 +456,22 @@ function GuideSheet({ step, setStep, onSync }: { step: number | null; setStep: (
 /* ───────────── 貼上 ───────────── */
 
 const METRICS: { key: keyof HealthData; label: string; icon: IconName; color: string; unit: string }[] = [
-  { key: 'weight', label: '體重', icon: 'monitor_weight', color: '#5b8c5a', unit: 'kg' },
-  { key: 'bodyFat', label: '體脂', icon: 'fitness_center', color: '#e9b44c', unit: '%' },
-  { key: 'steps', label: '步數', icon: 'directions_walk', color: '#5fa8d3', unit: '步' },
-  { key: 'activeKcal', label: '活動', icon: 'local_fire_department', color: '#e07a5f', unit: 'kcal' },
+  { key: 'weight', label: '體重', icon: 'monitor_weight', color: 'rgb(var(--leaf))', unit: 'kg' },
+  { key: 'bodyFat', label: '體脂', icon: 'fitness_center', color: 'rgb(var(--honey))', unit: '%' },
+  { key: 'steps', label: '步數', icon: 'directions_walk', color: 'rgb(var(--sky))', unit: '步' },
+  { key: 'activeKcal', label: '活動', icon: 'local_fire_department', color: 'rgb(var(--tomato))', unit: 'kcal' },
 ]
 
 function Burst() {
   const pieces: { icon: IconName; color: string }[] = [
-    { icon: 'auto_awesome', color: '#e9b44c' },
-    { icon: 'celebration', color: '#e07a5f' },
-    { icon: 'favorite', color: '#5b8c5a' },
-    { icon: 'star', color: '#e9b44c' },
-    { icon: 'auto_awesome', color: '#5fa8d3' },
-    { icon: 'eco', color: '#5b8c5a' },
-    { icon: 'star', color: '#e07a5f' },
-    { icon: 'celebration', color: '#5fa8d3' },
+    { icon: 'auto_awesome', color: 'rgb(var(--honey))' },
+    { icon: 'celebration', color: 'rgb(var(--tomato))' },
+    { icon: 'favorite', color: 'rgb(var(--leaf))' },
+    { icon: 'star', color: 'rgb(var(--honey))' },
+    { icon: 'auto_awesome', color: 'rgb(var(--sky))' },
+    { icon: 'eco', color: 'rgb(var(--leaf))' },
+    { icon: 'star', color: 'rgb(var(--tomato))' },
+    { icon: 'celebration', color: 'rgb(var(--sky))' },
   ]
   return (
     <div className="pointer-events-none absolute inset-0 grid place-items-center">
@@ -557,7 +557,7 @@ function PasteSheet({ open, onClose, onHelp }: { open: boolean; onClose: () => v
                 initial={{ opacity: 0, y: 20, scale: 0.8 }}
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 transition={{ type: 'spring', stiffness: 500, damping: 15, delay: 0.1 + i * 0.08 }}
-                className="rounded-3xl bg-white p-4 text-center shadow-card"
+                className="rounded-3xl bg-card p-4 text-center shadow-card"
               >
                 <div className="flex justify-center" style={{ color: m.color }}>
                   <Icon name={m.icon} size={30} fill motion="pop" />
@@ -579,7 +579,7 @@ function PasteSheet({ open, onClose, onHelp }: { open: boolean; onClose: () => v
               whileTap={{ scale: 0.94 }}
               animate={{ scale: [1, 1.03, 1] }}
               transition={{ scale: { repeat: Infinity, duration: 1.6, ease: 'easeInOut' } }}
-              className="w-full rounded-3xl bg-leaf py-5 text-lg font-bold text-white shadow-card"
+              className="w-full rounded-3xl bg-leaf py-5 text-lg font-bold text-on-leaf shadow-card"
             >
               <span className="flex items-center justify-center gap-2">
                 <Icon name="content_paste" size={24} fill />
@@ -606,7 +606,7 @@ function PasteSheet({ open, onClose, onHelp }: { open: boolean; onClose: () => v
                   onChange={(e) => setManualText(e.target.value)}
                   placeholder="在這裡長按，選「貼上」"
                   rows={2}
-                  className="w-full rounded-2xl bg-white p-3 text-sm shadow-card outline-none ring-leaf/40 focus:ring-2"
+                  className="w-full rounded-2xl bg-card p-3 text-sm shadow-card outline-none ring-leaf/40 focus:ring-2"
                 />
                 <Button variant="soft" className="w-full" disabled={!manualText.trim()} onClick={() => apply(manualText)}>
                   確定
@@ -650,7 +650,7 @@ function ManualSheet({ open, onClose }: { open: boolean; onClose: () => void }) 
           { icon: 'monitor_weight' as const, label: '體重', unit: 'kg', value: weight, set: setWeight, placeholder: '例如 62.5' },
           { icon: 'fitness_center' as const, label: '體脂（選填）', unit: '%', value: fat, set: setFat, placeholder: '例如 25' },
         ].map((f) => (
-          <label key={f.label} className="flex items-center justify-between rounded-3xl bg-white p-4 shadow-card">
+          <label key={f.label} className="flex items-center justify-between rounded-3xl bg-card p-4 shadow-card">
             <span className="flex items-center gap-2 font-medium">
               <Icon name={f.icon} size={22} fill className="text-leaf" />
               {f.label}

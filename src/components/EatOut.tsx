@@ -76,7 +76,7 @@ export function EatOutBrowser({ onPick, compact = false }: { onPick: (it: EatIte
           setLimit(40)
         }}
         placeholder="搜尋品項或店家，例如 雞胸、拿鐵、全家"
-        className="w-full rounded-2xl bg-white px-4 py-3 text-sm shadow-card outline-none ring-leaf/40 focus:ring-2"
+        className="w-full rounded-2xl bg-card px-4 py-3 text-sm shadow-card outline-none ring-leaf/40 focus:ring-2"
       />
       <div className="-mx-4 flex gap-2 overflow-x-auto px-4">
         {[{ id: 'all' as const, label: '全部', image: 'basket' as const }, ...EAT_KINDS.filter((k) => data.brands.some((b) => b.kind === k.id))].map((k) => (
@@ -87,7 +87,7 @@ export function EatOutBrowser({ onPick, compact = false }: { onPick: (it: EatIte
               setBrand(null)
               setLimit(40)
             }}
-            className={`flex shrink-0 items-center gap-1 rounded-full py-1 pl-1.5 pr-3 text-sm transition-colors ${kind === k.id ? 'bg-ink text-cream' : 'bg-white text-muted shadow-card'}`}
+            className={`flex shrink-0 items-center gap-1 rounded-full py-1 pl-1.5 pr-3 text-sm transition-colors ${kind === k.id ? 'bg-ink text-cream' : 'bg-card text-muted shadow-card'}`}
           >
             <Food id={k.image} size={22} />
             {k.label}
@@ -103,7 +103,7 @@ export function EatOutBrowser({ onPick, compact = false }: { onPick: (it: EatIte
                 setBrand(brand === b.id ? null : b.id)
                 setLimit(40)
               }}
-              className={`shrink-0 rounded-full px-3 py-1 text-xs transition-colors ${brand === b.id ? 'bg-leaf text-white' : 'bg-leaf-soft/60 text-leaf-dark'}`}
+              className={`shrink-0 rounded-full px-3 py-1 text-xs transition-colors ${brand === b.id ? 'bg-leaf text-on-leaf' : 'bg-leaf-soft/60 text-leaf-dark'}`}
             >
               {b.name}
               <span className="ml-1 opacity-60">{b.count}</span>
@@ -158,7 +158,7 @@ export function EatOutBrowser({ onPick, compact = false }: { onPick: (it: EatIte
 
 function ItemRow({ it, brand, onTap }: { it: EatItem; brand?: EatBrand; onTap: () => void }) {
   return (
-    <Tap press={0.98} onClick={onTap} className="flex w-full items-center gap-3 rounded-2xl bg-white p-3 text-left shadow-card">
+    <Tap press={0.98} onClick={onTap} className="flex w-full items-center gap-3 rounded-2xl bg-card p-3 text-left shadow-card">
       <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-cream">
         <Food id={itemImage(it, brand)} size={30} />
       </span>
@@ -250,7 +250,7 @@ export function EatItemSheet({
               </div>
             </div>
           </div>
-          <div className="grid grid-cols-4 gap-2 rounded-3xl bg-white p-3 text-center shadow-card">
+          <div className="grid grid-cols-4 gap-2 rounded-3xl bg-card p-3 text-center shadow-card">
             {(
               [
                 ['熱量', Math.round(item.k), 'kcal'],
@@ -267,7 +267,7 @@ export function EatItemSheet({
               </div>
             ))}
           </div>
-          {item.ko && <p className="px-1 text-xs text-[#a07a20]">這家只公布熱量，記錄時蛋白質、碳水、脂肪會算 0；想算準一點可以用「AI 估算」。</p>}
+          {item.ko && <p className="px-1 text-xs text-honey-ink">這家只公布熱量，記錄時蛋白質、碳水、脂肪會算 0；想算準一點可以用「AI 估算」。</p>}
           {(item.fi !== undefined || item.su !== undefined || item.na !== undefined) && (
             <div className="flex flex-wrap gap-2 px-1 text-xs text-muted">
               {item.fi !== undefined && <span>膳食纖維 {item.fi}g</span>}
@@ -280,12 +280,12 @@ export function EatItemSheet({
             <div className="flex gap-1.5">
               {!logOnly &&
                 [today, addDays(today, 1)].map((d) => (
-                  <Tap key={d} onClick={() => setDate(d)} className={`rounded-full px-3 py-1.5 text-xs ${date === d ? 'bg-ink text-cream' : 'bg-white shadow-card'}`}>
+                  <Tap key={d} onClick={() => setDate(d)} className={`rounded-full px-3 py-1.5 text-xs ${date === d ? 'bg-ink text-cream' : 'bg-card shadow-card'}`}>
                     {d === today ? '今天' : '明天'}
                   </Tap>
                 ))}
               {MEAL_SLOTS.map((m) => (
-                <Tap key={m} onClick={() => setMeal(m)} className={`rounded-full px-3 py-1.5 text-xs ${meal === m ? 'bg-leaf text-white' : 'bg-white shadow-card'}`}>
+                <Tap key={m} onClick={() => setMeal(m)} className={`rounded-full px-3 py-1.5 text-xs ${meal === m ? 'bg-leaf text-on-leaf' : 'bg-card shadow-card'}`}>
                   {MEAL_LABEL[m]}
                 </Tap>
               ))}
