@@ -20,9 +20,16 @@ for (const f of readdirSync('data/eatout').filter((f) => f.endsWith('.json')).so
   let count = 0
   for (const it of d.items) {
     const kcal = num(it.kcal), protein = num(it.protein), carbs = num(it.carbs), fat = num(it.fat)
-    if ([kcal, protein, carbs, fat].some((v) => v === undefined) || !it.name || !it.id || seen.has(it.id)) continue
+    // 只公布熱量的來源（例如 7-11）允許沒有三大營養素
+    const macros = [protein, carbs, fat].every((v) => v !== undefined)
+    if (kcal === undefined || (!macros && !d.kcalOnly) || !it.name || !it.id || seen.has(it.id)) continue
     seen.add(it.id)
-    const row = { id: it.id, b: b.id, n: String(it.name).trim(), k: kcal, p: protein, c: carbs, f: fat }
+    const row = { id: it.id, b: b.id, n: String(it.name).trim(), k: kcal }
+    if (macros) Object.assign(row, { p: protein, c: carbs, f: fat })
+    else {
+      row.ko = 1
+      if (fat !== undefined) row.f = fat
+    }
     if (it.category) row.cat = it.category
     if (it.serving) row.s = it.serving
     for (const [key, short] of [['fiber', 'fi'], ['sugar', 'su'], ['sodium', 'na']]) if (num(it[key]) !== undefined) row[short] = num(it[key])
@@ -30,7 +37,7 @@ for (const f of readdirSync('data/eatout').filter((f) => f.endsWith('.json')).so
     items.push(row)
     count++
   }
-  if (count) brands.push({ id: b.id, name: b.name, kind: KINDS.includes(b.kind) ? b.kind : 'fastfood', site: b.site, source: d.source, fetchedAt: d.fetchedAt, count })
+  if (count) brands.push({ id: b.id, name: b.name, kind: KINDS.includes(b.kind) ? b.kind : 'fastfood', site: b.site, source: d.source, fetchedAt: d.fetchedAt, count, ...(d.kcalOnly ? { kcalOnly: true } : {}) })
 }
 
 const updatedAt = brands.map((b) => b.fetchedAt).filter(Boolean).sort().pop() ?? null

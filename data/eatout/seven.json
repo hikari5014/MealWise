@@ -1,0 +1,3488 @@
+{
+  "brand": {
+    "id": "seven",
+    "name": "7-ELEVEN",
+    "kind": "convenience",
+    "site": "https://www.7-11.com.tw/"
+  },
+  "source": "https://www.7-11.com.tw/freshfoods/",
+  "kcalOnly": true,
+  "fetchedAt": "2026-10-09",
+  "items": [
+    {
+      "id": "seven-0-ricerolls_622",
+      "name": "肉鬆玉子新極大飯糰",
+      "category": "飯糰",
+      "serving": "1 份",
+      "kcal": 311
+    },
+    {
+      "id": "seven-0-ricerolls_623",
+      "name": "爆漿起司燻腸飯卷",
+      "category": "飯糰",
+      "serving": "1 份",
+      "kcal": 488
+    },
+    {
+      "id": "seven-0-ricerolls_618",
+      "name": "味鼎爆漿起司大飯糰",
+      "category": "飯糰",
+      "serving": "1 份",
+      "kcal": 809
+    },
+    {
+      "id": "seven-0-ricerolls_619",
+      "name": "TOMMI櫻花蝦油飯堡",
+      "category": "三明治漢堡",
+      "serving": "1 份",
+      "kcal": 304.5
+    },
+    {
+      "id": "seven-0-ricerolls_620",
+      "name": "壹番屋-炸雞起司咖哩飯糰",
+      "category": "飯糰",
+      "serving": "1 份",
+      "kcal": 266
+    },
+    {
+      "id": "seven-0-ricerolls_621",
+      "name": "嫩雞毛豆炊飯飯糰(圓)",
+      "category": "飯糰",
+      "serving": "1 份",
+      "kcal": 187
+    },
+    {
+      "id": "seven-0-ricerolls_610",
+      "name": "肉鬆海苔新極大壽司",
+      "category": "飯糰",
+      "serving": "1 份",
+      "kcal": 440
+    },
+    {
+      "id": "seven-0-ricerolls_612",
+      "name": "櫸木燻雞飯糰",
+      "category": "飯糰",
+      "serving": "1 份",
+      "kcal": 215
+    },
+    {
+      "id": "seven-0-ricerolls_611",
+      "name": "新極上飯糰-煙燻銀鮭",
+      "category": "飯糰",
+      "serving": "1 份",
+      "kcal": 221
+    },
+    {
+      "id": "seven-0-ricerolls_600",
+      "name": "新極上飯糰-炭烤銀鮭",
+      "category": "飯糰",
+      "serving": "1 份",
+      "kcal": 190
+    },
+    {
+      "id": "seven-0-ricerolls_601",
+      "name": "新極上飯糰-炙烤鮭魚腹",
+      "category": "飯糰",
+      "serving": "1 份",
+      "kcal": 184
+    },
+    {
+      "id": "seven-0-ricerolls_602",
+      "name": "新極上飯糰-炙燒明太子鮭魚",
+      "category": "飯糰",
+      "serving": "1 份",
+      "kcal": 195
+    },
+    {
+      "id": "seven-0-ricerolls_603",
+      "name": "新極上飯糰-蔥鹽生鮭",
+      "category": "飯糰",
+      "serving": "1 份",
+      "kcal": 196
+    },
+    {
+      "id": "seven-0-ricerolls_605",
+      "name": "新極上飯糰-鮭魚鮭魚卵",
+      "category": "飯糰",
+      "serving": "1 份",
+      "kcal": 220
+    },
+    {
+      "id": "seven-0-ricerolls_606",
+      "name": "星宇握便當-明太子火腿厚蛋",
+      "category": "便當",
+      "serving": "1 份",
+      "kcal": 379
+    },
+    {
+      "id": "seven-0-ricerolls_613",
+      "name": "奮起湖秘製雙拼握便當",
+      "category": "便當",
+      "serving": "1 份",
+      "kcal": 419
+    },
+    {
+      "id": "seven-0-ricerolls_595",
+      "name": "台鐵梅干扣肉握便當",
+      "category": "便當",
+      "serving": "1 份",
+      "kcal": 416
+    },
+    {
+      "id": "seven-0-ricerolls_574",
+      "name": "新極大飯糰-炙燒蔥鹽牛肉",
+      "category": "飯糰",
+      "serving": "1 份",
+      "kcal": 256
+    },
+    {
+      "id": "seven-0-ricerolls_571",
+      "name": "新極上飯糰-明太子鮭魚",
+      "category": "飯糰",
+      "serving": "1 份",
+      "kcal": 228
+    },
+    {
+      "id": "seven-0-ricerolls_556",
+      "name": "哇沙米秋鮭飯糰",
+      "category": "飯糰",
+      "serving": "1 份",
+      "kcal": 198
+    },
+    {
+      "id": "seven-0-ricerolls_551",
+      "name": "握便當-乾杯炭火燒肉",
+      "category": "便當",
+      "serving": "1 份",
+      "kcal": 525
+    },
+    {
+      "id": "seven-0-ricerolls_540",
+      "name": "炙烤鹽蔥燒肉飯糰",
+      "category": "飯糰",
+      "serving": "1 份",
+      "kcal": 191
+    },
+    {
+      "id": "seven-0-ricerolls_577",
+      "name": "林聰明-雞肉飯飯糰",
+      "category": "飯糰",
+      "serving": "1 份",
+      "kcal": 226
+    },
+    {
+      "id": "seven-0-ricerolls_495",
+      "name": "石安牧場溏心蛋飯糰",
+      "category": "飯糰",
+      "serving": "1 份",
+      "kcal": 168
+    },
+    {
+      "id": "seven-0-ricerolls_496",
+      "name": "炙燒明太子鮭魚飯糰",
+      "category": "飯糰",
+      "serving": "1 份",
+      "kcal": 185
+    },
+    {
+      "id": "seven-0-ricerolls_478",
+      "name": "鮪魚肉鬆雙手卷",
+      "category": "飯糰",
+      "serving": "1 份",
+      "kcal": 404
+    },
+    {
+      "id": "seven-0-ricerolls_505",
+      "name": "北海道秋鮭鮪魚雙手卷",
+      "category": "飯糰",
+      "serving": "1 份",
+      "kcal": 364
+    },
+    {
+      "id": "seven-0-ricerolls_608",
+      "name": "握便當-黑胡椒烤雞",
+      "category": "便當",
+      "serving": "1 份",
+      "kcal": 334
+    },
+    {
+      "id": "seven-0-ricerolls_581",
+      "name": "炭火燒肉飯糰",
+      "category": "飯糰",
+      "serving": "1 份",
+      "kcal": 179
+    },
+    {
+      "id": "seven-0-ricerolls_579",
+      "name": "御選肉鬆飯糰",
+      "category": "飯糰",
+      "serving": "1 份",
+      "kcal": 248
+    },
+    {
+      "id": "seven-0-ricerolls_582",
+      "name": "雙蔬鮪魚飯糰",
+      "category": "飯糰",
+      "serving": "1 份",
+      "kcal": 221
+    },
+    {
+      "id": "seven-1-light_1356",
+      "name": "Crami-魚肉起司球",
+      "category": "水果",
+      "serving": "1 份",
+      "kcal": 60.4
+    },
+    {
+      "id": "seven-1-light_1357",
+      "name": "Crami-魚漿蟹味棒",
+      "category": "水果",
+      "serving": "1 份",
+      "kcal": 32
+    },
+    {
+      "id": "seven-1-light_1333",
+      "name": "日式鹽醬豆腐",
+      "category": "水果",
+      "serving": "1 份",
+      "kcal": 129
+    },
+    {
+      "id": "seven-1-light_1334",
+      "name": "21Plus主廚烤雞沙拉",
+      "category": "沙拉蔬食",
+      "serving": "1 份",
+      "kcal": 94
+    },
+    {
+      "id": "seven-1-light_1336",
+      "name": "韓式雜菜冬粉",
+      "category": "麵食",
+      "serving": "1 份",
+      "kcal": 198
+    },
+    {
+      "id": "seven-1-light_1321",
+      "name": "一日野菜-海藻沙拉",
+      "category": "沙拉蔬食",
+      "serving": "1 份",
+      "kcal": 36
+    },
+    {
+      "id": "seven-1-light_1304",
+      "name": "藍鑽蝦舒肥嫩雞沙拉",
+      "category": "沙拉蔬食",
+      "serving": "1 份",
+      "kcal": 128
+    },
+    {
+      "id": "seven-1-light_1305",
+      "name": "煙燻鮭魚、帆立貝沙拉",
+      "category": "沙拉蔬食",
+      "serving": "1 份",
+      "kcal": 89
+    },
+    {
+      "id": "seven-1-light_1307",
+      "name": "一日野菜-活力彩蔬",
+      "category": "沙拉蔬食",
+      "serving": "1 份",
+      "kcal": 96
+    },
+    {
+      "id": "seven-1-light_1094",
+      "name": "芝麻葉海鮮佐義式油醋沙拉",
+      "category": "沙拉蔬食",
+      "serving": "1 份",
+      "kcal": 139
+    },
+    {
+      "id": "seven-1-light_1031",
+      "name": "和風胡麻醬",
+      "category": "水果",
+      "serving": "1 份",
+      "kcal": 171
+    },
+    {
+      "id": "seven-1-light_1017",
+      "name": "蔬果和風醬",
+      "category": "沙拉蔬食",
+      "serving": "1 份",
+      "kcal": 28
+    },
+    {
+      "id": "seven-1-light_764",
+      "name": "千島醬",
+      "category": "水果",
+      "serving": "1 份",
+      "kcal": 122
+    },
+    {
+      "id": "seven-2-cuisine_337",
+      "name": "極饗-四川風味麻辣豆腐飯",
+      "category": "鮮食",
+      "serving": "1 份",
+      "kcal": 655
+    },
+    {
+      "id": "seven-2-cuisine_342",
+      "name": "極饗-炸豬排炒飯",
+      "category": "鮮食",
+      "serving": "1 份",
+      "kcal": 807
+    },
+    {
+      "id": "seven-2-cuisine_330",
+      "name": "極饗-滑蛋牛肉燴飯",
+      "category": "輕食小食",
+      "serving": "1 份",
+      "kcal": 580
+    },
+    {
+      "id": "seven-2-cuisine_328",
+      "name": "肉絲黃金蛋炒飯",
+      "category": "輕食小食",
+      "serving": "1 份",
+      "kcal": 616
+    },
+    {
+      "id": "seven-2-cuisine_327",
+      "name": "極饗-馬上大吉(雞) 腿便當",
+      "category": "便當",
+      "serving": "1 份",
+      "kcal": 701
+    },
+    {
+      "id": "seven-2-cuisine_329",
+      "name": "紅燒牛雙寶燴飯",
+      "category": "鮮食",
+      "serving": "1 份",
+      "kcal": 574
+    },
+    {
+      "id": "seven-2-cuisine_341",
+      "name": "極饗-沙茶豬肉燴飯",
+      "category": "鮮食",
+      "serving": "1 份",
+      "kcal": 684
+    },
+    {
+      "id": "seven-2-cuisine_311",
+      "name": "香蒜烤雞鮮蔬餐盒",
+      "category": "便當",
+      "serving": "1 份",
+      "kcal": 374
+    },
+    {
+      "id": "seven-2-cuisine_301",
+      "name": "Homeal x 壹番屋 奶油咖哩雞肉飯",
+      "category": "鮮食",
+      "serving": "1 份",
+      "kcal": 592
+    },
+    {
+      "id": "seven-2-cuisine_302",
+      "name": "Homeal x 日式牛丼",
+      "category": "丼飯",
+      "serving": "1 份",
+      "kcal": 497
+    },
+    {
+      "id": "seven-2-cuisine_286",
+      "name": "Homeal x鄧師傅-客家小炒",
+      "category": "鮮食",
+      "serving": "1 份",
+      "kcal": 310
+    },
+    {
+      "id": "seven-2-cuisine_287",
+      "name": "Homeal x鄧師傅-塔香風味炒花蛤",
+      "category": "鮮食",
+      "serving": "1 份",
+      "kcal": 295.5
+    },
+    {
+      "id": "seven-2-cuisine_288",
+      "name": "Homeal x鄧師傅-鳳梨糖醋肉",
+      "category": "鮮食",
+      "serving": "1 份",
+      "kcal": 408.5
+    },
+    {
+      "id": "seven-2-cuisine_281",
+      "name": "極饗-香腸雙拼便當",
+      "category": "便當",
+      "serving": "1 份",
+      "kcal": 701
+    },
+    {
+      "id": "seven-2-cuisine_321",
+      "name": "極饗-豪華秘製雙拼餐盒",
+      "category": "便當",
+      "serving": "1 份",
+      "kcal": 715
+    },
+    {
+      "id": "seven-3-Snacks_455",
+      "name": "來一客上湯獅子頭湯品",
+      "category": "小食",
+      "serving": "1 份",
+      "kcal": 21
+    },
+    {
+      "id": "seven-3-Snacks_443",
+      "name": "水牛城風味香辣雞翅",
+      "category": "小食",
+      "serving": "1 份",
+      "kcal": 209
+    },
+    {
+      "id": "seven-3-Snacks_440",
+      "name": "椒鹽無骨排骨酥",
+      "category": "小食",
+      "serving": "1 份",
+      "kcal": 354
+    },
+    {
+      "id": "seven-3-Snacks_442",
+      "name": "獨饗三起司蔥抓餅",
+      "category": "小食",
+      "serving": "1 份",
+      "kcal": 494
+    },
+    {
+      "id": "seven-3-Snacks_441",
+      "name": "上口美食清蒸筍香肉圓",
+      "category": "輕食小食",
+      "serving": "1 份",
+      "kcal": 331
+    },
+    {
+      "id": "seven-3-Snacks_439",
+      "name": "一甲子餐飲經典台式碗粿",
+      "category": "小食",
+      "serving": "1 份",
+      "kcal": 238.8
+    },
+    {
+      "id": "seven-3-Snacks_436",
+      "name": "鹽烤蒜味雞肉丸",
+      "category": "焗烤",
+      "serving": "1 份",
+      "kcal": 197
+    },
+    {
+      "id": "seven-3-Snacks_437",
+      "name": "(盒)玉米起司蛋餅",
+      "category": "輕食小食",
+      "serving": "1 份",
+      "kcal": 288
+    },
+    {
+      "id": "seven-3-Snacks_438",
+      "name": "(蔬)酸辣湯",
+      "category": "沙拉蔬食",
+      "serving": "1 份",
+      "kcal": 78
+    },
+    {
+      "id": "seven-3-Snacks_431",
+      "name": "膳馨綠竹筍排骨湯",
+      "category": "輕食小食",
+      "serving": "1 份",
+      "kcal": 103
+    },
+    {
+      "id": "seven-3-Snacks_434",
+      "name": "粥天子-廣式皮蛋瘦肉煲粥",
+      "category": "輕食小食",
+      "serving": "1 份",
+      "kcal": 301
+    },
+    {
+      "id": "seven-3-Snacks_415",
+      "name": "黑金松露嫩雞胸",
+      "category": "輕食小食",
+      "serving": "1 份",
+      "kcal": 146
+    },
+    {
+      "id": "seven-3-Snacks_417",
+      "name": "左營劉家酸菜白肉冬粉",
+      "category": "麵食",
+      "serving": "1 份",
+      "kcal": 163
+    },
+    {
+      "id": "seven-3-Snacks_418",
+      "name": "鹽烤麻辣雞心",
+      "category": "焗烤",
+      "serving": "1 份",
+      "kcal": 132
+    },
+    {
+      "id": "seven-3-Snacks_410",
+      "name": "粥天子-白粥",
+      "category": "小食",
+      "serving": "1 份",
+      "kcal": 152
+    },
+    {
+      "id": "seven-3-Snacks_411",
+      "name": "粥天子-田園雞蓉玉米粥",
+      "category": "輕食小食",
+      "serving": "1 份",
+      "kcal": 261
+    },
+    {
+      "id": "seven-3-Snacks_412",
+      "name": "Simple Fit黃金玉米棒",
+      "category": "輕食小食",
+      "serving": "1 份",
+      "kcal": 167
+    },
+    {
+      "id": "seven-3-Snacks_403",
+      "name": "21Plus藜麥毛豆嫩雞丁",
+      "category": "小食",
+      "serving": "1 份",
+      "kcal": 161
+    },
+    {
+      "id": "seven-3-Snacks_396",
+      "name": "石安牧場椒麻溫泉蛋",
+      "category": "輕食小食",
+      "serving": "1 份",
+      "kcal": 106
+    },
+    {
+      "id": "seven-3-Snacks_389",
+      "name": "法蘭希迷你布里乾酪",
+      "category": "小食",
+      "serving": "1 份",
+      "kcal": 67
+    },
+    {
+      "id": "seven-3-Snacks_390",
+      "name": "恩美萊紅切達起司棒",
+      "category": "小食",
+      "serving": "1 份",
+      "kcal": 113
+    },
+    {
+      "id": "seven-3-Snacks_392",
+      "name": "阿桐阿寶四神湯",
+      "category": "小食",
+      "serving": "1 份",
+      "kcal": 114
+    },
+    {
+      "id": "seven-3-Snacks_387",
+      "name": "黃金玉米棒",
+      "category": "輕食小食",
+      "serving": "1 份",
+      "kcal": 264
+    },
+    {
+      "id": "seven-3-Snacks_384",
+      "name": "日式半熟蛋",
+      "category": "輕食小食",
+      "serving": "1 份",
+      "kcal": 63
+    },
+    {
+      "id": "seven-3-Snacks_385",
+      "name": "宗家府泡菜80g",
+      "category": "小食",
+      "serving": "1 份",
+      "kcal": 100
+    },
+    {
+      "id": "seven-3-Snacks_386",
+      "name": "凱薩風味嫩雞鮮蔬捲餅",
+      "category": "沙拉蔬食",
+      "serving": "1 份",
+      "kcal": 171
+    },
+    {
+      "id": "seven-3-Snacks_378",
+      "name": "21Plus甘梅薯條",
+      "category": "小食",
+      "serving": "1 份",
+      "kcal": 209.4
+    },
+    {
+      "id": "seven-3-Snacks_347",
+      "name": "及第豬肉熟水餃",
+      "category": "小食",
+      "serving": "1 份",
+      "kcal": 430
+    },
+    {
+      "id": "seven-3-Snacks_372",
+      "name": "大腸肉羹麵線",
+      "category": "麵食",
+      "serving": "1 份",
+      "kcal": 209
+    },
+    {
+      "id": "seven-3-Snacks_369",
+      "name": "恩美萊手撕起司棒",
+      "category": "小食",
+      "serving": "1 份",
+      "kcal": 85.1
+    },
+    {
+      "id": "seven-3-Snacks_354",
+      "name": "博客海鹽嫩雞胸",
+      "category": "輕食小食",
+      "serving": "1 份",
+      "kcal": 99
+    },
+    {
+      "id": "seven-3-Snacks_359",
+      "name": "獨饗薄皮黃金煎餃",
+      "category": "小食",
+      "serving": "1 份",
+      "kcal": 276
+    },
+    {
+      "id": "seven-3-Snacks_337",
+      "name": "滿漢小香腸_青花椒",
+      "category": "大亨堡",
+      "serving": "1 份",
+      "kcal": 221
+    },
+    {
+      "id": "seven-3-Snacks_348",
+      "name": "Marinfood煙燻乾酪",
+      "category": "小食",
+      "serving": "1 份",
+      "kcal": 170
+    },
+    {
+      "id": "seven-3-Snacks_330",
+      "name": "21Plus剝皮辣椒雞胸肉",
+      "category": "輕食小食",
+      "serving": "1 份",
+      "kcal": 163
+    },
+    {
+      "id": "seven-3-Snacks_335",
+      "name": "馨苑薑絲鱸魚湯",
+      "category": "小食",
+      "serving": "1 份",
+      "kcal": 84
+    },
+    {
+      "id": "seven-3-Snacks_319",
+      "name": "十三香烤雞翅",
+      "category": "焗烤",
+      "serving": "1 份",
+      "kcal": 232
+    },
+    {
+      "id": "seven-3-Snacks_314",
+      "name": "粥天子-阿發師香菇雞肉粥",
+      "category": "小食",
+      "serving": "1 份",
+      "kcal": 234
+    },
+    {
+      "id": "seven-3-Snacks_308",
+      "name": "乾杯炭火燒肉包",
+      "category": "小食",
+      "serving": "1 份",
+      "kcal": 263
+    },
+    {
+      "id": "seven-3-Snacks_283",
+      "name": "雞肉蛋白棒-黑胡椒風味",
+      "category": "輕食小食",
+      "serving": "1 份",
+      "kcal": 163
+    },
+    {
+      "id": "seven-3-Snacks_302",
+      "name": "21xBEING Fit桃木燻雞胸",
+      "category": "輕食小食",
+      "serving": "1 份",
+      "kcal": 120
+    },
+    {
+      "id": "seven-3-Snacks_435",
+      "name": "21Plus蒜香鹽酥雞",
+      "category": "小食",
+      "serving": "1 份",
+      "kcal": 281
+    },
+    {
+      "id": "seven-3-Snacks_286",
+      "name": "永心鳳茶剝皮辣椒燉雞盅",
+      "category": "小食",
+      "serving": "1 份",
+      "kcal": 130
+    },
+    {
+      "id": "seven-3-Snacks_177",
+      "name": "芋頭排骨酥湯",
+      "category": "小食",
+      "serving": "1 份",
+      "kcal": 207
+    },
+    {
+      "id": "seven-3-Snacks_178",
+      "name": "麻油米血",
+      "category": "小食",
+      "serving": "1 份",
+      "kcal": 145
+    },
+    {
+      "id": "seven-3-Snacks_179",
+      "name": "筒仔米糕",
+      "category": "小食",
+      "serving": "1 份",
+      "kcal": 207
+    },
+    {
+      "id": "seven-3-Snacks_281",
+      "name": "膳馨原盅厚菇燉雞湯",
+      "category": "小食",
+      "serving": "1 份",
+      "kcal": 138
+    },
+    {
+      "id": "seven-3-Snacks_187",
+      "name": "石安牧場剝皮辣椒茶碗蒸",
+      "category": "小食",
+      "serving": "1 份",
+      "kcal": 94
+    },
+    {
+      "id": "seven-3-Snacks_244",
+      "name": "石安牧場蔬食茶碗蒸",
+      "category": "沙拉蔬食",
+      "serving": "1 份",
+      "kcal": 98
+    },
+    {
+      "id": "seven-3-Snacks_260",
+      "name": "台畜煙燻豬肝100g",
+      "category": "小食",
+      "serving": "1 份",
+      "kcal": 146
+    },
+    {
+      "id": "seven-3-Snacks_212",
+      "name": "油香椒麻蒟蒻(全素)",
+      "category": "小食",
+      "serving": "1 份",
+      "kcal": 170
+    },
+    {
+      "id": "seven-3-Snacks_204",
+      "name": "如記真空綠竹筍",
+      "category": "輕食小食",
+      "serving": "1 份",
+      "kcal": 28
+    },
+    {
+      "id": "seven-3-Snacks_274",
+      "name": "厚燒玉子",
+      "category": "小食",
+      "serving": "1 份",
+      "kcal": 164
+    },
+    {
+      "id": "seven-4-ForeignDishes_493",
+      "name": "雙拼起司紅醬焗飯",
+      "category": "焗烤",
+      "serving": "1 份",
+      "kcal": 684
+    },
+    {
+      "id": "seven-4-ForeignDishes_494",
+      "name": "Homeal 奶香起司烤雞筆管麵",
+      "category": "麵食",
+      "serving": "1 份",
+      "kcal": 569
+    },
+    {
+      "id": "seven-4-ForeignDishes_499",
+      "name": "這不是滷肉飯",
+      "category": "便當",
+      "serving": "1 份",
+      "kcal": 406
+    },
+    {
+      "id": "seven-4-ForeignDishes_496",
+      "name": "歐姆蛋牛肉咖哩飯",
+      "category": "輕食小食",
+      "serving": "1 份",
+      "kcal": 666
+    },
+    {
+      "id": "seven-4-ForeignDishes_490",
+      "name": "一鍋燒-滑蛋嫩雞親子丼",
+      "category": "丼飯",
+      "serving": "1 份",
+      "kcal": 613
+    },
+    {
+      "id": "seven-4-ForeignDishes_497",
+      "name": "黃金炸豬排玉子丼",
+      "category": "丼飯",
+      "serving": "1 份",
+      "kcal": 629
+    },
+    {
+      "id": "seven-4-ForeignDishes_489",
+      "name": "香炸豬排歐姆蛋咖哩飯",
+      "category": "輕食小食",
+      "serving": "1 份",
+      "kcal": 727
+    },
+    {
+      "id": "seven-4-ForeignDishes_485",
+      "name": "頌丹樂-泰式打拋豬肉飯",
+      "category": "便當",
+      "serving": "1 份",
+      "kcal": 575
+    },
+    {
+      "id": "seven-4-ForeignDishes_492",
+      "name": "歐姆蛋包飯",
+      "category": "輕食小食",
+      "serving": "1 份",
+      "kcal": 498
+    },
+    {
+      "id": "seven-4-ForeignDishes_484",
+      "name": "日式雪花牛丼",
+      "category": "丼飯",
+      "serving": "1 份",
+      "kcal": 669
+    },
+    {
+      "id": "seven-4-ForeignDishes_477",
+      "name": "星宇航空-雙醬雞排咖哩飯",
+      "category": "便當",
+      "serving": "1 份",
+      "kcal": 764
+    },
+    {
+      "id": "seven-4-ForeignDishes_471",
+      "name": "爪哇咖哩豬肉飯",
+      "category": "便當",
+      "serving": "1 份",
+      "kcal": 553
+    },
+    {
+      "id": "seven-4-ForeignDishes_470",
+      "name": "豆酥烤魚鮮蔬餐盒",
+      "category": "便當",
+      "serving": "1 份",
+      "kcal": 418
+    },
+    {
+      "id": "seven-4-ForeignDishes_456",
+      "name": "21Plus主廚烤雞時蔬餐",
+      "category": "沙拉蔬食",
+      "serving": "1 份",
+      "kcal": 432
+    },
+    {
+      "id": "seven-4-ForeignDishes_424",
+      "name": "增雞蛋白餐",
+      "category": "輕食小食",
+      "serving": "1 份",
+      "kcal": 595
+    },
+    {
+      "id": "seven-4-ForeignDishes_430",
+      "name": "牛角-炙燒雙拼便當",
+      "category": "便當",
+      "serving": "1 份",
+      "kcal": 614
+    },
+    {
+      "id": "seven-4-ForeignDishes_428",
+      "name": "日式佛蒙特咖哩雞肉飯",
+      "category": "便當",
+      "serving": "1 份",
+      "kcal": 795
+    },
+    {
+      "id": "seven-5-Noodles_265",
+      "name": "蔥鹽增雞蛋白麵",
+      "category": "麵食",
+      "serving": "1 份",
+      "kcal": 463
+    },
+    {
+      "id": "seven-5-Noodles_266",
+      "name": "極饗-蔥爆沙茶牛肉炒麵",
+      "category": "麵食",
+      "serving": "1 份",
+      "kcal": 645
+    },
+    {
+      "id": "seven-5-Noodles_267",
+      "name": "Homeal x SN 剝皮辣椒雞細扁麵",
+      "category": "麵食",
+      "serving": "1 份",
+      "kcal": 419
+    },
+    {
+      "id": "seven-5-Noodles_268",
+      "name": "Homeal x貳樓雙起司肉醬義大利麵",
+      "category": "麵食",
+      "serving": "1 份",
+      "kcal": 492
+    },
+    {
+      "id": "seven-5-Noodles_269",
+      "name": "Homeal x貳樓烤雞佐青醬義大利麵",
+      "category": "麵食",
+      "serving": "1 份",
+      "kcal": 529
+    },
+    {
+      "id": "seven-5-Noodles_261",
+      "name": "擔擔胡麻冷麵",
+      "category": "麵食",
+      "serving": "1 份",
+      "kcal": 500
+    },
+    {
+      "id": "seven-5-Noodles_262",
+      "name": "韓式泡菜冷烏龍麵",
+      "category": "麵食",
+      "serving": "1 份",
+      "kcal": 356
+    },
+    {
+      "id": "seven-5-Noodles_259",
+      "name": "極饗-維力炸醬巧克力拌麵",
+      "category": "麵食",
+      "serving": "1 份",
+      "kcal": 660
+    },
+    {
+      "id": "seven-5-Noodles_260",
+      "name": "極饗-蕃茄蛋湯麵",
+      "category": "麵食",
+      "serving": "1 份",
+      "kcal": 463
+    },
+    {
+      "id": "seven-5-Noodles_258",
+      "name": "博多明太子冷烏龍麵",
+      "category": "麵食",
+      "serving": "1 份",
+      "kcal": 375
+    },
+    {
+      "id": "seven-5-Noodles_256",
+      "name": "極饗-蒜蓉蝦拌麵",
+      "category": "麵食",
+      "serving": "1 份",
+      "kcal": 453
+    },
+    {
+      "id": "seven-5-Noodles_257",
+      "name": "北海道蕎麥風味沾麵",
+      "category": "麵食",
+      "serving": "1 份",
+      "kcal": 336
+    },
+    {
+      "id": "seven-5-Noodles_253",
+      "name": "太和殿-藤椒風味烤雞拌麵(辣)",
+      "category": "麵食",
+      "serving": "1 份",
+      "kcal": 483
+    },
+    {
+      "id": "seven-5-Noodles_252",
+      "name": "極饗-府城鹽水風味意麵",
+      "category": "麵食",
+      "serving": "1 份",
+      "kcal": 586
+    },
+    {
+      "id": "seven-5-Noodles_83",
+      "name": "滿漢大餐酸菜牛肉拌麵",
+      "category": "麵食",
+      "serving": "1 份",
+      "kcal": 546
+    },
+    {
+      "id": "seven-6-Oden_173",
+      "name": "綠竹筍",
+      "category": "輕食小食",
+      "serving": "1 份",
+      "kcal": 8
+    },
+    {
+      "id": "seven-6-Oden_171",
+      "name": "炙燒雞胸肉",
+      "category": "輕食小食",
+      "serving": "1 份",
+      "kcal": 48
+    },
+    {
+      "id": "seven-6-Oden_170",
+      "name": "黃金玉子揚",
+      "category": "輕食小食",
+      "serving": "1 份",
+      "kcal": 107
+    },
+    {
+      "id": "seven-6-Oden_168",
+      "name": "翠玉娃娃菜",
+      "category": "輕食小食",
+      "serving": "1 份",
+      "kcal": 6
+    },
+    {
+      "id": "seven-6-Oden_169",
+      "name": "魚卵福袋",
+      "category": "輕食小食",
+      "serving": "1 份",
+      "kcal": 51
+    },
+    {
+      "id": "seven-6-Oden_166",
+      "name": "金黃蝦仁餅",
+      "category": "輕食小食",
+      "serving": "1 份",
+      "kcal": 70
+    },
+    {
+      "id": "seven-6-Oden_167",
+      "name": "鮮香菇",
+      "category": "輕食小食",
+      "serving": "1 份",
+      "kcal": 11
+    },
+    {
+      "id": "seven-6-Oden_165",
+      "name": "章魚燒串",
+      "category": "輕食小食",
+      "serving": "1 份",
+      "kcal": 49
+    },
+    {
+      "id": "seven-6-Oden_163",
+      "name": "日式雞肉丸",
+      "category": "輕食小食",
+      "serving": "1 份",
+      "kcal": 83
+    },
+    {
+      "id": "seven-6-Oden_164",
+      "name": "日本一正炸魚餅",
+      "category": "輕食小食",
+      "serving": "1 份",
+      "kcal": 42
+    },
+    {
+      "id": "seven-6-Oden_157",
+      "name": "金沙海鮮丸",
+      "category": "輕食小食",
+      "serving": "1 份",
+      "kcal": 56
+    },
+    {
+      "id": "seven-6-Oden_158",
+      "name": "黃金魚板",
+      "category": "輕食小食",
+      "serving": "1 份",
+      "kcal": 78
+    },
+    {
+      "id": "seven-6-Oden_159",
+      "name": "爆汁新星腸",
+      "category": "輕食小食",
+      "serving": "1 份",
+      "kcal": 97
+    },
+    {
+      "id": "seven-6-Oden_160",
+      "name": "花枝丸",
+      "category": "輕食小食",
+      "serving": "1 份",
+      "kcal": 61
+    },
+    {
+      "id": "seven-6-Oden_161",
+      "name": "手工高麗菜捲",
+      "category": "輕食小食",
+      "serving": "1 份",
+      "kcal": 40
+    },
+    {
+      "id": "seven-6-Oden_162",
+      "name": "原味豬肉貢丸",
+      "category": "輕食小食",
+      "serving": "1 份",
+      "kcal": 85
+    },
+    {
+      "id": "seven-6-Oden_155",
+      "name": "韓國魚板串",
+      "category": "輕食小食",
+      "serving": "1 份",
+      "kcal": 88
+    },
+    {
+      "id": "seven-6-Oden_152",
+      "name": "黃金魚豆腐",
+      "category": "輕食小食",
+      "serving": "1 份",
+      "kcal": 91
+    },
+    {
+      "id": "seven-6-Oden_154",
+      "name": "日本一正野燒竹輪",
+      "category": "輕食小食",
+      "serving": "1 份",
+      "kcal": 51
+    },
+    {
+      "id": "seven-6-Oden_145",
+      "name": "滷豬血",
+      "category": "輕食小食",
+      "serving": "1 份",
+      "kcal": 14
+    },
+    {
+      "id": "seven-6-Oden_144",
+      "name": "野菜豆腐棒",
+      "category": "輕食小食",
+      "serving": "1 份",
+      "kcal": 72
+    },
+    {
+      "id": "seven-6-Oden_142",
+      "name": "杏鮑菇",
+      "category": "輕食小食",
+      "serving": "1 份",
+      "kcal": 14
+    },
+    {
+      "id": "seven-6-Oden_133",
+      "name": "筊白筍",
+      "category": "輕食小食",
+      "serving": "1 份",
+      "kcal": 6
+    },
+    {
+      "id": "seven-6-Oden_131",
+      "name": "香甜玉米",
+      "category": "輕食小食",
+      "serving": "1 份",
+      "kcal": 76
+    },
+    {
+      "id": "seven-6-Oden_126",
+      "name": "香滷翅小腿",
+      "category": "輕食小食",
+      "serving": "1 份",
+      "kcal": 70.9
+    },
+    {
+      "id": "seven-6-Oden_124",
+      "name": "滷味香蔥肉丸",
+      "category": "輕食小食",
+      "serving": "1 份",
+      "kcal": 84
+    },
+    {
+      "id": "seven-6-Oden_05",
+      "name": "白蘿蔔",
+      "category": "輕食小食",
+      "serving": "1 份",
+      "kcal": 8
+    },
+    {
+      "id": "seven-6-Oden_99",
+      "name": "華昇飛魚卵海鮮卷",
+      "category": "輕食小食",
+      "serving": "1 份",
+      "kcal": 46
+    },
+    {
+      "id": "seven-6-Oden_18",
+      "name": "桂冠黃金魚蛋",
+      "category": "輕食小食",
+      "serving": "1 份",
+      "kcal": 32
+    },
+    {
+      "id": "seven-6-Oden_138",
+      "name": "旗魚黑輪",
+      "category": "輕食小食",
+      "serving": "1 份",
+      "kcal": 63
+    },
+    {
+      "id": "seven-6-Oden_19",
+      "name": "台灣黑輪",
+      "category": "輕食小食",
+      "serving": "1 份",
+      "kcal": 103
+    },
+    {
+      "id": "seven-6-Oden_63",
+      "name": "虱目魚丸",
+      "category": "輕食小食",
+      "serving": "1 份",
+      "kcal": 82
+    },
+    {
+      "id": "seven-6-Oden_104",
+      "name": "中華油豆腐",
+      "category": "輕食小食",
+      "serving": "1 份",
+      "kcal": 60
+    },
+    {
+      "id": "seven-6-Oden_30",
+      "name": "米血糕",
+      "category": "輕食小食",
+      "serving": "1 份",
+      "kcal": 129
+    },
+    {
+      "id": "seven-6-Oden_65",
+      "name": "關東煮春雨",
+      "category": "輕食小食",
+      "serving": "1 份",
+      "kcal": 108
+    },
+    {
+      "id": "seven-6-Oden_33",
+      "name": "關東煮科學麵",
+      "category": "麵食",
+      "serving": "1 份",
+      "kcal": 188
+    },
+    {
+      "id": "seven-7-Bigbite_48",
+      "name": "椒麻辣味熱狗",
+      "category": "大亨堡",
+      "serving": "1 份",
+      "kcal": 217
+    },
+    {
+      "id": "seven-7-Bigbite_47",
+      "name": "原味香腸",
+      "category": "大亨堡",
+      "serving": "1 份",
+      "kcal": 265
+    },
+    {
+      "id": "seven-7-Bigbite_45",
+      "name": "亨氏番茄醬爆汁熱狗",
+      "category": "大亨堡",
+      "serving": "1 份",
+      "kcal": 190
+    },
+    {
+      "id": "seven-7-Bigbite_44",
+      "name": "日式碳烤風味熱狗",
+      "category": "大亨堡",
+      "serving": "1 份",
+      "kcal": 203
+    },
+    {
+      "id": "seven-7-Bigbite_40",
+      "name": "爆汁起司熱狗",
+      "category": "大亨堡",
+      "serving": "1 份",
+      "kcal": 200,
+      "fat": 16,
+      "sodium": 417
+    },
+    {
+      "id": "seven-7-Bigbite_23",
+      "name": "起司四重奏熱狗堡",
+      "category": "三明治漢堡",
+      "serving": "1 份",
+      "kcal": 453
+    },
+    {
+      "id": "seven-7-Bigbite_18",
+      "name": "美式原味熱狗",
+      "category": "大亨堡",
+      "serving": "1 份",
+      "kcal": 204,
+      "fat": 16.6,
+      "sodium": 437
+    },
+    {
+      "id": "seven-7-Bigbite_14",
+      "name": "三起司熱狗",
+      "category": "大亨堡",
+      "serving": "1 份",
+      "kcal": 212,
+      "fat": 16.9,
+      "sodium": 449
+    },
+    {
+      "id": "seven-7-Bigbite_19",
+      "name": "大亨堡麵包",
+      "category": "三明治漢堡",
+      "serving": "1 份",
+      "kcal": 177,
+      "fat": 2.9,
+      "sodium": 212
+    },
+    {
+      "id": "seven-10-bread_1291",
+      "name": "吳寶春-荔枝玫瑰軟法",
+      "category": "麵包甜點",
+      "serving": "1 份",
+      "kcal": 257
+    },
+    {
+      "id": "seven-10-bread_1292",
+      "name": "豐實果乾切片麵包",
+      "category": "麵食",
+      "serving": "1 份",
+      "kcal": 447
+    },
+    {
+      "id": "seven-10-bread_1293",
+      "name": "蛋白力量-濃醇可可",
+      "category": "輕食小食",
+      "serving": "1 份",
+      "kcal": 390
+    },
+    {
+      "id": "seven-10-bread_1294",
+      "name": "高纖地瓜雜糧麵包",
+      "category": "麵食",
+      "serving": "1 份",
+      "kcal": 380
+    },
+    {
+      "id": "seven-10-bread_1295",
+      "name": "虎皮蛋糕",
+      "category": "麵包甜點",
+      "serving": "1 份",
+      "kcal": 280
+    },
+    {
+      "id": "seven-10-bread_1296",
+      "name": "新感覺鮪魚沙拉",
+      "category": "沙拉蔬食",
+      "serving": "1 份",
+      "kcal": 211
+    },
+    {
+      "id": "seven-10-bread_1275",
+      "name": "甘納豆芋泥平燒",
+      "category": "麵包甜點",
+      "serving": "1 份",
+      "kcal": 286
+    },
+    {
+      "id": "seven-10-bread_1276",
+      "name": "重量級-雞蛋牛奶棒",
+      "category": "輕食小食",
+      "serving": "1 份",
+      "kcal": 446
+    },
+    {
+      "id": "seven-10-bread_1277",
+      "name": "重量級-奶油手撕餐包",
+      "category": "麵包甜點",
+      "serving": "1 份",
+      "kcal": 397
+    },
+    {
+      "id": "seven-10-bread_1278",
+      "name": "蜂蜜奶霜Q鬆餅",
+      "category": "麵包甜點",
+      "serving": "1 份",
+      "kcal": 284.6
+    },
+    {
+      "id": "seven-10-bread_1279",
+      "name": "晨光厚奶酥土司",
+      "category": "麵包甜點",
+      "serving": "1 份",
+      "kcal": 722
+    },
+    {
+      "id": "seven-10-bread_1281",
+      "name": "晶華法式千層派",
+      "category": "麵包甜點",
+      "serving": "1 份",
+      "kcal": 412.4
+    },
+    {
+      "id": "seven-10-bread_1282",
+      "name": "傳說-巨大巧克力雙餡蛋糕捲",
+      "category": "麵包甜點",
+      "serving": "1 份",
+      "kcal": 222
+    },
+    {
+      "id": "seven-10-bread_1283",
+      "name": "LaDears芋泥生乳捲",
+      "category": "麵包甜點",
+      "serving": "1 份",
+      "kcal": 188
+    },
+    {
+      "id": "seven-10-bread_1284",
+      "name": "昂舒巴黎卡士達奶霜生甜甜圈",
+      "category": "麵包甜點",
+      "serving": "1 份",
+      "kcal": 342.8
+    },
+    {
+      "id": "seven-10-bread_1285",
+      "name": "金桃家月見芋泥金沙大福",
+      "category": "麵包甜點",
+      "serving": "1 份",
+      "kcal": 149
+    },
+    {
+      "id": "seven-10-bread_1286",
+      "name": "吳寶春雞蛋布丁",
+      "category": "麵包甜點",
+      "serving": "1 份",
+      "kcal": 174
+    },
+    {
+      "id": "seven-10-bread_1287",
+      "name": "AB+益菌優格135g",
+      "category": "麵包甜點",
+      "serving": "1 份",
+      "kcal": 136
+    },
+    {
+      "id": "seven-10-bread_1288",
+      "name": "韓國KIM新鮮藍莓蒟蒻吸凍飲",
+      "category": "麵包甜點",
+      "serving": "1 份",
+      "kcal": 5.6
+    },
+    {
+      "id": "seven-10-bread_1268",
+      "name": "芙菲小圓餅-經典原味",
+      "category": "麵包甜點",
+      "serving": "1 份",
+      "kcal": 340
+    },
+    {
+      "id": "seven-10-bread_1270",
+      "name": "無框架甜點-金沙雪椪",
+      "category": "麵包甜點",
+      "serving": "1 份",
+      "kcal": 211.6
+    },
+    {
+      "id": "seven-10-bread_1250",
+      "name": "開心果奶霜脆糖菠蘿",
+      "category": "麵包甜點",
+      "serving": "1 份",
+      "kcal": 326
+    },
+    {
+      "id": "seven-10-bread_1251",
+      "name": "統一麵包菱格香菠蘿",
+      "category": "麵食",
+      "serving": "1 份",
+      "kcal": 413
+    },
+    {
+      "id": "seven-10-bread_1252",
+      "name": "炸彈菠蘿葡萄奶酥",
+      "category": "麵包甜點",
+      "serving": "1 份",
+      "kcal": 466.5
+    },
+    {
+      "id": "seven-10-bread_1254",
+      "name": "Semeur冠軍蛋黃酥",
+      "category": "輕食小食",
+      "serving": "1 份",
+      "kcal": 285.5
+    },
+    {
+      "id": "seven-10-bread_1255",
+      "name": "芝麻千層酥",
+      "category": "麵包甜點",
+      "serving": "1 份",
+      "kcal": 257.6
+    },
+    {
+      "id": "seven-10-bread_1256",
+      "name": "高鐵-莓果比利時鬆餅",
+      "category": "麵包甜點",
+      "serving": "1 份",
+      "kcal": 182
+    },
+    {
+      "id": "seven-10-bread_1258",
+      "name": "瑞穗鮮乳土司PREMIUM",
+      "category": "麵包甜點",
+      "serving": "1 份",
+      "kcal": 286
+    },
+    {
+      "id": "seven-10-bread_1260",
+      "name": "韓國延世大學提拉米蘇風味生乳包",
+      "category": "麵包甜點",
+      "serving": "1 份",
+      "kcal": 474
+    },
+    {
+      "id": "seven-10-bread_1261",
+      "name": "昂舒巴黎提拉米蘇",
+      "category": "麵包甜點",
+      "serving": "1 份",
+      "kcal": 198
+    },
+    {
+      "id": "seven-10-bread_1264",
+      "name": "線條小狗草莓優格愛心馬卡龍",
+      "category": "麵包甜點",
+      "serving": "1 份",
+      "kcal": 129
+    },
+    {
+      "id": "seven-10-bread_1263",
+      "name": "LaDears焦糖布蕾馬卡龍",
+      "category": "麵包甜點",
+      "serving": "1 份",
+      "kcal": 136
+    },
+    {
+      "id": "seven-10-bread_1249",
+      "name": "圓山-寶山黑糖手撕包",
+      "category": "麵包甜點",
+      "serving": "1 份",
+      "kcal": 264
+    },
+    {
+      "id": "seven-10-bread_1241",
+      "name": "藍莓丹麥",
+      "category": "麵包甜點",
+      "serving": "1 份",
+      "kcal": 361
+    },
+    {
+      "id": "seven-10-bread_1243",
+      "name": "焦糖海鹽小可頌",
+      "category": "麵包甜點",
+      "serving": "1 份",
+      "kcal": 240.8
+    },
+    {
+      "id": "seven-10-bread_1246",
+      "name": "夢甜屋北海道霜淇淋風味Q皮鬆餅",
+      "category": "霜淇淋",
+      "serving": "1 份",
+      "kcal": 164.9
+    },
+    {
+      "id": "seven-10-bread_1247",
+      "name": "極濃生乳布丁",
+      "category": "麵包甜點",
+      "serving": "1 份",
+      "kcal": 152.9
+    },
+    {
+      "id": "seven-10-bread_1248",
+      "name": "八棟圓仔湯 花生薏仁湯",
+      "category": "麵包甜點",
+      "serving": "1 份",
+      "kcal": 273
+    },
+    {
+      "id": "seven-10-bread_1233",
+      "name": "乖乖-奶油椰子堡",
+      "category": "三明治漢堡",
+      "serving": "1 份",
+      "kcal": 382
+    },
+    {
+      "id": "seven-10-bread_1234",
+      "name": "乖乖-香濃巧克力雷仔捲",
+      "category": "麵包甜點",
+      "serving": "1 份",
+      "kcal": 283
+    },
+    {
+      "id": "seven-10-bread_1236",
+      "name": "LaDears焦糖海鹽達克瓦茲",
+      "category": "麵包甜點",
+      "serving": "1 份",
+      "kcal": 117
+    },
+    {
+      "id": "seven-10-bread_1237",
+      "name": "昂舒巴黎焦糖生甜甜圈",
+      "category": "麵包甜點",
+      "serving": "1 份",
+      "kcal": 288
+    },
+    {
+      "id": "seven-10-bread_1239",
+      "name": "地瓜燒",
+      "category": "輕食小食",
+      "serving": "1 份",
+      "kcal": 104.1
+    },
+    {
+      "id": "seven-10-bread_1238",
+      "name": "杜拜巧克力千層蛋糕",
+      "category": "麵包甜點",
+      "serving": "1 份",
+      "kcal": 243
+    },
+    {
+      "id": "seven-10-bread_1215",
+      "name": "野生藍莓貝果",
+      "category": "麵包甜點",
+      "serving": "1 份",
+      "kcal": 290
+    },
+    {
+      "id": "seven-10-bread_1226",
+      "name": "法式香頌",
+      "category": "麵包甜點",
+      "serving": "1 份",
+      "kcal": 326
+    },
+    {
+      "id": "seven-10-bread_1220",
+      "name": "抹茶紅豆土司",
+      "category": "麵包甜點",
+      "serving": "1 份",
+      "kcal": 210
+    },
+    {
+      "id": "seven-10-bread_1222",
+      "name": "杜拜巧克力大福",
+      "category": "麵包甜點",
+      "serving": "1 份",
+      "kcal": 172
+    },
+    {
+      "id": "seven-10-bread_1223",
+      "name": "竹葉堂黑糖蕨餅",
+      "category": "麵包甜點",
+      "serving": "1 份",
+      "kcal": 275.4
+    },
+    {
+      "id": "seven-10-bread_1224",
+      "name": "晶英酒店糖霜檸檬蛋糕棒",
+      "category": "麵包甜點",
+      "serving": "1 份",
+      "kcal": 112.2
+    },
+    {
+      "id": "seven-10-bread_1194",
+      "name": "新感覺雙重巧克力夾心",
+      "category": "麵包甜點",
+      "serving": "1 份",
+      "kcal": 263
+    },
+    {
+      "id": "seven-10-bread_1195",
+      "name": "統一麵包濃醇巧克力派司",
+      "category": "麵食",
+      "serving": "1 份",
+      "kcal": 396
+    },
+    {
+      "id": "seven-10-bread_1196",
+      "name": "草莓果泥麵包",
+      "category": "麵食",
+      "serving": "1 份",
+      "kcal": 247
+    },
+    {
+      "id": "seven-10-bread_1212",
+      "name": "好時-巧克力麻糬麵包",
+      "category": "麵食",
+      "serving": "1 份",
+      "kcal": 542.7
+    },
+    {
+      "id": "seven-10-bread_1203",
+      "name": "好時-巧克力麻糬軟餅乾",
+      "category": "麵包甜點",
+      "serving": "1 份",
+      "kcal": 294
+    },
+    {
+      "id": "seven-10-bread_1207",
+      "name": "光泉百香蜜桃雙格優酪",
+      "category": "麵包甜點",
+      "serving": "1 份",
+      "kcal": 144.8
+    },
+    {
+      "id": "seven-10-bread_1208",
+      "name": "光泉森林莓果雙格優酪",
+      "category": "麵包甜點",
+      "serving": "1 份",
+      "kcal": 134.8
+    },
+    {
+      "id": "seven-10-bread_1209",
+      "name": "福樂Q果蘋果蔓越莓優酪135g",
+      "category": "麵包甜點",
+      "serving": "1 份",
+      "kcal": 108
+    },
+    {
+      "id": "seven-10-bread_1181",
+      "name": "線條小狗布丁大福",
+      "category": "麵包甜點",
+      "serving": "1 份",
+      "kcal": 108
+    },
+    {
+      "id": "seven-10-bread_1189",
+      "name": "昂舒巴黎卡士達雙餡泡芙",
+      "category": "麵包甜點",
+      "serving": "1 份",
+      "kcal": 156
+    },
+    {
+      "id": "seven-10-bread_1190",
+      "name": "吳寶春芒果奶酪",
+      "category": "麵包甜點",
+      "serving": "1 份",
+      "kcal": 187.9
+    },
+    {
+      "id": "seven-10-bread_1191",
+      "name": "韓國延世大學原味生乳包105g",
+      "category": "麵包甜點",
+      "serving": "1 份",
+      "kcal": 337
+    },
+    {
+      "id": "seven-10-bread_1193",
+      "name": "愛樂薇水果優格-藍莓",
+      "category": "麵包甜點",
+      "serving": "1 份",
+      "kcal": 119
+    },
+    {
+      "id": "seven-10-bread_1192",
+      "name": "愛樂薇水果優格-草莓",
+      "category": "麵包甜點",
+      "serving": "1 份",
+      "kcal": 113
+    },
+    {
+      "id": "seven-10-bread_1170",
+      "name": "LaDears芋泥波士頓派",
+      "category": "麵包甜點",
+      "serving": "1 份",
+      "kcal": 177
+    },
+    {
+      "id": "seven-10-bread_1172",
+      "name": "春上方塊戚風杯(北海道奶霜)",
+      "category": "麵包甜點",
+      "serving": "1 份",
+      "kcal": 296.4
+    },
+    {
+      "id": "seven-10-bread_1158",
+      "name": "生乳烤布丁",
+      "category": "焗烤",
+      "serving": "1 份",
+      "kcal": 191.1
+    },
+    {
+      "id": "seven-10-bread_1159",
+      "name": "LaDears草莓黑森林蛋糕",
+      "category": "麵包甜點",
+      "serving": "1 份",
+      "kcal": 294.2
+    },
+    {
+      "id": "seven-10-bread_1160",
+      "name": "LaDears法式乳酪塔",
+      "category": "麵包甜點",
+      "serving": "1 份",
+      "kcal": 202
+    },
+    {
+      "id": "seven-10-bread_1150",
+      "name": "LADEARS北海道生乳捲",
+      "category": "麵包甜點",
+      "serving": "1 份",
+      "kcal": 198
+    },
+    {
+      "id": "seven-10-bread_1136",
+      "name": "夢甜屋紅豆鮮奶油雙餡銅鑼燒",
+      "category": "麵包甜點",
+      "serving": "1 份",
+      "kcal": 207
+    },
+    {
+      "id": "seven-10-bread_1138",
+      "name": "黑丸-蠟筆小新愛玉寒天",
+      "category": "麵包甜點",
+      "serving": "1 份",
+      "kcal": 85.6
+    },
+    {
+      "id": "seven-10-bread_1139",
+      "name": "黑丸-蠟筆小新仙草奶凍",
+      "category": "麵包甜點",
+      "serving": "1 份",
+      "kcal": 69.1
+    },
+    {
+      "id": "seven-10-bread_1120",
+      "name": "愛餡大亨-爆漿卡士達脆糖菠蘿",
+      "category": "麵包甜點",
+      "serving": "1 份",
+      "kcal": 345
+    },
+    {
+      "id": "seven-10-bread_1124",
+      "name": "LaDears提拉米蘇蛋糕杯",
+      "category": "麵包甜點",
+      "serving": "1 份",
+      "kcal": 197
+    },
+    {
+      "id": "seven-10-bread_1125",
+      "name": "日式麻糬泡芙",
+      "category": "麵包甜點",
+      "serving": "1 份",
+      "kcal": 140
+    },
+    {
+      "id": "seven-10-bread_1126",
+      "name": "統一布丁(焦糖出走咘布)",
+      "category": "麵包甜點",
+      "serving": "1 份",
+      "kcal": 111
+    },
+    {
+      "id": "seven-10-bread_1109",
+      "name": "吳寶春-抹茶紅豆麻糬麵包",
+      "category": "麵食",
+      "serving": "1 份",
+      "kcal": 389
+    },
+    {
+      "id": "seven-10-bread_1117",
+      "name": "光泉純乳優酪",
+      "category": "麵包甜點",
+      "serving": "1 份",
+      "kcal": 84.2
+    },
+    {
+      "id": "seven-10-bread_1100",
+      "name": "統一麵包鹽奶油厚菠蘿",
+      "category": "麵食",
+      "serving": "1 份",
+      "kcal": 477
+    },
+    {
+      "id": "seven-10-bread_1103",
+      "name": "新感覺花生夾心",
+      "category": "麵包甜點",
+      "serving": "1 份",
+      "kcal": 297
+    },
+    {
+      "id": "seven-10-bread_1210",
+      "name": "丹麥紅豆土司",
+      "category": "麵包甜點",
+      "serving": "1 份",
+      "kcal": 354
+    },
+    {
+      "id": "seven-10-bread_1093",
+      "name": "貓福珊迪草莓派",
+      "category": "麵包甜點",
+      "serving": "1 份",
+      "kcal": 166.8
+    },
+    {
+      "id": "seven-10-bread_1080",
+      "name": "The Smurfs 藍莓戚風夾心蛋糕",
+      "category": "麵包甜點",
+      "serving": "1 份",
+      "kcal": 91
+    },
+    {
+      "id": "seven-10-bread_1084",
+      "name": "開心果千層塔",
+      "category": "麵包甜點",
+      "serving": "1 份",
+      "kcal": 193.8
+    },
+    {
+      "id": "seven-10-bread_1085",
+      "name": "昂舒巴黎提拉米蘇覆盆莓口味",
+      "category": "麵包甜點",
+      "serving": "1 份",
+      "kcal": 181
+    },
+    {
+      "id": "seven-10-bread_1064",
+      "name": "貝洛邦核桃多穀物",
+      "category": "麵包甜點",
+      "serving": "1 份",
+      "kcal": 461
+    },
+    {
+      "id": "seven-10-bread_1065",
+      "name": "貝洛邦法式經典可頌",
+      "category": "麵包甜點",
+      "serving": "1 份",
+      "kcal": 271
+    },
+    {
+      "id": "seven-10-bread_1068",
+      "name": "統一麵包椰香葡萄",
+      "category": "麵食",
+      "serving": "1 份",
+      "kcal": 356
+    },
+    {
+      "id": "seven-10-bread_1072",
+      "name": "LaDears榛果脆脆可麗捲",
+      "category": "麵包甜點",
+      "serving": "1 份",
+      "kcal": 287
+    },
+    {
+      "id": "seven-10-bread_1059",
+      "name": "LADEARS經典檸檬塔",
+      "category": "麵包甜點",
+      "serving": "1 份",
+      "kcal": 256
+    },
+    {
+      "id": "seven-10-bread_1060",
+      "name": "吉伊卡哇草莓卡士達麻糬泡芙",
+      "category": "麵包甜點",
+      "serving": "1 份",
+      "kcal": 106
+    },
+    {
+      "id": "seven-10-bread_1048",
+      "name": "提拉米蘇 QQ 蛋糕捲",
+      "category": "麵包甜點",
+      "serving": "1 份",
+      "kcal": 233
+    },
+    {
+      "id": "seven-10-bread_1014",
+      "name": "晨光GOLD巧克力生土司",
+      "category": "麵包甜點",
+      "serving": "1 份",
+      "kcal": 255
+    },
+    {
+      "id": "seven-10-bread_999",
+      "name": "統一麵包糖蜜香紅豆麵包",
+      "category": "麵食",
+      "serving": "1 份",
+      "kcal": 303
+    },
+    {
+      "id": "seven-10-bread_1000",
+      "name": "統一麵包鹽奶油捲",
+      "category": "麵食",
+      "serving": "1 份",
+      "kcal": 277
+    },
+    {
+      "id": "seven-10-bread_959",
+      "name": "台式馬卡龍",
+      "category": "麵包甜點",
+      "serving": "1 份",
+      "kcal": 170
+    },
+    {
+      "id": "seven-10-bread_939",
+      "name": "盛香珍完熟芒果鮮果凍",
+      "category": "麵包甜點",
+      "serving": "1 份",
+      "kcal": 183
+    },
+    {
+      "id": "seven-10-bread_840",
+      "name": "中華豆花(水果風味)",
+      "category": "麵包甜點",
+      "serving": "1 份",
+      "kcal": 90
+    },
+    {
+      "id": "seven-10-bread_974",
+      "name": "光泉正庄杏仁豆腐",
+      "category": "麵包甜點",
+      "serving": "1 份",
+      "kcal": 82.9
+    },
+    {
+      "id": "seven-10-bread_926",
+      "name": "優菓甜坊醇厚熟布丁",
+      "category": "麵包甜點",
+      "serving": "1 份",
+      "kcal": 208.4
+    },
+    {
+      "id": "seven-10-bread_917",
+      "name": "黑丸招牌仙草吸凍飲",
+      "category": "麵包甜點",
+      "serving": "1 份",
+      "kcal": 91
+    },
+    {
+      "id": "seven-10-bread_893",
+      "name": "OPEN!蘋果吸凍飲PP220",
+      "category": "麵包甜點",
+      "serving": "1 份",
+      "kcal": 164.6
+    },
+    {
+      "id": "seven-10-bread_645",
+      "name": "OPEN!雙葡萄吸凍飲PP220",
+      "category": "麵包甜點",
+      "serving": "1 份",
+      "kcal": 147.8
+    },
+    {
+      "id": "seven-10-bread_896",
+      "name": "順天本草輕點龜苓膏-蜂蜜",
+      "category": "麵包甜點",
+      "serving": "1 份",
+      "kcal": 63.5
+    },
+    {
+      "id": "seven-10-bread_975",
+      "name": "福樂超能蛋白無加糖優酪",
+      "category": "輕食小食",
+      "serving": "1 份",
+      "kcal": 113
+    },
+    {
+      "id": "seven-10-bread_872",
+      "name": "福樂超能蛋白百香果優酪",
+      "category": "輕食小食",
+      "serving": "1 份",
+      "kcal": 113
+    },
+    {
+      "id": "seven-10-bread_777",
+      "name": "植物的優芒果蜜桃優格",
+      "category": "麵包甜點",
+      "serving": "1 份",
+      "kcal": 202
+    },
+    {
+      "id": "seven-10-bread_831",
+      "name": "福樂燕麥草莓優酪150g",
+      "category": "麵包甜點",
+      "serving": "1 份",
+      "kcal": 133
+    },
+    {
+      "id": "seven-10-bread_916",
+      "name": "福樂Q果草莓覆盆莓優酪",
+      "category": "麵包甜點",
+      "serving": "1 份",
+      "kcal": 111
+    },
+    {
+      "id": "seven-10-bread_638",
+      "name": "愛餡大亨-煉乳牛奶",
+      "category": "麵包甜點",
+      "serving": "1 份",
+      "kcal": 293
+    },
+    {
+      "id": "seven-10-bread_224",
+      "name": "丹麥起司火腿",
+      "category": "麵包甜點",
+      "serving": "1 份",
+      "kcal": 396
+    },
+    {
+      "id": "seven-10-bread_225",
+      "name": "蛋黃奶香麵包",
+      "category": "麵食",
+      "serving": "1 份",
+      "kcal": 310
+    },
+    {
+      "id": "seven-10-bread_627",
+      "name": "原之果實小蜜柑鮮果凍",
+      "category": "麵包甜點",
+      "serving": "1 份",
+      "kcal": 204
+    },
+    {
+      "id": "seven-10-bread_1119",
+      "name": "晶典小品-咖啡凍",
+      "category": "麵包甜點",
+      "serving": "1 份",
+      "kcal": 91.6
+    },
+    {
+      "id": "seven-10-bread_1118",
+      "name": "晶典小品-茉莉茶凍",
+      "category": "麵包甜點",
+      "serving": "1 份",
+      "kcal": 85.6
+    },
+    {
+      "id": "seven-10-bread_626",
+      "name": "優菓甜坊摩摩喳喳甜湯",
+      "category": "麵包甜點",
+      "serving": "1 份",
+      "kcal": 250.3
+    },
+    {
+      "id": "seven-10-bread_742",
+      "name": "優菓甜坊紅豆紫米湯",
+      "category": "麵包甜點",
+      "serving": "1 份",
+      "kcal": 263.48
+    },
+    {
+      "id": "seven-10-bread_892",
+      "name": "優菓甜坊椰香紫芋露",
+      "category": "麵包甜點",
+      "serving": "1 份",
+      "kcal": 235.2
+    },
+    {
+      "id": "seven-10-bread_544",
+      "name": "優菓甜坊蒟蒻薏仁綠豆湯",
+      "category": "麵包甜點",
+      "serving": "1 份",
+      "kcal": 207.8
+    },
+    {
+      "id": "seven-10-bread_337",
+      "name": "優菓甜坊可可玉米片鮮奶酪",
+      "category": "輕食小食",
+      "serving": "1 份",
+      "kcal": 161.2
+    },
+    {
+      "id": "seven-10-bread_335",
+      "name": "優菓甜坊黑糖豆花",
+      "category": "麵包甜點",
+      "serving": "1 份",
+      "kcal": 164.6
+    },
+    {
+      "id": "seven-10-bread_338",
+      "name": "優菓甜坊仙草凍",
+      "category": "麵包甜點",
+      "serving": "1 份",
+      "kcal": 137.8
+    },
+    {
+      "id": "seven-10-bread_339",
+      "name": "優菓甜坊銀耳蓮子湯",
+      "category": "麵包甜點",
+      "serving": "1 份",
+      "kcal": 141.8
+    },
+    {
+      "id": "seven-12-images_steam_09",
+      "name": "炊肉圓",
+      "category": "小吃",
+      "serving": "1 份",
+      "kcal": 221.1,
+      "fat": 10.3,
+      "sodium": 318
+    },
+    {
+      "id": "seven-12-steam_08",
+      "name": "芋粿巧",
+      "category": "小吃",
+      "serving": "1 份",
+      "kcal": 189.4,
+      "fat": 5,
+      "sodium": 315
+    },
+    {
+      "id": "seven-12-steam_07",
+      "name": "蘿蔔糕",
+      "category": "小吃",
+      "serving": "1 份",
+      "kcal": 152,
+      "fat": 4.3,
+      "sodium": 338
+    },
+    {
+      "id": "seven-12-steam_05",
+      "name": "甜玉米",
+      "category": "輕食小食",
+      "serving": "1 份",
+      "kcal": 76,
+      "fat": 0.8,
+      "sodium": 0
+    },
+    {
+      "id": "seven-12-steam_03",
+      "name": "糯米腸",
+      "category": "小吃",
+      "serving": "1 份",
+      "kcal": 249,
+      "fat": 9.9,
+      "sodium": 332
+    },
+    {
+      "id": "seven-12-steam_04",
+      "name": "蒸手工高麗菜捲",
+      "category": "小吃",
+      "serving": "1 份",
+      "kcal": 57,
+      "fat": 2.3,
+      "sodium": 289
+    },
+    {
+      "id": "seven-12-steam_02",
+      "name": "花生粉米血糕",
+      "category": "麵食",
+      "serving": "1 份",
+      "kcal": 206,
+      "fat": 0.9,
+      "sodium": 357
+    },
+    {
+      "id": "seven-12-steam_01",
+      "name": "日式飛龍頭(魚板)",
+      "category": "小吃",
+      "serving": "1 份",
+      "kcal": 47.8,
+      "fat": 2.2,
+      "sodium": 163
+    },
+    {
+      "id": "seven-13-luwei_258",
+      "name": "御料小館x老四川-川辣寬粉",
+      "category": "麵食",
+      "serving": "1 份",
+      "kcal": 256
+    },
+    {
+      "id": "seven-13-luwei_259",
+      "name": "御料小館x老四川麻辣燙",
+      "category": "麵食",
+      "serving": "1 份",
+      "kcal": 236
+    },
+    {
+      "id": "seven-13-luwei_254",
+      "name": "御料小館 x SN-炸裂椒麻腿",
+      "category": "麵食",
+      "serving": "1 份",
+      "kcal": 390
+    },
+    {
+      "id": "seven-13-luwei_255",
+      "name": "御料小館 x SN-美式BBQ烤雞翅",
+      "category": "焗烤",
+      "serving": "1 份",
+      "kcal": 272
+    },
+    {
+      "id": "seven-13-luwei_237",
+      "name": "御料小館日式照燒雞肉丸",
+      "category": "麵食",
+      "serving": "1 份",
+      "kcal": 276
+    },
+    {
+      "id": "seven-13-luwei_235",
+      "name": "涓豆腐泡菜冬粉",
+      "category": "麵食",
+      "serving": "1 份",
+      "kcal": 155
+    },
+    {
+      "id": "seven-13-luwei_234",
+      "name": "御料小館玉米豬肉水餃",
+      "category": "輕食小食",
+      "serving": "1 份",
+      "kcal": 294
+    },
+    {
+      "id": "seven-13-luwei_229",
+      "name": "御料小館韓風洋釀炸雞",
+      "category": "麵食",
+      "serving": "1 份",
+      "kcal": 234
+    },
+    {
+      "id": "seven-13-luwei_243",
+      "name": "御料小館X艋舺雞排-爆汁嫩雞",
+      "category": "麵食",
+      "serving": "1 份",
+      "kcal": 242
+    },
+    {
+      "id": "seven-13-luwei_225",
+      "name": "御料小館韓風甜辣醬炸雞",
+      "category": "麵食",
+      "serving": "1 份",
+      "kcal": 284
+    },
+    {
+      "id": "seven-13-luwei_223",
+      "name": "御料小館x膳馨 無骨秘製排骨酥",
+      "category": "麵食",
+      "serving": "1 份",
+      "kcal": 242
+    },
+    {
+      "id": "seven-13-luwei_208",
+      "name": "御料小館x世界的山將夢幻唐揚雞",
+      "category": "麵食",
+      "serving": "1 份",
+      "kcal": 331.5
+    },
+    {
+      "id": "seven-13-luwei_193",
+      "name": "御料小館X世界的山將夢幻雞翅",
+      "category": "麵食",
+      "serving": "1 份",
+      "kcal": 180.7
+    },
+    {
+      "id": "seven-13-luwei_191",
+      "name": "御料小館奶油培根義大利麵",
+      "category": "麵食",
+      "serving": "1 份",
+      "kcal": 350
+    },
+    {
+      "id": "seven-13-luwei_189",
+      "name": "御料小館招牌水煎包",
+      "category": "麵食",
+      "serving": "1 份",
+      "kcal": 457
+    },
+    {
+      "id": "seven-13-luwei_165",
+      "name": "御料小館招牌水餃",
+      "category": "麵食",
+      "serving": "1 份",
+      "kcal": 376
+    },
+    {
+      "id": "seven-13-luwei_162",
+      "name": "御料小館鮮肉鍋貼",
+      "category": "麵食",
+      "serving": "1 份",
+      "kcal": 412
+    },
+    {
+      "id": "seven-13-luwei_207",
+      "name": "御料小館沙茶豬肉蛋炒飯",
+      "category": "輕食小食",
+      "serving": "1 份",
+      "kcal": 413
+    },
+    {
+      "id": "seven-13-luwei_164",
+      "name": "御料小館火腿肉絲黃金蛋炒飯",
+      "category": "輕食小食",
+      "serving": "1 份",
+      "kcal": 479
+    },
+    {
+      "id": "seven-13-luwei_156",
+      "name": "御料小館辣味雞柳條",
+      "category": "麵食",
+      "serving": "1 份",
+      "kcal": 188
+    },
+    {
+      "id": "seven-13-luwei_149",
+      "name": "御料小館香辣炸雞球",
+      "category": "麵食",
+      "serving": "1 份",
+      "kcal": 245
+    },
+    {
+      "id": "seven-13-luwei_204",
+      "name": "御料小館泰式打拋豬炒飯",
+      "category": "麵食",
+      "serving": "1 份",
+      "kcal": 349
+    },
+    {
+      "id": "seven-13-luwei_117",
+      "name": "御料小館原味嫩雞塊",
+      "category": "麵食",
+      "serving": "1 份",
+      "kcal": 243
+    },
+    {
+      "id": "seven-13-luwei_118",
+      "name": "御料小館椒鹽鹽酥雞",
+      "category": "麵食",
+      "serving": "1 份",
+      "kcal": 281
+    },
+    {
+      "id": "seven-13-luwei_99",
+      "name": "御料小館豆乳雞",
+      "category": "麵食",
+      "serving": "1 份",
+      "kcal": 248
+    },
+    {
+      "id": "seven-13-luwei_161",
+      "name": "御料小館韓式泡菜鍋貼",
+      "category": "麵食",
+      "serving": "1 份",
+      "kcal": 402
+    },
+    {
+      "id": "seven-13-luwei_84",
+      "name": "御料小館青醬蛤蜊義大利麵",
+      "category": "麵食",
+      "serving": "1 份",
+      "kcal": 327
+    },
+    {
+      "id": "seven-13-luwei_110",
+      "name": "松稜糖燻雞翅",
+      "category": "麵食",
+      "serving": "1 份",
+      "kcal": 238
+    },
+    {
+      "id": "seven-13-luwei_35",
+      "name": "爆炒滷雞胗",
+      "category": "麵食",
+      "serving": "1 份",
+      "kcal": 173
+    },
+    {
+      "id": "seven-13-luwei_32",
+      "name": "石安牧場香滷蛋白丁",
+      "category": "輕食小食",
+      "serving": "1 份",
+      "kcal": 33
+    },
+    {
+      "id": "seven-13-luwei_202",
+      "name": "石安牧場溫泉蛋(2入)",
+      "category": "輕食小食",
+      "serving": "1 份",
+      "kcal": 106
+    },
+    {
+      "id": "seven-14-health_23",
+      "name": "21風味館烤雞蔬食盒餐",
+      "category": "便當",
+      "serving": "1 份",
+      "kcal": 266
+    },
+    {
+      "id": "seven-14-health_04",
+      "name": "繽紛鮮蔬烤雞便當",
+      "category": "便當",
+      "serving": "1 份",
+      "kcal": 353
+    },
+    {
+      "id": "seven-14-health_05",
+      "name": "丸龜照燒雞炊飯",
+      "category": "便當",
+      "serving": "1 份",
+      "kcal": 465
+    },
+    {
+      "id": "seven-14-health_11",
+      "name": "紐奧良風味烤雞蔬菜捲",
+      "category": "沙拉蔬食",
+      "serving": "1 份",
+      "kcal": 280
+    },
+    {
+      "id": "seven-14-health_21",
+      "name": "一日野菜-八種蔬菜溫沙拉",
+      "category": "沙拉蔬食",
+      "serving": "1 份",
+      "kcal": 101
+    },
+    {
+      "id": "seven-14-health_20",
+      "name": "一日野菜-農夫十蔬",
+      "category": "沙拉蔬食",
+      "serving": "1 份",
+      "kcal": 89
+    },
+    {
+      "id": "seven-14-health_22",
+      "name": "完熟番茄蔬菜湯",
+      "category": "沙拉蔬食",
+      "serving": "1 份",
+      "kcal": 166
+    },
+    {
+      "id": "seven-14-health_17",
+      "name": "蔥鹽烤雞蔬食便當",
+      "category": "便當",
+      "serving": "1 份",
+      "kcal": 373
+    },
+    {
+      "id": "seven-14-health_18",
+      "name": "鹽麴雞腿溫沙拉",
+      "category": "沙拉蔬食",
+      "serving": "1 份",
+      "kcal": 187
+    },
+    {
+      "id": "seven-14-health_19",
+      "name": "什蔬滷味",
+      "category": "沙拉蔬食",
+      "serving": "1 份",
+      "kcal": 291
+    },
+    {
+      "id": "seven-14-health_07",
+      "name": "一日野菜-和風海藻",
+      "category": "便當",
+      "serving": "1 份",
+      "kcal": 32
+    },
+    {
+      "id": "seven-15-sandwich_153",
+      "name": "(熱壓土司)八棟花生麻糬",
+      "category": "三明治漢堡",
+      "serving": "1 份",
+      "kcal": 305
+    },
+    {
+      "id": "seven-15-sandwich_152",
+      "name": "肉鬆火腿蛋三明治",
+      "category": "三明治漢堡",
+      "serving": "1 份",
+      "kcal": 269
+    },
+    {
+      "id": "seven-15-sandwich_146",
+      "name": "爆蛋流心豬肉堡",
+      "category": "三明治漢堡",
+      "serving": "1 份",
+      "kcal": 461
+    },
+    {
+      "id": "seven-15-sandwich_143",
+      "name": "吉士豬肉堡加蛋",
+      "category": "三明治漢堡",
+      "serving": "1 份",
+      "kcal": 261
+    },
+    {
+      "id": "seven-15-sandwich_27",
+      "name": "(熱壓土司)厚起司蛋",
+      "category": "輕食小食",
+      "serving": "1 份",
+      "kcal": 333
+    },
+    {
+      "id": "seven-15-sandwich_31",
+      "name": "(熱壓土司)紐奧良風味烤雞",
+      "category": "焗烤",
+      "serving": "1 份",
+      "kcal": 293
+    },
+    {
+      "id": "seven-15-sandwich_33",
+      "name": "(熱壓土司)里肌肉蛋",
+      "category": "輕食小食",
+      "serving": "1 份",
+      "kcal": 287
+    },
+    {
+      "id": "seven-15-sandwich_09",
+      "name": "藍莓乳酪三明治",
+      "category": "三明治漢堡",
+      "serving": "1 份",
+      "kcal": 175
+    },
+    {
+      "id": "seven-15-sandwich_144",
+      "name": "溏心蛋紐奧良風味烤雞三明治",
+      "category": "三明治漢堡",
+      "serving": "1 份",
+      "kcal": 235
+    },
+    {
+      "id": "seven-15-sandwich_57",
+      "name": "鮪魚洋芋溏心蛋三明治",
+      "category": "三明治漢堡",
+      "serving": "1 份",
+      "kcal": 281
+    },
+    {
+      "id": "seven-16-ohlala_153",
+      "name": "焗烤奶油蝦仁通心粉",
+      "category": "麵食",
+      "serving": "1 份",
+      "kcal": 490
+    },
+    {
+      "id": "seven-16-ohlala_149",
+      "name": "燻腸紅醬義大利麵",
+      "category": "麵食",
+      "serving": "1 份",
+      "kcal": 684
+    },
+    {
+      "id": "seven-16-ohlala_146",
+      "name": "蒜香油封蝦義大利麵",
+      "category": "麵食",
+      "serving": "1 份",
+      "kcal": 482
+    },
+    {
+      "id": "seven-16-ohlala_147",
+      "name": "香蒜白酒蛤蠣義大利麵",
+      "category": "麵食",
+      "serving": "1 份",
+      "kcal": 438
+    },
+    {
+      "id": "seven-16-ohlala_143",
+      "name": "奶油蛋黃醬培根義大利麵",
+      "category": "麵食",
+      "serving": "1 份",
+      "kcal": 579
+    },
+    {
+      "id": "seven-16-ohlala_141",
+      "name": "21Plus莎莎醬繽紛雞肉冷義麵",
+      "category": "麵食",
+      "serving": "1 份",
+      "kcal": 346
+    },
+    {
+      "id": "seven-16-ohlala_139",
+      "name": "瑪格麗特筆管麵",
+      "category": "麵食",
+      "serving": "1 份",
+      "kcal": 632
+    },
+    {
+      "id": "seven-16-ohlala_131",
+      "name": "蝦仁白醬焗烤飯",
+      "category": "焗烤",
+      "serving": "1 份",
+      "kcal": 567
+    },
+    {
+      "id": "seven-16-ohlala_129",
+      "name": "海鮮青醬焗飯",
+      "category": "焗烤",
+      "serving": "1 份",
+      "kcal": 490
+    },
+    {
+      "id": "seven-16-ohlala_103",
+      "name": "青醬蛤蠣義大利麵",
+      "category": "麵食",
+      "serving": "1 份",
+      "kcal": 666
+    },
+    {
+      "id": "seven-16-ohlala_134",
+      "name": "烤雞奶香焗飯",
+      "category": "焗烤",
+      "serving": "1 份",
+      "kcal": 642
+    },
+    {
+      "id": "seven-16-ohlala_140",
+      "name": "SAY CHEESE培根筆管麵",
+      "category": "麵食",
+      "serving": "1 份",
+      "kcal": 733
+    },
+    {
+      "id": "seven-16-ohlala_125",
+      "name": "香蒜奶油雙拼義大利麵",
+      "category": "麵食",
+      "serving": "1 份",
+      "kcal": 646
+    },
+    {
+      "id": "seven-16-ohlala_110",
+      "name": "義式蕃茄肉醬義大利麵",
+      "category": "麵食",
+      "serving": "1 份",
+      "kcal": 609
+    },
+    {
+      "id": "seven-17-veg_178",
+      "name": "雲川水月彩蔬參巴拌飯",
+      "category": "沙拉蔬食",
+      "serving": "1 份",
+      "kcal": 501
+    },
+    {
+      "id": "seven-17-veg_176",
+      "name": "陽明春天香辣豆腐拌麵",
+      "category": "麵食",
+      "serving": "1 份",
+      "kcal": 470
+    },
+    {
+      "id": "seven-17-veg_177",
+      "name": "香鬆紫米風味飯糰",
+      "category": "飯糰",
+      "serving": "1 份",
+      "kcal": 396
+    },
+    {
+      "id": "seven-17-veg_173",
+      "name": "小小樹食松露蕈菇燉飯",
+      "category": "拌飯拌麵",
+      "serving": "1 份",
+      "kcal": 598
+    },
+    {
+      "id": "seven-17-veg_174",
+      "name": "陽明春天南洋咖哩燴飯",
+      "category": "拌飯拌麵",
+      "serving": "1 份",
+      "kcal": 653
+    },
+    {
+      "id": "seven-17-veg_175",
+      "name": "日式豆皮蕎麥風味冷麵",
+      "category": "麵食",
+      "serving": "1 份",
+      "kcal": 387
+    },
+    {
+      "id": "seven-17-veg_172",
+      "name": "椒鹽蔬食香雞排",
+      "category": "沙拉蔬食",
+      "serving": "1 份",
+      "kcal": 435.5
+    },
+    {
+      "id": "seven-17-veg_170",
+      "name": "波隆那風植物肉醬義大利麵",
+      "category": "麵食",
+      "serving": "1 份",
+      "kcal": 481
+    },
+    {
+      "id": "seven-17-veg_171",
+      "name": "烘蛋植肉堡",
+      "category": "三明治漢堡",
+      "serving": "1 份",
+      "kcal": 426
+    },
+    {
+      "id": "seven-17-veg_169",
+      "name": "祥和塔香香鬆飯糰",
+      "category": "飯糰",
+      "serving": "1 份",
+      "kcal": 230
+    },
+    {
+      "id": "seven-17-veg_163",
+      "name": "金沙烤豆腐義大利麵",
+      "category": "麵食",
+      "serving": "1 份",
+      "kcal": 600
+    },
+    {
+      "id": "seven-17-veg_149",
+      "name": "麻油菇菇油飯",
+      "category": "拌飯拌麵",
+      "serving": "1 份",
+      "kcal": 469
+    },
+    {
+      "id": "seven-17-veg_130",
+      "name": "輕滷時蔬",
+      "category": "沙拉蔬食",
+      "serving": "1 份",
+      "kcal": 43
+    },
+    {
+      "id": "seven-17-veg_135",
+      "name": "火腿醬香炒飯",
+      "category": "拌飯拌麵",
+      "serving": "1 份",
+      "kcal": 645
+    },
+    {
+      "id": "seven-17-veg_152",
+      "name": "塔香杏鮑菇飯糰",
+      "category": "飯糰",
+      "serving": "1 份",
+      "kcal": 215
+    },
+    {
+      "id": "seven-17-veg_159",
+      "name": "陽明春天菇菇毛豆飯糰",
+      "category": "飯糰",
+      "serving": "1 份",
+      "kcal": 202
+    },
+    {
+      "id": "seven-17-veg_118",
+      "name": "陽明春天野菇炊飯飯糰",
+      "category": "飯糰",
+      "serving": "1 份",
+      "kcal": 213
+    },
+    {
+      "id": "seven-17-veg_97",
+      "name": "陽明春天古早味香菇竹筍粥",
+      "category": "輕食小食",
+      "serving": "1 份",
+      "kcal": 189
+    },
+    {
+      "id": "seven-17-veg_165",
+      "name": "麻油菇菇拌飯",
+      "category": "拌飯拌麵",
+      "serving": "1 份",
+      "kcal": 369
+    },
+    {
+      "id": "seven-17-veg_164",
+      "name": "香辣堅果蛋炒飯",
+      "category": "輕食小食",
+      "serving": "1 份",
+      "kcal": 585
+    },
+    {
+      "id": "seven-17-veg_95",
+      "name": "弘揚植物肉青花椒熟水餃",
+      "category": "拌飯拌麵",
+      "serving": "1 份",
+      "kcal": 206
+    },
+    {
+      "id": "seven-17-veg_36",
+      "name": "弘陽-植物肉玉米熟水餃",
+      "category": "輕食小食",
+      "serving": "1 份",
+      "kcal": 210
+    },
+    {
+      "id": "seven-17-veg_23",
+      "name": "桂冠素三杯炒飯",
+      "category": "拌飯拌麵",
+      "serving": "1 份",
+      "kcal": 620
+    },
+    {
+      "id": "seven-17-veg_30",
+      "name": "松珍素鮮嫩炸雞塊",
+      "category": "拌飯拌麵",
+      "serving": "1 份",
+      "kcal": 200
+    },
+    {
+      "id": "seven-17-veg_31",
+      "name": "松珍素花枝丸",
+      "category": "拌飯拌麵",
+      "serving": "1 份",
+      "kcal": 133
+    },
+    {
+      "id": "seven-18-star_348",
+      "name": "晶英-麻辣奶油鮮蝦義大利麵",
+      "category": "麵食",
+      "serving": "1 份",
+      "kcal": 586
+    },
+    {
+      "id": "seven-18-star_350",
+      "name": "煙燻鮭魚冷麵",
+      "category": "麵食",
+      "serving": "1 份",
+      "kcal": 514
+    },
+    {
+      "id": "seven-18-star_351",
+      "name": "晶華-港式油雞臘味飯",
+      "category": "鮮食",
+      "serving": "1 份",
+      "kcal": 541
+    },
+    {
+      "id": "seven-18-star_340",
+      "name": "晶華壽喜燒牛肉新極大飯糰",
+      "category": "飯糰",
+      "serving": "1 份",
+      "kcal": 289
+    },
+    {
+      "id": "seven-18-star_343",
+      "name": "晶華紐奧良風味烤雞堡",
+      "category": "三明治漢堡",
+      "serving": "1 份",
+      "kcal": 332
+    },
+    {
+      "id": "seven-18-star_345",
+      "name": "晶華-府城肉燥厚切排骨飯",
+      "category": "鮮食",
+      "serving": "1 份",
+      "kcal": 696
+    },
+    {
+      "id": "seven-18-star_347",
+      "name": "潮粵坊-爆炒豚肉",
+      "category": "鮮食",
+      "serving": "1 份",
+      "kcal": 579
+    },
+    {
+      "id": "seven-18-star_328",
+      "name": "頌丹樂泰奶提拉米蘇",
+      "category": "鮮食",
+      "serving": "1 份",
+      "kcal": 185
+    },
+    {
+      "id": "seven-18-star_330",
+      "name": "帕泰家-泰式綠咖哩嫩雞飯(辣)",
+      "category": "鮮食",
+      "serving": "1 份",
+      "kcal": 668
+    },
+    {
+      "id": "seven-18-star_331",
+      "name": "頌丹樂-遇見泰式打拋雞拌麵",
+      "category": "麵食",
+      "serving": "1 份",
+      "kcal": 568
+    },
+    {
+      "id": "seven-18-star_322",
+      "name": "米香-蟹黃豆腐煲燴飯",
+      "category": "鮮食",
+      "serving": "1 份",
+      "kcal": 627
+    },
+    {
+      "id": "seven-18-star_324",
+      "name": "阜杭豆漿-里肌肉蛋紫米飯糰",
+      "category": "飯糰",
+      "serving": "1 份",
+      "kcal": 422
+    },
+    {
+      "id": "seven-18-star_323",
+      "name": "阜杭豆漿-經典飯糰",
+      "category": "飯糰",
+      "serving": "1 份",
+      "kcal": 469
+    },
+    {
+      "id": "seven-18-star_311",
+      "name": "富錦樹-剝皮辣椒雞燴飯",
+      "category": "鮮食",
+      "serving": "1 份",
+      "kcal": 605
+    },
+    {
+      "id": "seven-18-star_318",
+      "name": "米香-催淚蛋親子丼飯",
+      "category": "丼飯",
+      "serving": "1 份",
+      "kcal": 636
+    },
+    {
+      "id": "seven-18-star_307",
+      "name": "頌丹樂-泰式酸辣雞腿冷麵",
+      "category": "麵食",
+      "serving": "1 份",
+      "kcal": 369
+    },
+    {
+      "id": "seven-18-star_304",
+      "name": "潮粵坊 楊枝甘露",
+      "category": "鮮食",
+      "serving": "1 份",
+      "kcal": 166
+    },
+    {
+      "id": "seven-18-star_306",
+      "name": "米香-三杯雞燴飯",
+      "category": "鮮食",
+      "serving": "1 份",
+      "kcal": 700
+    },
+    {
+      "id": "seven-18-star_297",
+      "name": "星級饗宴-麻油雞飯糰",
+      "category": "飯糰",
+      "serving": "1 份",
+      "kcal": 354
+    },
+    {
+      "id": "seven-18-star_288",
+      "name": "晶華-四起司香草烤雞握便當",
+      "category": "便當",
+      "serving": "1 份",
+      "kcal": 414
+    },
+    {
+      "id": "seven-18-star_283",
+      "name": "馨苑干貝海鮮煲粥",
+      "category": "鮮食",
+      "serving": "1 份",
+      "kcal": 175
+    },
+    {
+      "id": "seven-18-star_284",
+      "name": "晶英-起司火腿雙餡土司",
+      "category": "鮮食",
+      "serving": "1 份",
+      "kcal": 335
+    },
+    {
+      "id": "seven-18-star_286",
+      "name": "晶英酒店奶凍蜜瓜包",
+      "category": "鮮食",
+      "serving": "1 份",
+      "kcal": 258
+    },
+    {
+      "id": "seven-18-star_266",
+      "name": "米香-蟹黃蝦仁豆腐煲燴飯",
+      "category": "鮮食",
+      "serving": "1 份",
+      "kcal": 627
+    },
+    {
+      "id": "seven-18-star_295",
+      "name": "可口紅燒牛肉麵",
+      "category": "麵食",
+      "serving": "1 份",
+      "kcal": 610
+    },
+    {
+      "id": "seven-18-star_265",
+      "name": "帕泰家-泰式辣炒雞肉拌飯",
+      "category": "鮮食",
+      "serving": "1 份",
+      "kcal": 556
+    },
+    {
+      "id": "seven-18-star_353",
+      "name": "晶華-金黃魚子燒賣",
+      "category": "鮮食",
+      "serving": "1 份",
+      "kcal": 271
+    },
+    {
+      "id": "seven-18-star_219",
+      "name": "晶英-港式醬燜牛肉燴飯",
+      "category": "鮮食",
+      "serving": "1 份",
+      "kcal": 488
+    },
+    {
+      "id": "seven-18-star_189",
+      "name": "星級饗宴X晶華-碧玉鮮蝦餃",
+      "category": "鮮食",
+      "serving": "1 份",
+      "kcal": 224
+    },
+    {
+      "id": "seven-18-star_190",
+      "name": "星級饗宴x晶華法式牛肉丸焗烤飯",
+      "category": "焗烤",
+      "serving": "1 份",
+      "kcal": 379
+    },
+    {
+      "id": "seven-19-panini_11",
+      "name": "胡椒餅風味",
+      "category": "輕食小食",
+      "serving": "1 份",
+      "kcal": 230
+    },
+    {
+      "id": "seven-19-panini_12",
+      "name": "厚起司蛋",
+      "category": "輕食小食",
+      "serving": "1 份",
+      "kcal": 333
+    },
+    {
+      "id": "seven-19-panini_10",
+      "name": "紐約客辣味熱狗",
+      "category": "大亨堡",
+      "serving": "1 份",
+      "kcal": 403
+    },
+    {
+      "id": "seven-19-panini_3",
+      "name": "丹麥鮪魚起司",
+      "category": "輕食小食",
+      "serving": "1 份",
+      "kcal": 357
+    },
+    {
+      "id": "seven-19-panini_9",
+      "name": "醬燒炙烤牛",
+      "category": "焗烤",
+      "serving": "1 份",
+      "kcal": 235
+    },
+    {
+      "id": "seven-19-panini_2",
+      "name": "紐奧良風味烤雞",
+      "category": "焗烤",
+      "serving": "1 份",
+      "kcal": 323
+    },
+    {
+      "id": "seven-19-panini_4",
+      "name": "爆漿起司",
+      "category": "輕食小食",
+      "serving": "1 份",
+      "kcal": 313
+    },
+    {
+      "id": "seven-19-panini_5",
+      "name": "里肌肉蛋",
+      "category": "輕食小食",
+      "serving": "1 份",
+      "kcal": 287
+    },
+    {
+      "id": "seven-19-panini_6",
+      "name": "丹麥紅豆麻糬",
+      "category": "輕食小食",
+      "serving": "1 份",
+      "kcal": 319
+    },
+    {
+      "id": "seven-19-panini_7",
+      "name": "阜杭豆漿-蔥蛋厚燒餅",
+      "category": "輕食小食",
+      "serving": "1 份",
+      "kcal": 406
+    },
+    {
+      "id": "seven-21-ice_28",
+      "name": "乖乖奶油椰子霜淇淋",
+      "category": "霜淇淋",
+      "serving": "1 份",
+      "kcal": 155.7
+    },
+    {
+      "id": "seven-21-ice_26",
+      "name": "甘王草莓卡士達霜淇淋",
+      "category": "霜淇淋",
+      "serving": "1 份",
+      "kcal": 173.7
+    },
+    {
+      "id": "seven-21-ice_27",
+      "name": "橙香雪貝霜淇淋",
+      "category": "霜淇淋",
+      "serving": "1 份",
+      "kcal": 164.7
+    },
+    {
+      "id": "seven-21-ice_25",
+      "name": "可爾必思水蜜桃霜淇淋",
+      "category": "霜淇淋",
+      "serving": "1 份",
+      "kcal": 171.5
+    },
+    {
+      "id": "seven-21-ice_24",
+      "name": "甜鹽蜜語牛奶霜淇淋",
+      "category": "霜淇淋",
+      "serving": "1 份",
+      "kcal": 191.37
+    },
+    {
+      "id": "seven-21-ice_23",
+      "name": "日東紅茶皇家奶茶霜淇淋",
+      "category": "霜淇淋",
+      "serving": "1 份",
+      "kcal": 175.7
+    },
+    {
+      "id": "seven-21-ice_22",
+      "name": "香檳葡萄霜淇淋",
+      "category": "霜淇淋",
+      "serving": "1 份",
+      "kcal": 173
+    },
+    {
+      "id": "seven-21-ice_21",
+      "name": "黑芝麻牛奶霜淇淋",
+      "category": "霜淇淋",
+      "serving": "1 份",
+      "kcal": 186
+    },
+    {
+      "id": "seven-21-ice_20",
+      "name": "藍莓起司霜淇淋",
+      "category": "霜淇淋",
+      "serving": "1 份",
+      "kcal": 192
+    },
+    {
+      "id": "seven-21-ice_19",
+      "name": "開心果霜淇淋",
+      "category": "霜淇淋",
+      "serving": "1 份",
+      "kcal": 191
+    },
+    {
+      "id": "seven-21-ice_18",
+      "name": "玫瑰鹽濃焦糖霜淇淋",
+      "category": "霜淇淋",
+      "serving": "1 份",
+      "kcal": 186
+    },
+    {
+      "id": "seven-21-ice_17",
+      "name": "Binggrae香蕉牛奶霜淇淋",
+      "category": "霜淇淋",
+      "serving": "1 份",
+      "kcal": 151
+    },
+    {
+      "id": "seven-21-ice_16",
+      "name": "統一木瓜牛乳霜淇淋",
+      "category": "霜淇淋",
+      "serving": "1 份",
+      "kcal": 166.1
+    },
+    {
+      "id": "seven-21-ice_15",
+      "name": "水蜜桃牛奶霜淇淋",
+      "category": "霜淇淋",
+      "serving": "1 份",
+      "kcal": 178.78
+    },
+    {
+      "id": "seven-21-ice_14",
+      "name": "海鹽蜂蜜牛奶霜淇淋",
+      "category": "霜淇淋",
+      "serving": "1 份",
+      "kcal": 191.37
+    },
+    {
+      "id": "seven-21-ice_13",
+      "name": "可爾必思牛奶霜淇淋",
+      "category": "霜淇淋",
+      "serving": "1 份",
+      "kcal": 159.5
+    },
+    {
+      "id": "seven-21-ice_12",
+      "name": "芋香牛奶霜淇淋",
+      "category": "霜淇淋",
+      "serving": "1 份",
+      "kcal": 154.7
+    },
+    {
+      "id": "seven-21-ice_11",
+      "name": "不知火橘霜淇淋",
+      "category": "霜淇淋",
+      "serving": "1 份",
+      "kcal": 164.7
+    },
+    {
+      "id": "seven-21-ice_1",
+      "name": "義美牛奶霜淇淋",
+      "category": "霜淇淋",
+      "serving": "1 份",
+      "kcal": 248.2
+    },
+    {
+      "id": "seven-21-ice_2",
+      "name": "泰濃郁！奶茶風味霜淇淋",
+      "category": "霜淇淋",
+      "serving": "1 份",
+      "kcal": 171.7
+    },
+    {
+      "id": "seven-21-ice_3",
+      "name": "夏日芒芒芒果風味霜淇淋",
+      "category": "霜淇淋",
+      "serving": "1 份",
+      "kcal": 199
+    },
+    {
+      "id": "seven-21-ice_4",
+      "name": "加點蜜桃風味霜淇淋",
+      "category": "霜淇淋",
+      "serving": "1 份",
+      "kcal": 246.3
+    },
+    {
+      "id": "seven-21-ice_5",
+      "name": "蜜桃風味霜淇淋",
+      "category": "霜淇淋",
+      "serving": "1 份",
+      "kcal": 199.9
+    },
+    {
+      "id": "seven-21-ice_6",
+      "name": "酷黑岩鹽牛奶糖風味霜淇淋(脆餅)",
+      "category": "霜淇淋",
+      "serving": "1 份",
+      "kcal": 223.3
+    },
+    {
+      "id": "seven-21-ice_7",
+      "name": "酷黑岩鹽牛奶糖風味霜淇淋",
+      "category": "霜淇淋",
+      "serving": "1 份",
+      "kcal": 202
+    },
+    {
+      "id": "seven-21-ice_8",
+      "name": "布丁霜淇淋",
+      "category": "麵包甜點",
+      "serving": "1 份",
+      "kcal": 172.12
+    },
+    {
+      "id": "seven-21-ice_9",
+      "name": "巧克力霜淇淋",
+      "category": "霜淇淋",
+      "serving": "1 份",
+      "kcal": 184.75
+    },
+    {
+      "id": "seven-21-ice_10",
+      "name": "草莓開運霜饗霜淇淋",
+      "category": "霜淇淋",
+      "serving": "1 份",
+      "kcal": 289.5
+    },
+    {
+      "id": "seven-22-rice_69",
+      "name": "21Plus嘉義風味雞肉飯",
+      "category": "丼飯",
+      "serving": "1 份",
+      "kcal": 639
+    },
+    {
+      "id": "seven-22-rice_66",
+      "name": "Homeal 韓式牛肉拌飯",
+      "category": "丼飯",
+      "serving": "1 份",
+      "kcal": 546
+    },
+    {
+      "id": "seven-22-rice_68",
+      "name": "Homeal 香辣醬肉絲炒飯",
+      "category": "丼飯",
+      "serving": "1 份",
+      "kcal": 610
+    },
+    {
+      "id": "seven-22-rice_55",
+      "name": "鼎富發豬油拌飯",
+      "category": "丼飯",
+      "serving": "1 份",
+      "kcal": 372
+    },
+    {
+      "id": "seven-22-rice_52",
+      "name": "壹番屋-豬排咖哩蛋包飯",
+      "category": "輕食小食",
+      "serving": "1 份",
+      "kcal": 770
+    },
+    {
+      "id": "seven-22-rice_50",
+      "name": "極饗-台灣鯛西魯肉燴飯",
+      "category": "丼飯",
+      "serving": "1 份",
+      "kcal": 603
+    },
+    {
+      "id": "seven-22-rice_36",
+      "name": "極饗-紅燒牛雙寶燴飯",
+      "category": "丼飯",
+      "serving": "1 份",
+      "kcal": 574
+    },
+    {
+      "id": "seven-23-dessert_82",
+      "name": "爆汁美式熱狗",
+      "category": "大亨堡",
+      "serving": "1 份",
+      "kcal": 203
+    },
+    {
+      "id": "seven-23-dessert_78",
+      "name": "新手工高麗菜捲",
+      "category": "大亨堡",
+      "serving": "1 份",
+      "kcal": 40
+    },
+    {
+      "id": "seven-23-dessert_80",
+      "name": "日東紅茶焙茶歐蕾霜淇淋",
+      "category": "霜淇淋",
+      "serving": "1 份",
+      "kcal": 221
+    },
+    {
+      "id": "seven-23-dessert_76",
+      "name": "蜂蜜柚子霜淇淋",
+      "category": "霜淇淋",
+      "serving": "1 份",
+      "kcal": 189.7
+    },
+    {
+      "id": "seven-23-dessert_75",
+      "name": "芋頭牛奶霜淇淋",
+      "category": "霜淇淋",
+      "serving": "1 份",
+      "kcal": 154.7
+    },
+    {
+      "id": "seven-23-dessert_74",
+      "name": "海鮮蛋白棒",
+      "category": "輕食小食",
+      "serving": "1 份",
+      "kcal": 84
+    }
+  ]
+}

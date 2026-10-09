@@ -18,8 +18,8 @@ const nowMeal = (): MealSlot => {
 type Sort = 'best' | 'kcal' | 'protein'
 type Quick = 'protein' | 'lowcarb' | 'light'
 const QUICK: { id: Quick; label: string; test: (it: EatItem) => boolean }[] = [
-  { id: 'protein', label: '高蛋白 20g+', test: (it) => it.p >= 20 },
-  { id: 'lowcarb', label: '低碳 20g 以下', test: (it) => it.c <= 20 },
+  { id: 'protein', label: '高蛋白 20g+', test: (it) => (it.p ?? 0) >= 20 },
+  { id: 'lowcarb', label: '低碳 20g 以下', test: (it) => it.c !== undefined && it.c <= 20 },
   { id: 'light', label: '500 大卡以下', test: (it) => it.k <= 500 },
 ]
 
@@ -44,7 +44,7 @@ export function EatOutBrowser({ onPick, compact = false }: { onPick: (it: EatIte
       if (q && !`${it.n}${it.cat ?? ''}${b?.name ?? ''}`.includes(q)) return false
       return quick.every((k) => QUICK.find((x) => x.id === k)!.test(it))
     })
-    return out.sort((a, b) => (sort === 'kcal' ? a.k - b.k : sort === 'protein' ? b.p - a.p : eatScore(b) - eatScore(a)))
+    return out.sort((a, b) => (sort === 'kcal' ? a.k - b.k : sort === 'protein' ? (b.p ?? -1) - (a.p ?? -1) : eatScore(b) - eatScore(a)))
   }, [data, brandMap, brand, kind, q, quick, sort])
 
   if (error && !data)
@@ -169,9 +169,15 @@ function ItemRow({ it, brand, onTap }: { it: EatItem; brand?: EatBrand; onTap: (
           {it.s ? `・${it.s}` : ''}
         </span>
         <span className="mt-0.5 flex gap-2 text-[11px] tabular-nums text-ink/70">
-          <span>蛋白 {it.p}g</span>
-          <span>碳水 {it.c}g</span>
-          <span>脂肪 {it.f}g</span>
+          {it.ko ? (
+            <span className="text-muted">官方只公布熱量{it.f !== undefined ? `・脂肪 ${it.f}g` : ''}</span>
+          ) : (
+            <>
+              <span>蛋白 {it.p}g</span>
+              <span>碳水 {it.c}g</span>
+              <span>脂肪 {it.f}g</span>
+            </>
+          )}
         </span>
       </span>
       <span className="shrink-0 text-right">
@@ -248,9 +254,9 @@ export function EatItemSheet({
             {(
               [
                 ['熱量', Math.round(item.k), 'kcal'],
-                ['蛋白質', item.p, 'g'],
-                ['碳水', item.c, 'g'],
-                ['脂肪', item.f, 'g'],
+                ['蛋白質', item.p ?? '—', 'g'],
+                ['碳水', item.c ?? '—', 'g'],
+                ['脂肪', item.f ?? '—', 'g'],
               ] as const
             ).map(([l, v, u]) => (
               <div key={l}>
@@ -261,6 +267,7 @@ export function EatItemSheet({
               </div>
             ))}
           </div>
+          {item.ko && <p className="px-1 text-xs text-[#a07a20]">這家只公布熱量，記錄時蛋白質、碳水、脂肪會算 0；想算準一點可以用「AI 估算」。</p>}
           {(item.fi !== undefined || item.su !== undefined || item.na !== undefined) && (
             <div className="flex flex-wrap gap-2 px-1 text-xs text-muted">
               {item.fi !== undefined && <span>膳食纖維 {item.fi}g</span>}

@@ -13,6 +13,7 @@ export interface EatBrand {
   source?: string
   fetchedAt?: string
   count: number
+  kcalOnly?: boolean
 }
 
 /** 為了檔案小，欄位用縮寫 */
@@ -21,9 +22,12 @@ export interface EatItem {
   b: string
   n: string
   k: number
-  p: number
-  c: number
-  f: number
+  /** 只公布熱量的品項沒有 p、c */
+  p?: number
+  c?: number
+  f?: number
+  /** 只有熱量 */
+  ko?: 1
   cat?: string
   s?: string
   fi?: number
@@ -50,6 +54,7 @@ export const EAT_KINDS: { id: EatKind; label: string; image: FoodImage }[] = [
 export const KIND_IMAGE = Object.fromEntries(EAT_KINDS.map((k) => [k.id, k.image])) as Record<EatKind, FoodImage>
 
 const NAME_IMAGE: [RegExp, FoodImage][] = [
+  [/飯糰|飯卷/, 'rice-ball'],
   [/沙拉|生菜/, 'salad'],
   [/雞蛋|茶葉蛋|溫泉蛋|水煮蛋|蛋餅|荷包蛋/, 'egg'],
   [/雞/, 'chicken-breast'],
@@ -61,7 +66,6 @@ const NAME_IMAGE: [RegExp, FoodImage][] = [
   [/豆漿/, 'soy-milk'],
   [/地瓜/, 'sweet-potato'],
   [/水餃|鍋貼|餃/, 'dumpling'],
-  [/飯糰/, 'rice-ball'],
   [/便當|丼|飯/, 'rice'],
   [/麵|粉/, 'noodle-bowl'],
   [/漢堡|堡/, 'meal-lunch'],
@@ -108,7 +112,7 @@ export function useEatOut() {
   return { data, error, retry: () => loadEatOut(true).then(setData, () => setError(true)) }
 }
 
-export const eatNutrition = (it: EatItem): Nutrition => ({ kcal: Math.round(it.k), protein: it.p, carbs: it.c, fat: it.f, fiber: it.fi ?? 0 })
+export const eatNutrition = (it: EatItem): Nutrition => ({ kcal: Math.round(it.k), protein: it.p ?? 0, carbs: it.c ?? 0, fat: it.f ?? 0, fiber: it.fi ?? 0 })
 
 const guessMeals = (it: EatItem, brand?: EatBrand): MealSlot[] => {
   const t = `${it.cat ?? ''}${it.n}`
@@ -138,4 +142,4 @@ export function eatToRecipe(it: EatItem, brand?: EatBrand): Recipe {
 }
 
 /** 推薦分數：蛋白質多、熱量合理的在前面 */
-export const eatScore = (it: EatItem) => (it.p * 4) / Math.max(it.k, 60) + (it.k >= 250 && it.k <= 650 ? 0.15 : 0)
+export const eatScore = (it: EatItem) => (it.ko ? 0.05 : ((it.p ?? 0) * 4) / Math.max(it.k, 60)) + (it.k >= 250 && it.k <= 650 ? 0.15 : 0)
