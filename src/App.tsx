@@ -1,6 +1,6 @@
 import { motion, MotionConfig } from 'framer-motion'
 import { useLiveQuery } from 'dexie-react-hooks'
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Food } from './components/Food'
 import { HealthSyncProvider } from './components/HealthSync'
 import { Icon } from './components/Icon'
@@ -104,9 +104,41 @@ export default function App() {
   )
 }
 
+/**
+ * iPhone 的已知問題：鍵盤收起後，貼在底部的元素有時會卡在畫面中間。
+ * 鍵盤打開時先把導覽列藏起來；收起後強制瀏覽器重新排版一次，讓它回到底部。
+ */
+function useKeyboardOpen() {
+  const [open, setOpen] = useState(false)
+  useEffect(() => {
+    const vv = window.visualViewport
+    if (!vv) return
+    const check = () => setOpen(vv.height < window.innerHeight * 0.78)
+    const relayout = () =>
+      window.setTimeout(() => {
+        window.scrollTo(window.scrollX, window.scrollY)
+        check()
+      }, 120)
+    vv.addEventListener('resize', check)
+    window.addEventListener('focusout', relayout)
+    window.addEventListener('orientationchange', relayout)
+    return () => {
+      vv.removeEventListener('resize', check)
+      window.removeEventListener('focusout', relayout)
+      window.removeEventListener('orientationchange', relayout)
+    }
+  }, [])
+  return open
+}
+
 function BottomNav({ tab, onChange }: { tab: TabId; onChange: (t: TabId) => void }) {
+  const keyboard = useKeyboardOpen()
   return (
-    <nav className="fixed inset-x-0 bottom-0 z-30 border-t border-ink/5 bg-cream/85 pb-[env(safe-area-inset-bottom)] backdrop-blur-md">
+    <nav
+      className={`fixed inset-x-0 bottom-0 z-30 border-t border-ink/5 bg-cream/85 pb-[env(safe-area-inset-bottom)] backdrop-blur-md transition-transform duration-200 ${
+        keyboard ? 'pointer-events-none translate-y-full' : ''
+      }`}
+    >
       <div className="mx-auto flex max-w-lg px-2">
         {TABS.map((t) => {
           const active = t.id === tab
