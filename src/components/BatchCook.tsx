@@ -26,6 +26,7 @@ import { useRecipeDetail } from './RecipeDetail'
 import { RecipePhoto } from './RecipePhoto'
 import { Button, CheckButton, Segmented, Sheet, Tap, useToast } from './ui'
 import { Art } from './Art'
+import { usePantryPlan } from './PantryPlan'
 
 const STORAGE_STYLE = {
   fridge: 'bg-sky-soft text-sky',
@@ -816,6 +817,7 @@ function CheckRow({ checked, toggle, title, sub, right }: { checked: boolean; to
 /** 清單頁：一次備餐的入口與紀錄 */
 export function BatchSessions() {
   const { start, open } = useBatchCook()
+  const openPantry = usePantryPlan()
   useRecipesVersion()
   const sessions = useLiveQuery(() => db.batches.orderBy('createdAt').reverse().limit(6).toArray()) ?? []
   return (
@@ -837,6 +839,14 @@ export function BatchSessions() {
           </span>
         </span>
       </motion.button>
+      <Tap press={0.98} onClick={openPantry} className="flex w-full items-center gap-3 rounded-3xl bg-white p-3 text-left shadow-card">
+        <Art name="empty-shopping" width={56} className="!mx-0 shrink-0" float={false} />
+        <span className="flex-1">
+          <span className="block font-bold">用冰箱食材排一週</span>
+          <span className="block text-xs text-muted">輸入家裡有的 → 推薦菜色、哪些一次備好、哪些天天換、還缺什麼</span>
+        </span>
+        <Icon name="chevron_right" size={20} className="text-muted" />
+      </Tap>
       {sessions.map((s) => (
         <motion.button
           key={s.id}

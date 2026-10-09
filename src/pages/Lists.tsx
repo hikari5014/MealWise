@@ -5,7 +5,8 @@ import { Food } from '../components/Food'
 import { Icon } from '../components/Icon'
 import { todayKey, weekDays, weekStart } from '../lib/date'
 import { spring } from '../lib/feedback'
-import { actions, useChecks, usePlans } from '../lib/hooks'
+import { actions, useChecks, usePlans, usePref } from '../lib/hooks'
+import { matchIds, type Pantry } from '../lib/pantry'
 import { buildShopping, formatQty } from '../lib/meal'
 import { SECTION_IMAGE, SECTION_LABEL, SECTION_ORDER, type PlanEntry, type Profile } from '../types'
 import { WeekSwitcher } from './Plan'
@@ -99,6 +100,8 @@ function Shopping({ weekKey, plans, servings }: { weekKey: string; plans: PlanEn
   const prefix = `shop|${weekKey}|`
   const checks = useChecks(prefix)
   const items = buildShopping(plans, servings)
+  const [pantry] = usePref<Pantry>('pantry', {})
+  const atHome = (name: string) => matchIds(name).some((id) => (pantry[id] ?? 0) > 0)
   const done = items.filter((i) => checks.has(prefix + i.key)).length
 
   return (
@@ -140,7 +143,10 @@ function Shopping({ weekKey, plans, servings }: { weekKey: string; plans: PlanEn
                           transition={{ duration: 0.22 }}
                         />
                       </div>
-                      <div className="truncate text-xs text-muted">{item.from.join('、')}</div>
+                      <div className="truncate text-xs text-muted">
+                        {atHome(item.name) && <span className="mr-1 rounded-full bg-leaf-soft px-1.5 py-0.5 text-[10px] text-leaf-dark">冰箱有</span>}
+                        {item.from.join('、')}
+                      </div>
                     </div>
                     <span className={`text-sm tabular-nums ${checked ? 'text-muted' : 'font-medium'}`}>
                       {formatQty(item.qty, item.unit)}

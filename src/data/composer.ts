@@ -7,10 +7,10 @@ import type { FoodImage } from './foodImages'
  * 料理組合器：挑食材 + 烹調方式 → 自動產生食譜與營養。
  * 營養是每 `base` 份量的估計值（生重；飯麵為熟重），參考衛福部食品營養成分資料庫的常見數值四捨五入。
  */
-export type Part = 'protein' | 'veg' | 'fruit' | 'carb' | 'fat' | 'flavor'
+export type Part = 'protein' | 'veg' | 'fruit' | 'carb' | 'fat' | 'flavor' | 'other'
 
 /** 第一層分類（蛋豆魚肉、蔬菜、水果…） */
-export type GroupId = 'meat' | 'sea' | 'egg' | 'bean' | 'veg' | 'fruit' | 'carb' | 'fat' | 'flavor'
+export type GroupId = 'meat' | 'sea' | 'egg' | 'bean' | 'veg' | 'fruit' | 'carb' | 'fat' | 'flavor' | 'other'
 
 export interface Comp {
   id: string
@@ -562,6 +562,24 @@ export const GROUPS: Group[] = RAW.map((gr) => ({
 
 export const COMPONENTS: Comp[] = GROUPS.flatMap((gr) => gr.subs.flatMap((s) => s.items))
 
+/** 冰箱清單才用到的：乳品、現成醬料與其他常見食材（組合料理不顯示） */
+const other = (id: string, name: string, image: FoodImage, section: Section, sub: string): Comp => ({
+  id, name, short: name, part: 'other', group: 'other', sub, image, section, unit: '份', base: 1, qty: 1, step: 1, n: [0, 0, 0, 0, 0],
+})
+export const PANTRY_EXTRA: Group = {
+  id: 'other',
+  label: '乳品與其他',
+  image: 'milk',
+  part: 'other',
+  subs: [
+    { label: '乳品', items: [other('milk', '鮮奶', 'milk', 'dairyEgg', '乳品'), other('yogurt', '希臘優格', 'yogurt', 'dairyEgg', '乳品'), other('cheese-shred', '起司絲', 'cheese', 'dairyEgg', '乳品'), other('butter', '奶油', 'butter', 'dairyEgg', '乳品')] },
+    { label: '蔬果', items: [other('mixed-greens', '綜合生菜', 'lettuce', 'produce', '蔬果'), other('bean-sprouts', '豆芽菜', 'seedling', 'produce', '蔬果'), other('frozen-veg', '冷凍三色豆', 'pea-pod', 'produce', '蔬果'), other('berries', '綜合莓果', 'blueberries', 'produce', '蔬果')] },
+    { label: '醬料乾貨', items: [other('rice-wine', '米酒', 'jar', 'pantry', '醬料乾貨'), other('doubanjiang', '豆瓣醬', 'doubanjiang', 'pantry', '醬料乾貨'), other('honey', '蜂蜜', 'honey', 'pantry', '醬料乾貨'), other('dry-noodle', '乾麵條', 'noodle-bowl', 'grain', '醬料乾貨'), other('preserved-radish', '菜脯', 'jar', 'pantry', '醬料乾貨'), other('peanut-butter', '花生醬', 'peanuts', 'pantry', '醬料乾貨')] },
+  ],
+}
+export const PANTRY_GROUPS: Group[] = [...GROUPS, PANTRY_EXTRA]
+export const ALL_COMP_MAP: Record<string, Comp> = Object.fromEntries(PANTRY_GROUPS.flatMap((g) => g.subs.flatMap((s) => s.items)).map((x) => [x.id, x]))
+
 export const COMP_MAP: Record<string, Comp> = Object.fromEntries(COMPONENTS.map((x) => [x.id, x]))
 
 export const PART_LABEL: Record<Part, { label: string; hint: string; max: number }> = {
@@ -571,6 +589,7 @@ export const PART_LABEL: Record<Part, { label: string; hint: string; max: number
   carb: { label: '主食', hint: '最多 1 樣，不選＝低碳', max: 1 },
   fat: { label: '好油脂', hint: '最多 2 樣', max: 2 },
   flavor: { label: '調味', hint: '最多 3 樣', max: 3 },
+  other: { label: '其他', hint: '', max: 99 },
 }
 
 export type Method = 'pan' | 'stir' | 'oven' | 'steam' | 'soup' | 'cold' | 'air'

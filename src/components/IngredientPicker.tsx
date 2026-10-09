@@ -1,6 +1,6 @@
 import { AnimatePresence, motion, useAnimationControls } from 'framer-motion'
 import { useEffect, useRef, useState } from 'react'
-import { GROUPS, PART_LABEL, type Comp, type Group } from '../data/composer'
+import { GROUPS as DEFAULT_GROUPS, PART_LABEL, type Comp, type Group } from '../data/composer'
 import { haptic } from '../lib/feedback'
 import { Food } from './Food'
 import { Icon } from './Icon'
@@ -16,11 +16,16 @@ export function IngredientPicker({
   items,
   blocked,
   onToggle,
+  groups: GROUPS = DEFAULT_GROUPS,
+  limits = true,
 }: {
   items: Record<string, number>
   blocked: (c: Comp) => boolean
   /** 回傳 false 代表超過上限、沒有加進去 */
   onToggle: (c: Comp) => boolean
+  groups?: Group[]
+  /** 是否顯示每類上限（冰箱清單不限） */
+  limits?: boolean
 }) {
   const [openId, setOpenId] = useState<Group['id'] | null>(null)
   const openIndex = GROUPS.findIndex((g) => g.id === openId)
@@ -58,6 +63,7 @@ export function IngredientPicker({
                 className="overflow-hidden"
               >
                 <Panel
+                  limits={limits}
                   key={openGroup.id}
                   group={openGroup}
                   column={openIndex % COLS}
@@ -119,6 +125,7 @@ function GroupTile({ group, count, open, onTap }: { group: Group; count: number;
 }
 
 function Panel({
+  limits,
   group,
   column,
   items,
@@ -126,6 +133,7 @@ function Panel({
   onToggle,
   onClose,
 }: {
+  limits: boolean
   group: Group
   column: number
   items: Record<string, number>
@@ -162,7 +170,7 @@ function Panel({
             <Food id={group.image} size={28} />
           </motion.span>
           <span className="font-bold">{group.label}</span>
-          <span className="text-[11px] text-muted">{limit.label}・{limit.hint}</span>
+          {limits && <span className="text-[11px] text-muted">{limit.label}・{limit.hint}</span>}
           <motion.button whileTap={{ scale: 0.85 }} onClick={onClose} aria-label="收起" className="ml-auto grid h-8 w-8 place-items-center rounded-full bg-white/80">
             <Icon name="expand_more" size={20} className="rotate-180" />
           </motion.button>

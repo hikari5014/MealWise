@@ -25,6 +25,7 @@ import { CUISINES, type Cuisine } from '../data/cuisine'
 import { MealTitle } from './Today'
 import { MEAL_LABEL, MEAL_SLOTS, type MealSlot, type PlanEntry, type Profile } from '../types'
 import { Art } from '../components/Art'
+import { usePantryPlan } from '../components/PantryPlan'
 
 export default function Plan({ profile }: { profile: Profile }) {
   const [view, setView] = useState<'week' | 'month' | 'library'>('week')
@@ -103,6 +104,7 @@ function Week({ profile, focus }: { profile: Profile; focus: string | null }) {
   const [quick, setQuick] = useState(false)
   const [copying, setCopying] = useState(false)
   const batch = useBatchCook()
+  const openPantry = usePantryPlan()
   const marks = useMarks(days)
   const [dir, setDir] = useState(0)
   const [picking, setPicking] = useState<MealSlot | null>(null)
@@ -205,6 +207,7 @@ function Week({ profile, focus }: { profile: Profile; focus: string | null }) {
       <div className="-mx-4 flex gap-2 overflow-x-auto px-4 text-xs">
         {(
           [
+            ['kitchen', '用冰箱食材排', openPantry],
             ['history', '複製上週', lastWeek],
             ['content_copy', '這天複製到…', () => setCopying(true)],
             ['auto_awesome', '隨機排滿', fillWeek],

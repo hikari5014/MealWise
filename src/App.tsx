@@ -22,6 +22,7 @@ import Me from './pages/Me'
 import Onboarding from './pages/Onboarding'
 import Plan from './pages/Plan'
 import Today from './pages/Today'
+import { PantryPlanProvider } from './components/PantryPlan'
 
 const TABS = [
   { id: 'today', label: '今天', icon: 'restaurant' },
@@ -65,6 +66,7 @@ export default function App() {
 <RecipeDetailProvider>
               <BatchCookProvider>
               <ComposerProvider>
+              <PantryPlanProvider>
                 {profile === undefined ? (
                   <Splash />
                 ) : profile === null ? (
@@ -88,6 +90,7 @@ export default function App() {
                     <BottomNav tab={tab} onChange={go} />
                   </>
                 )}
+              </PantryPlanProvider>
               </ComposerProvider>
               </BatchCookProvider>
               </RecipeDetailProvider>
