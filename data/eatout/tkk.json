@@ -1,0 +1,162 @@
+{
+  "brand": {
+    "id": "tkk",
+    "name": "頂呱呱",
+    "kind": "fastfood",
+    "site": "https://www.tkkinc.com.tw/"
+  },
+  "source": "https://www.tkkinc.com.tw/sideDish.html",
+  "fetchedAt": "2026-10-09",
+  "items": [
+    {
+      "id": "tkk-sichuan-popcorn-chicken",
+      "name": "青花椒鹹酥雞",
+      "category": "炸雞",
+      "serving": "1 份",
+      "kcal": 268,
+      "protein": 13.7,
+      "carbs": 29.8,
+      "fat": 10.4,
+      "sugar": 1.1,
+      "sodium": 742,
+      "source": "https://www.tkkinc.com.tw/sideDishProduct_117_%E9%9D%92%E8%8A%B1%E6%A4%92%E9%B9%B9%E9%85%A5%E9%9B%9E.html"
+    },
+    {
+      "id": "tkk-chicken-cartilage",
+      "name": "呱呱雞脆骨",
+      "category": "炸雞",
+      "serving": "1 份",
+      "kcal": 423,
+      "protein": 16.2,
+      "carbs": 31.7,
+      "fat": 25.7,
+      "sugar": 2.3,
+      "sodium": 784.5,
+      "source": "https://www.tkkinc.com.tw/sideDishProduct_115_%E5%91%B1%E5%91%B1%E9%9B%9E%E8%84%86%E9%AA%A8.html"
+    },
+    {
+      "id": "tkk-nuggets-10",
+      "name": "阿勇雞塊10入",
+      "category": "炸雞",
+      "serving": "1 份",
+      "kcal": 362,
+      "protein": 28,
+      "carbs": 24.6,
+      "fat": 26.8,
+      "sodium": 772,
+      "source": "https://www.tkkinc.com.tw/sideDishProduct_126_%E9%98%BF%E5%8B%87%E9%9B%9E%E5%A1%8A10%E5%85%A5.html"
+    },
+    {
+      "id": "tkk-wavy-fries",
+      "name": "波浪薯條",
+      "category": "點心",
+      "serving": "1 份",
+      "kcal": 161,
+      "protein": 2.7,
+      "carbs": 23,
+      "fat": 6.3,
+      "sugar": 0.2,
+      "sodium": 220,
+      "source": "https://www.tkkinc.com.tw/sideDishProduct_123_%E6%B3%A2%E6%B5%AA%E8%96%AF%E6%A2%9D.html"
+    },
+    {
+      "id": "tkk-bobo-balls",
+      "name": "呱呱啵啵球",
+      "category": "點心",
+      "serving": "1 份（起司球x2+布朗尼球x2）",
+      "kcal": 209,
+      "protein": 4,
+      "carbs": 26.8,
+      "fat": 8.1,
+      "sodium": 379.2,
+      "source": "https://www.tkkinc.com.tw/sideDishProduct_118_%E5%91%B1%E5%91%B1%E5%95%B5%E5%95%B5%E7%90%83.html"
+    },
+    {
+      "id": "tkk-chicken-cutlet",
+      "name": "呱呱雞排",
+      "category": "炸雞",
+      "serving": "1 入",
+      "kcal": 546.4,
+      "protein": 58.5,
+      "carbs": 49,
+      "fat": 13,
+      "sodium": 223,
+      "source": "https://www.tkkinc.com.tw/sideDishProduct_98_%E5%91%B1%E5%91%B1%E9%9B%9E%E6%8E%92.html"
+    },
+    {
+      "id": "tkk-chicken-strips",
+      "name": "呱呱雞柳條",
+      "category": "炸雞",
+      "serving": "3 入",
+      "kcal": 185.1,
+      "protein": 26.3,
+      "carbs": 16.8,
+      "fat": 1.4,
+      "sodium": 715.4,
+      "source": "https://www.tkkinc.com.tw/sideDishProduct_66_%E5%91%B1%E5%91%B1%E9%9B%9E%E6%9F%B3%E6%A2%9D.html"
+    },
+    {
+      "id": "tkk-chicken-neck",
+      "name": "雞脖子",
+      "category": "炸雞",
+      "serving": "1 份",
+      "kcal": 185,
+      "protein": 21.6,
+      "carbs": 7.4,
+      "fat": 8.3,
+      "sugar": 0,
+      "source": "https://www.tkkinc.com.tw/sideDishProduct_38_%E9%9B%9E%E8%84%96%E5%AD%90.html"
+    },
+    {
+      "id": "tkk-original-chicken",
+      "name": "原味炸雞",
+      "category": "炸雞",
+      "serving": "1 塊",
+      "kcal": 243,
+      "protein": 16.7,
+      "carbs": 4.3,
+      "fat": 17.7,
+      "sugar": 0.1,
+      "sodium": 507.4,
+      "source": "https://www.tkkinc.com.tw/sideDishProduct_1_%E5%8E%9F%E5%91%B3%E7%82%B8%E9%9B%9E.html"
+    },
+    {
+      "id": "tkk-spicy-chicken",
+      "name": "辣味炸雞",
+      "category": "炸雞",
+      "serving": "1 塊",
+      "kcal": 332,
+      "protein": 26.3,
+      "carbs": 8.2,
+      "fat": 21.6,
+      "sugar": 0.1,
+      "sodium": 761.8,
+      "source": "https://www.tkkinc.com.tw/sideDishProduct_74_%E8%BE%A3%E5%91%B3%E7%82%B8%E9%9B%9E.html"
+    },
+    {
+      "id": "tkk-original-drumstick",
+      "name": "原味雞腿",
+      "category": "炸雞",
+      "serving": "1 支",
+      "kcal": 126,
+      "protein": 11.8,
+      "carbs": 3.3,
+      "fat": 5.8,
+      "sodium": 367.4,
+      "source": "https://www.tkkinc.com.tw/sideDishProduct_2_%E5%8E%9F%E5%91%B3%E9%9B%9E%E8%85%BF.html"
+    },
+    {
+      "id": "tkk-gua-bao",
+      "name": "呱呱包",
+      "category": "漢堡",
+      "serving": "1 入",
+      "kcal": 361,
+      "protein": 11.6,
+      "carbs": 40.5,
+      "fat": 17,
+      "sugar": 0.4,
+      "sodium": 482.6,
+      "source": "https://www.tkkinc.com.tw/sideDishProduct_42_%E5%91%B1%E5%91%B1%E5%8C%85.html"
+    }
+  ]
+}

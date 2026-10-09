@@ -24,11 +24,13 @@ import Plan from './pages/Plan'
 import Today from './pages/Today'
 import { PantryPlanProvider } from './components/PantryPlan'
 import { EatOutPickerProvider } from './components/EatOut'
+import Train from './pages/Train'
 
 const TABS = [
   { id: 'today', label: '今天', icon: 'restaurant' },
   { id: 'plan', label: '菜單', icon: 'calendar_month' },
   { id: 'lists', label: '清單', icon: 'shopping_cart' },
+  { id: 'train', label: '訓練', icon: 'fitness_center' },
   { id: 'me', label: '我的', icon: 'person' },
 ] as const satisfies readonly { id: string; label: string; icon: IconName }[]
 
@@ -86,6 +88,7 @@ export default function App() {
                         {tab === 'today' && <Today profile={profile} onGoPlan={() => go('plan')} />}
                         {tab === 'plan' && <Plan profile={profile} />}
                         {tab === 'lists' && <Lists profile={profile} />}
+                        {tab === 'train' && <Train />}
                         {tab === 'me' && <Me profile={profile} />}
                       </motion.div>
                     </main>

@@ -3,7 +3,7 @@
 //   POST /Web_FFD_2022/ws/QueryFsProductListByFilter  {KEYWORD, MEMBER} → 依分類列出商品
 //   POST /Web_FFD_2022/ws/QueryFsProductByItem        {CMNO}            → 單品營養標示
 // 只抓鮮食 / 即食分類（飯糰、主餐麵食、三明治、沙拉、小菜滷味湯品、蒸箱、燒烤、鍋物、蛋品），
-// 另外從乳製品挑優格／優酪乳／豆漿。Node 22 ESM，只用全域 fetch。
+// 加上現做飲料，另外從乳製品、一般飲料挑優格／優酪乳／豆漿／無糖茶。Node 22 ESM，只用全域 fetch。
 
 const SITE = 'https://foodsafety.family.com.tw/Web_FFD_2022/';
 const API = 'https://foodsafety.family.com.tw/Web_FFD_2022/ws/';
@@ -21,10 +21,13 @@ const CATEGORIES = {
   11: '燒烤熱食',
   12: '關東煮鍋物',
   13: '蛋品',
+  8: '現做飲料',
 };
-// 乳製品(16) 只挑這些關鍵字
-const DAIRY_ID = 16;
-const DAIRY_RE = /優格|優酪|豆漿|豆奶/;
+// 乳製品(16)、一般飲料(17) 只挑這些關鍵字
+const PICKY = {
+  16: [/優格|優酪|豆漿|豆奶/, '優格豆漿'],
+  17: [/無糖|無加糖|豆漿|豆奶/, '無糖茶豆漿'],
+};
 
 async function post(path, body, tries = 3) {
   let lastErr;
@@ -89,7 +92,7 @@ export default async function fetchBrand() {
     const cid = Number(cat.CATEGORY_ID);
     for (const it of cat.ITEM || []) {
       if (CATEGORIES[cid]) wanted.push({ cmno: it.CMNO, category: CATEGORIES[cid] });
-      else if (cid === DAIRY_ID && DAIRY_RE.test(it.PRODNAME || '')) wanted.push({ cmno: it.CMNO, category: '優格豆漿' });
+      else if (PICKY[cid] && PICKY[cid][0].test(it.PRODNAME || '')) wanted.push({ cmno: it.CMNO, category: PICKY[cid][1] });
     }
   }
   if (wanted.length < 50) throw new Error(`全家商品清單異常（只有 ${wanted.length} 項）`);
@@ -116,6 +119,11 @@ export default async function fetchBrand() {
     const note = parseNote(rec.NOTE);
     const protein = num(n.PROTEIN), fat = num(n.TOTALFAT), carbs = num(n.CARBOHYDRATE);
     if (note.kcal == null || protein == null || fat == null || carbs == null) continue;
+    // 現做飲料常只填熱量與糖、其餘填 0；這類或明顯打錯（如脂肪 230 g）的資料不收
+    const sugar0 = num(n.SUGAR);
+    if (note.kcal > 0 && protein + carbs + fat === 0) continue;
+    if (sugar0 != null && sugar0 > carbs + 0.5) continue;
+    if (4 * protein + 4 * carbs + 9 * fat > 2 * note.kcal + 50) continue;
     const id = `family-${rec.CMNO}`;
     if (seen.has(id)) continue;
     seen.add(id);

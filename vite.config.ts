@@ -54,13 +54,18 @@ export default defineConfig({
         cleanupOutdatedCaches: true,
         globPatterns: ['**/*.{js,css,html,svg,png,webp}'],
         // 食譜照片比較大，看過才存進快取，不在安裝時全部下載
-        globIgnores: ['photos/**'],
+        globIgnores: ['photos/**', 'exercises/**'],
         runtimeCaching: [
           {
             // 外食資料每天更新：有網路就拿最新的，沒網路用上次存的
             urlPattern: ({ url }) => url.pathname.endsWith('/eatout/data.json'),
             handler: 'NetworkFirst',
             options: { cacheName: 'eatout-data', networkTimeoutSeconds: 4, expiration: { maxEntries: 2 } },
+          },
+          {
+            urlPattern: ({ url }) => url.pathname.includes('/exercises/'),
+            handler: 'CacheFirst',
+            options: { cacheName: 'exercise-photos', expiration: { maxEntries: 300 } },
           },
           {
             urlPattern: ({ url }) => url.pathname.includes('/photos/'),
