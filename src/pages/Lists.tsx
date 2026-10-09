@@ -11,6 +11,7 @@ import { SECTION_IMAGE, SECTION_LABEL, SECTION_ORDER, type PlanEntry, type Profi
 import { WeekSwitcher } from './Plan'
 import { WeekPrepView } from '../components/WeekPrep'
 import { BatchSessions } from '../components/BatchCook'
+import { Art } from '../components/Art'
 
 export default function Lists({ profile }: { profile: Profile }) {
   const [view, setView] = useState<'shop' | 'prep'>('shop')
@@ -39,7 +40,7 @@ export default function Lists({ profile }: { profile: Profile }) {
       {plans.length === 0 ? (
         <div className="py-16 text-center text-sm text-muted">
           <div className="mb-2 flex justify-center">
-            <Food id="basket" size={80} float />
+            <Art name="empty-shopping" width={150} />
           </div>
           這週還沒有菜單，排好菜單後清單會自動出現
         </div>

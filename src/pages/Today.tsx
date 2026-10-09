@@ -1,3 +1,4 @@
+import { Food } from '../components/Food'
 import { AnimatePresence, motion } from 'framer-motion'
 import { useMemo, useState } from 'react'
 import { HealthTip } from '../components/BodyCard'
@@ -17,7 +18,8 @@ import { haptic, spring } from '../lib/feedback'
 import { resolveDay } from '../lib/dietPlan'
 import { actions, useLogs, useMarks, usePlans, useRecent, useWater } from '../lib/hooks'
 import { macroTargets, PORTIONS, sumNutrition } from '../lib/meal'
-import { MEAL_COLOR, MEAL_ICON, MEAL_LABEL, MEAL_SLOTS, type LogEntry, type MealSlot, type PlanEntry, type Profile } from '../types'
+import { MEAL_COLOR, MEAL_IMAGE, MEAL_LABEL, MEAL_SLOTS, type LogEntry, type MealSlot, type PlanEntry, type Profile } from '../types'
+import { Art } from '../components/Art'
 
 export default function Today({ profile, onGoPlan }: { profile: Profile; onGoPlan: () => void }) {
   const date = todayKey()
@@ -105,7 +107,7 @@ export default function Today({ profile, onGoPlan }: { profile: Profile; onGoPla
           className="w-full rounded-3xl border-2 border-dashed border-leaf/40 p-4 text-left text-sm text-leaf-dark"
         >
           <span className="flex items-center gap-2">
-            <Icon name="event_available" size={22} motion="bounce" />
+            <Art name="empty-plan" width={56} className="!mx-0 shrink-0" />
             <span className="flex-1">今天還沒排菜單，先去排一下，之後吃飯只要打勾就好</span>
             <Icon name="arrow_forward" size={20} />
           </span>
@@ -300,11 +302,8 @@ function MealRow({
 export function MealTitle({ meal }: { meal: MealSlot }) {
   return (
     <span className="flex items-center gap-1.5">
-      <span
-        className="grid h-7 w-7 place-items-center rounded-lg"
-        style={{ backgroundColor: `${MEAL_COLOR[meal]}22`, color: MEAL_COLOR[meal] }}
-      >
-        <Icon name={MEAL_ICON[meal]} size={18} fill />
+      <span className="grid h-8 w-8 place-items-center rounded-lg" style={{ backgroundColor: `${MEAL_COLOR[meal]}1a` }}>
+        <Food id={MEAL_IMAGE[meal]} size={26} />
       </span>
       {MEAL_LABEL[meal]}
     </span>

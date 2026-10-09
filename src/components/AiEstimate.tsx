@@ -3,9 +3,9 @@ import { useEffect, useState } from 'react'
 import { db } from '../db'
 import { haptic, spring } from '../lib/feedback'
 import { MEAL_LABEL, type MealSlot, type Nutrition } from '../types'
-import { Food } from './Food'
 import { Icon } from './Icon'
 import { Button, Sheet, useToast } from './ui'
+import { Art } from './Art'
 
 const buildPrompt = (desc: string) => `你是一位營養師。請根據我附上的照片（以及描述），估算這一餐吃下去的總熱量與營養素。
 如果照片裡有好幾道菜，請合計成一餐；份量不確定時，以台灣常見的一人份估算。
@@ -188,7 +188,7 @@ export function AiEstimateSheet({
         ) : (
           <motion.div key="steps" exit={{ opacity: 0 }} className="space-y-4">
             <div className="flex items-center gap-3 rounded-3xl bg-gradient-to-br from-sky-soft to-leaf-soft p-4">
-              <Food id="pot" size={48} float />
+              <Art name="ai-estimate" width={72} className="!mx-0 shrink-0" />
               <p className="text-sm leading-relaxed">
                 不用一樣一樣輸入。拍張照片，連同下面的提示詞丟給 <b>ChatGPT、Claude 或 Gemini</b>，再把它的回覆貼回來就好。
               </p>

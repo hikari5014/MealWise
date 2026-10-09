@@ -1,3 +1,4 @@
+import type { FoodImage } from '../data/foodImages'
 import type { IconName } from './icons'
 import type { DayMark, MealSlot, Profile, Recipe } from '../types'
 import { addDays, fromKey } from './date'
@@ -12,6 +13,15 @@ export const MEAL_RULE_LABEL: Record<MealRule | 'feast', string> = {
   light: '輕食',
   skip: '不吃',
   feast: '大餐',
+}
+
+export const MEAL_RULE_IMAGE: Record<MealRule | 'feast', FoodImage> = {
+  normal: 'meal-lunch',
+  lowCarb: 'rule-lowcarb',
+  shake: 'rule-shake',
+  light: 'rule-light',
+  skip: 'rule-fasting',
+  feast: 'rule-feast',
 }
 
 export const MEAL_RULE_ICON: Record<MealRule | 'feast', IconName> = {

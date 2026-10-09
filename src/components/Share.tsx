@@ -13,6 +13,7 @@ import { Food } from './Food'
 import { Icon } from './Icon'
 import { RecipePhoto } from './RecipePhoto'
 import { Button, Segmented, Sheet, useToast } from './ui'
+import { Art } from './Art'
 
 interface ShareTarget {
   weekStart: string
@@ -204,7 +205,7 @@ function ShareSheet({ target, onClose }: { target: ShareTarget | null; onClose: 
           {count === 0 && (
             <div className="grid h-full place-items-center text-center text-sm text-muted">
               <div>
-                <Food id="basket" size={64} float />
+                <Art name="empty-plan" width={120} />
                 <p className="mt-2">這段時間還沒有排菜單</p>
               </div>
             </div>
@@ -524,7 +525,7 @@ function ImportSheet({ plan, onClose, onDone }: { plan: SharedPlan | null; onClo
               animate={{ scale: 1, rotate: 0 }}
               transition={{ type: 'spring', stiffness: 500, damping: 12, delay: 0.1 }}
             >
-              <Food id="bento" size={52} />
+              <Art name="share-card" width={60} float={false} />
             </motion.span>
             <div className="min-w-0 flex-1">
               <div className="truncate text-lg font-bold">{plan.title}</div>

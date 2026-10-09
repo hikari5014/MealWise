@@ -23,6 +23,7 @@ import { IngredientPicker } from './IngredientPicker'
 import { Icon } from './Icon'
 import { useRecipeDetail } from './RecipeDetail'
 import { Button, Sheet, Tap, useToast } from './ui'
+import { Art } from './Art'
 
 const Ctx = createContext<() => void>(() => {})
 export const useComposer = () => useContext(Ctx)
@@ -122,6 +123,14 @@ function Composer({ open, onClose }: { open: boolean; onClose: () => void }) {
   return (
     <Sheet open={open} onClose={onClose} title="組合料理">
       <div className="space-y-4">
+        <AnimatePresence initial={false}>
+          {selected.length === 0 && (
+            <motion.div key="hero" initial={{ opacity: 1 }} exit={{ opacity: 0, height: 0 }} className="overflow-hidden text-center">
+              <Art name="banner-composer" width={150} />
+              <p className="mt-1 text-xs text-muted">挑食材、選煮法，自動變成一道有營養標示的食譜</p>
+            </motion.div>
+          )}
+        </AnimatePresence>
         {/* 即時預覽 */}
         <motion.div layout className="sticky top-0 z-10 -mx-1 rounded-3xl bg-gradient-to-br from-leaf-soft to-honey-soft p-3 shadow-card">
           <div className="flex items-center gap-3">
@@ -184,7 +193,7 @@ function Composer({ open, onClose }: { open: boolean; onClose: () => void }) {
                   combo.method === m.id ? 'bg-leaf text-white' : 'bg-white shadow-card'
                 }`}
               >
-                <Icon name={m.icon} size={20} fill={combo.method === m.id} />
+                <Food id={m.image} size={30} />
                 {m.label}
               </motion.button>
             ))}

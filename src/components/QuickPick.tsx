@@ -10,6 +10,7 @@ import { MEAL_LABEL, type DayMark, type MealSlot, type PlanEntry, type Profile, 
 import { Icon } from './Icon'
 import { RecipePhoto } from './RecipePhoto'
 import { Button, Sheet, Tap, useToast } from './ui'
+import { Art } from './Art'
 
 interface Slot {
   date: string
@@ -112,12 +113,12 @@ export function QuickPickSheet({
     <Sheet open={open} onClose={finish} title="快速挑選">
       {slots.length === 0 ? (
         <div className="py-10 text-center text-sm text-muted">
-          <Icon name="task_alt" size={44} fill className="text-leaf" motion="pop" />
+          <Art name="empty-plan" width={120} />
           <p className="mt-2">這段時間都排好了</p>
         </div>
       ) : !slot ? (
         <div className="space-y-4 py-6 text-center">
-          <Icon name="celebration" size={52} fill className="text-tomato" motion="pop" />
+          <Art name="done-quickpick" width={150} />
           <p className="font-bold">完成！排好了 {added.length} 餐</p>
           <Button className="w-full" onClick={finish}>
             好

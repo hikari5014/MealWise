@@ -1,3 +1,4 @@
+import { Food } from './Food'
 import { AnimatePresence, motion } from 'framer-motion'
 import { useEffect, useState } from 'react'
 import { db } from '../db'
@@ -6,6 +7,7 @@ import {
   fmtTime,
   getPlan,
   MEAL_RULE_ICON,
+  MEAL_RULE_IMAGE,
   MEAL_RULE_LABEL,
   ruleDescription,
   type DietPlan,
@@ -357,7 +359,7 @@ export function DietPlanSheet({ open, onClose, profile }: { open: boolean; onClo
                 <div className="flex flex-wrap gap-1.5">
                   {RULES.map((r) => (
                     <Chip key={r} on={plan.meals[m] === r} onClick={() => set({ meals: { ...plan.meals, [m]: r } })}>
-                      <Icon name={MEAL_RULE_ICON[r]} size={15} fill={plan.meals[m] === r} />
+                      <Food id={MEAL_RULE_IMAGE[r]} size={20} />
                       {MEAL_RULE_LABEL[r]}
                     </Chip>
                   ))}

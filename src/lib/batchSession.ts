@@ -3,6 +3,7 @@ import type { Ingredient, MealSlot, Recipe, Section } from '../types'
 import { storageFor, storageOf, type Storage } from './batch'
 import { addDays, fromKey } from './date'
 import type { IconName } from './icons'
+import type { FoodImage } from '../data/foodImages'
 import { formatQty } from './meal'
 
 /** 一次備餐的紀錄 */
@@ -49,6 +50,8 @@ export interface FlowStep {
   title: string
   detail?: string
   icon: IconName
+  /** 3D 小圖（有的話取代圖示） */
+  image?: FoodImage
   /** 跟其他步驟同時進行 */
   parallel?: boolean
   recipeId?: string
@@ -115,6 +118,7 @@ export function buildBatchFlow(session: Pick<BatchSession, 'items' | 'assignment
   if (grains.length) {
     steps.push({
       key: 'grain',
+      image: 'method-steam',
       at: 0,
       minutes: 5,
       title: '洗米、主食下鍋',
@@ -126,11 +130,12 @@ export function buildBatchFlow(session: Pick<BatchSession, 'items' | 'assignment
   const byEq = (eq: Equipment) => list.filter((x) => equipmentOf(x.recipe) === eq)
   const ovens = byEq('oven')
   if (ovens.length) {
-    steps.push({ key: 'preheat', at: cursor, minutes: 10, title: '烤箱預熱 200°C', icon: 'local_fire_department', parallel: true })
+    steps.push({ key: 'preheat', image: 'method-oven', at: cursor, minutes: 10, title: '烤箱預熱 200°C', icon: 'local_fire_department', parallel: true })
   }
   const miseMinutes = 5 + veg.length * 3 + protein.length * 4
   steps.push({
     key: 'mise',
+    image: 'knife',
     at: cursor,
     minutes: miseMinutes,
     title: '一次備料：洗切蔬菜、處理肉',
@@ -144,6 +149,7 @@ export function buildBatchFlow(session: Pick<BatchSession, 'items' | 'assignment
   for (const { recipe, portions } of byEq('pot')) {
     steps.push({
       key: `pot-${recipe.id}`,
+      image: 'equip-pot',
       at: cursor,
       minutes: recipe.minutes,
       title: `${recipe.name} ×${portions} 下鍋燉`,
@@ -157,6 +163,7 @@ export function buildBatchFlow(session: Pick<BatchSession, 'items' | 'assignment
   for (const { recipe, portions } of byEq('cooker')) {
     steps.push({
       key: `cook-${recipe.id}`,
+      image: 'method-steam',
       at: cursor,
       minutes: recipe.minutes,
       title: `${recipe.name} ×${portions} 放電鍋／蒸`,
@@ -170,6 +177,7 @@ export function buildBatchFlow(session: Pick<BatchSession, 'items' | 'assignment
     const start = Math.max(cursor, (grains.length ? 5 : 0) + 10)
     steps.push({
       key: `oven-${recipe.id}`,
+      image: 'method-oven',
       at: start,
       minutes: recipe.minutes,
       title: `${recipe.name} ×${portions} 進烤箱`,
@@ -186,6 +194,7 @@ export function buildBatchFlow(session: Pick<BatchSession, 'items' | 'assignment
     const m = Math.round(Math.min(recipe.minutes, 20) * batchFactor(portions))
     steps.push({
       key: `pan-${recipe.id}`,
+      image: 'method-pan',
       at: panCursor,
       minutes: m,
       title: `${recipe.name} ×${portions}`,
@@ -198,6 +207,7 @@ export function buildBatchFlow(session: Pick<BatchSession, 'items' | 'assignment
   for (const { recipe, portions } of byEq('cold')) {
     steps.push({
       key: `cold-${recipe.id}`,
+      image: 'method-cold',
       at: panCursor,
       minutes: 8,
       title: `${recipe.name} ×${portions}（不用開火）`,
@@ -219,9 +229,10 @@ export function buildBatchFlow(session: Pick<BatchSession, 'items' | 'assignment
     })
     .filter((c): c is NonNullable<typeof c> => !!c)
 
-  steps.push({ key: 'cool', at: end, minutes: 25, title: '攤平放涼', detail: '淺盤攤開、不要蓋蓋子，降到室溫再分裝（不要超過 2 小時）', icon: 'water_drop' })
+  steps.push({ key: 'cool', image: 'step-cool', at: end, minutes: 25, title: '攤平放涼', detail: '淺盤攤開、不要蓋蓋子，降到室溫再分裝（不要超過 2 小時）', icon: 'water_drop' })
   steps.push({
     key: 'pack',
+    image: 'step-pack',
     at: end + 25,
     minutes: Math.min(40, Math.max(10, containers.length * people * 2)),
     title: `分裝 ${containers.length * people} 盒`,

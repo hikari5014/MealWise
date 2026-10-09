@@ -333,11 +333,18 @@ function Detail({ recipe, layoutId, onClose }: Opened & { onClose: () => void })
   )
 }
 
-const LICENSE_LABEL = { cc0: 'CC0 公眾領域', pdm: '公眾領域', by: 'CC BY' } as const
+const LICENSE_LABEL = { cc0: 'CC0 公眾領域', pdm: '公眾領域', by: 'CC BY', own: '自製' } as const
 
 function PhotoCreditLine({ id, illustrative = false }: { id: string; illustrative?: boolean }) {
   const c = photoCredit(id)
   if (!c) return null
+  if (c.license === 'own')
+    return (
+      <p className="flex items-center gap-1 text-[11px] text-muted">
+        <Icon name="image" size={14} />
+        示意圖：好食光自製（AI 生成，實際成品可能不同）
+      </p>
+    )
   return (
     <p className="flex flex-wrap items-center gap-1 text-[11px] text-muted">
       <Icon name="image" size={14} />

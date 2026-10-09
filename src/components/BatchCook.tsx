@@ -25,6 +25,7 @@ import { Icon } from './Icon'
 import { useRecipeDetail } from './RecipeDetail'
 import { RecipePhoto } from './RecipePhoto'
 import { Button, CheckButton, Segmented, Sheet, Tap, useToast } from './ui'
+import { Art } from './Art'
 
 const STORAGE_STYLE = {
   fridge: 'bg-sky-soft text-sky',
@@ -535,7 +536,7 @@ function FlowBody({ session, tab, setTab, onClose }: { session: BatchSession; ta
     <div className="space-y-4">
       <div className="rounded-3xl bg-gradient-to-br from-leaf-soft to-honey-soft p-4">
         <div className="flex items-center gap-3">
-          <Food id="cooking" size={48} float />
+          <Art name="banner-batch" width={84} className="!mx-0 shrink-0" />
           <div className="min-w-0 flex-1">
             <div className="font-bold">
               {session.items.length} 道菜・{flow.containers.length * people} 盒
@@ -654,7 +655,8 @@ function FlowBody({ session, tab, setTab, onClose }: { session: BatchSession; ta
                           <div className="min-w-0 flex-1" onClick={s.toggle}>
                             <div className="flex items-center gap-1.5">
                               <span className="text-xs text-muted">{MEAL_LABEL[c.meal]}</span>
-                              <span className={`rounded-full px-1.5 py-0.5 text-[10px] font-medium ${STORAGE_STYLE[c.storage]}`}>
+                              <span className={`flex items-center gap-0.5 rounded-full px-1.5 py-0.5 text-[10px] font-medium ${STORAGE_STYLE[c.storage]}`}>
+                                {c.storage !== 'fresh' && <Food id={c.storage === 'freezer' ? 'store-freezer' : 'store-fridge'} size={14} />}
                                 {STORAGE_LABEL[c.storage]}
                                 {people > 1 ? ` ×${people}` : ''}
                               </span>
@@ -702,7 +704,7 @@ function Timeline({ flow, session, step }: { flow: BatchFlow; session: BatchSess
   return (
     <div>
       <p className="mb-3 px-1 text-xs text-muted">左邊是從開始算起的時間。標「同時」的交給電鍋、烤箱、燉鍋自己跑，你繼續做下一件事。</p>
-      <ol className="relative space-y-3 before:absolute before:bottom-4 before:left-[46px] before:top-4 before:w-0.5 before:bg-ink/10">
+      <ol className="relative space-y-3 before:absolute before:bottom-4 before:left-[57px] before:top-4 before:w-0.5 before:bg-ink/10">
         {flow.steps.map((st, i) => {
           const s = step(`step:${st.key}`)
           const recipe = st.recipeId ? RECIPE_MAP[st.recipeId] : undefined
@@ -718,11 +720,11 @@ function Timeline({ flow, session, step }: { flow: BatchFlow; session: BatchSess
             >
               <span className="w-8 shrink-0 pt-2.5 text-right text-[11px] tabular-nums text-muted">{fmtClock(st.at)}</span>
               <span
-                className={`relative z-10 mt-1.5 grid h-7 w-7 shrink-0 place-items-center rounded-full ${
+                className={`relative z-10 mt-1 grid h-9 w-9 shrink-0 place-items-center rounded-full ${
                   s.checked ? 'bg-leaf text-white' : st.parallel ? 'bg-honey-soft text-[#a07a20]' : 'bg-white text-leaf-dark shadow-card'
                 }`}
               >
-                <Icon name={s.checked ? 'check' : st.icon} size={16} weight={600} />
+                {s.checked || !st.image ? <Icon name={s.checked ? 'check' : st.icon} size={18} weight={600} /> : <Food id={st.image} size={28} />}
               </span>
               <div className={`min-w-0 flex-1 rounded-2xl p-3 shadow-card transition-colors ${s.checked ? 'bg-white/50' : 'bg-white'}`}>
                 <div className="flex items-start gap-2">
@@ -821,16 +823,19 @@ export function BatchSessions() {
       <motion.button
         whileTap={{ scale: 0.97 }}
         onClick={() => start()}
-        className="flex w-full items-center gap-3 rounded-3xl bg-leaf p-4 text-left text-white shadow-card"
+        className="block w-full overflow-hidden rounded-3xl bg-gradient-to-br from-leaf-soft to-honey-soft p-4 text-left shadow-card"
       >
-        <span className="grid h-11 w-11 place-items-center rounded-2xl bg-white/20">
-          <Icon name="skillet" size={26} fill motion="wiggle" />
+        <Art name="banner-batch" width={280} />
+        <span className="mt-3 flex items-center gap-3">
+          <span className="flex-1">
+            <span className="block font-bold">開始一次備餐</span>
+            <span className="block text-xs text-ink/70">選幾道菜 → 自動排好採買、備料、開火順序、分裝</span>
+          </span>
+          <span className="flex items-center gap-0.5 rounded-full bg-leaf px-3 py-1.5 text-sm font-medium text-white">
+            開始
+            <Icon name="chevron_right" size={18} />
+          </span>
         </span>
-        <span className="flex-1">
-          <span className="block font-bold">開始一次備餐</span>
-          <span className="block text-xs text-white/80">選幾道菜 → 自動排好採買、備料、開火順序、分裝</span>
-        </span>
-        <Icon name="chevron_right" size={22} />
       </motion.button>
       {sessions.map((s) => (
         <motion.button

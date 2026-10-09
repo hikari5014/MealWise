@@ -11,7 +11,7 @@ export interface PhotoCredit {
   title: string
   creator: string
   source: string
-  license: 'cc0' | 'pdm' | 'by'
+  license: 'cc0' | 'pdm' | 'by' | 'own'
   licenseVersion: string
   licenseUrl: string
   landingUrl: string

@@ -1,7 +1,6 @@
 import { AnimatePresence, motion } from 'framer-motion'
 import { useState } from 'react'
 import { AvoidPicker } from '../components/AvoidPicker'
-import { Food } from '../components/Food'
 import { Icon } from '../components/Icon'
 import { Button } from '../components/ui'
 import { db } from '../db'
@@ -9,6 +8,7 @@ import { haptic, spring } from '../lib/feedback'
 import { suggestKcal } from '../lib/meal'
 import type { IconName } from '../lib/icons'
 import { GOAL_LABEL, type Goal, type Profile } from '../types'
+import { Art } from '../components/Art'
 
 const GOALS: { value: Goal; icon: IconName; hint: string }[] = [
   { value: 'lose', icon: 'spa', hint: '少一點熱量、多一點蛋白質' },
@@ -121,7 +121,7 @@ export default function Onboarding({ initial, onDone }: { initial?: Profile; onD
     >
       {!initial && (
         <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="mb-6">
-          <Food id="bento" size={64} float />
+          <Art name="onboard-welcome" width={150} className="!mx-0" />
           <h1 className="mt-2 text-2xl font-bold">歡迎來到好食光</h1>
           <p className="text-sm text-muted">花 30 秒告訴我你的需求，之後就交給我。</p>
         </motion.div>

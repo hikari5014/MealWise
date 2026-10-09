@@ -24,6 +24,7 @@ import type { IconName } from '../lib/icons'
 import { CUISINES, type Cuisine } from '../data/cuisine'
 import { MealTitle } from './Today'
 import { MEAL_LABEL, MEAL_SLOTS, type MealSlot, type PlanEntry, type Profile } from '../types'
+import { Art } from '../components/Art'
 
 export default function Plan({ profile }: { profile: Profile }) {
   const [view, setView] = useState<'week' | 'month' | 'library'>('week')
@@ -488,6 +489,7 @@ function Library({ profile }: { profile: Profile }) {
       </p>
       {list.length === 0 && (
         <div className="py-10 text-center text-sm text-muted">
+          {(group === 'fav' || group === 'mine') && <Art name={group === 'fav' ? 'empty-favorites' : 'empty-myrecipes'} width={130} className="mb-2" />}
           {group === 'fav' ? '還沒有最愛，在食譜頁點愛心就會出現在這裡' : group === 'mine' ? '還沒有自己的食譜，點右上角「新增」' : '沒有符合的食譜'}
         </div>
       )}

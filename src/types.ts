@@ -14,6 +14,13 @@ export const MEAL_LABEL: Record<MealSlot, string> = {
   snack: '點心',
 }
 
+export const MEAL_IMAGE: Record<MealSlot, FoodImage> = {
+  breakfast: 'meal-breakfast',
+  lunch: 'meal-lunch',
+  dinner: 'meal-dinner',
+  snack: 'meal-snack',
+}
+
 export const MEAL_ICON: Record<MealSlot, IconName> = {
   breakfast: 'wb_twilight',
   lunch: 'wb_sunny',
