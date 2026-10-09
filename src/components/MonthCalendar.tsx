@@ -23,6 +23,7 @@ export function MonthCalendar({ profile, onGoDay }: { profile: Profile; onGoDay:
   const [month, setMonth] = useState(monthStart(today))
   const [dir, setDir] = useState(0)
   const [selected, setSelected] = useState<string | null>(null)
+  const [ripple, setRipple] = useState<{ d: string; t: number } | null>(null)
   const first = weekStart(month)
   const cells = useMemo(() => Array.from({ length: 42 }, (_, i) => addDays(first, i)), [first])
   const marks = useMarks(cells)
@@ -89,10 +90,13 @@ export function MonthCalendar({ profile, onGoDay }: { profile: Profile; onGoDay:
             return (
               <motion.button
                 key={d}
-                whileTap={{ scale: 0.88 }}
+                whileTap={{ scale: 0.82 }}
+                transition={{ type: 'spring', stiffness: 600, damping: 15 }}
                 onClick={() => {
-                  haptic(6)
-                  setSelected(d)
+                  haptic([8, 20, 8])
+                  setRipple({ d, t: Date.now() })
+                  // 先讓點擊的水波跑一下，再打開設定
+                  window.setTimeout(() => setSelected(d), 160)
                 }}
                 className={`relative flex aspect-square flex-col items-center justify-start rounded-xl pt-1 text-sm transition-colors ${
                   inMonth ? '' : 'opacity-35'
@@ -100,8 +104,18 @@ export function MonthCalendar({ profile, onGoDay }: { profile: Profile; onGoDay:
                   isToday ? 'ring-2 ring-leaf' : ''
                 }`}
               >
-                <span className={`tabular-nums ${isToday ? 'font-bold text-leaf-dark' : ''}`}>{Number(d.slice(-2))}</span>
-                <span className="mt-0.5 flex h-4 items-center gap-0.5">
+                {ripple?.d === d && (
+                  <motion.span
+                    key={ripple.t}
+                    initial={{ scale: 0.3, opacity: 0.9 }}
+                    animate={{ scale: 1.25, opacity: 0 }}
+                    transition={{ duration: 0.5, ease: 'easeOut' }}
+                    className="pointer-events-none absolute inset-0 rounded-xl bg-leaf/35"
+                  />
+                )}
+                {selected === d && <motion.span layoutId="month-selected" transition={spring} className="pointer-events-none absolute inset-0 rounded-xl ring-2 ring-honey" />}
+                <span className={`relative tabular-nums ${isToday ? 'font-bold text-leaf-dark' : ''}`}>{Number(d.slice(-2))}</span>
+                <span className="relative mt-0.5 flex h-4 items-center gap-0.5">
                   {mark?.feast && <Icon name="celebration" size={13} fill className="text-tomato" />}
                   {mark?.fast && <Icon name="no_meals" size={13} className="text-ink/60" />}
                   {training && !mark?.feast && !mark?.fast && <Icon name="fitness_center" size={12} className="text-leaf" />}
