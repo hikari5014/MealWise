@@ -1,10 +1,11 @@
 import { AnimatePresence, motion } from 'framer-motion'
-import { createContext, useContext, useMemo, useState, type ReactNode } from 'react'
+import { createContext, useContext, useDeferredValue, useMemo, useState, type ReactNode } from 'react'
 import { db } from '../db'
 import { addDays, todayKey } from '../lib/date'
 import { EAT_KINDS, eatNutrition, plainBrand, itemImage, eatScore, eatToRecipe, useEatOut, type EatBrand, type EatData, type EatItem, type EatKind } from '../lib/eatout'
 import { haptic, spring } from '../lib/feedback'
 import { saveCustomRecipe } from '../lib/recipeStore'
+import { matchScore, parseQuery, prepare, scoreTier } from '../lib/search'
 import { MEAL_LABEL, MEAL_SLOTS, type MealSlot } from '../types'
 import { Food } from './Food'
 import { Icon } from './Icon'
@@ -35,17 +36,39 @@ export function EatOutBrowser({ onPick, compact = false }: { onPick: (it: EatIte
 
   const brandMap = useMemo(() => Object.fromEntries((data?.brands ?? []).map((b) => [b.id, b])), [data])
   const brands = (data?.brands ?? []).filter((b) => kind === 'all' || b.kind === kind)
-  const q = query.trim()
-  const list = useMemo(() => {
-    if (!data) return []
-    const out = data.items.filter((it) => {
+  const dq = useDeferredValue(query.trim())
+  const fields = useMemo(
+    () => new Map((data?.items ?? []).map((it) => [it.id, prepare([[it.n, 1], [it.cat, 0.8], [brandMap[it.b]?.name, 0.8]])])),
+    [data, brandMap],
+  )
+  const { list, outside } = useMemo(() => {
+    if (!data) return { list: [], outside: [] }
+    const terms = parseQuery(dq)
+    const score = new Map<string, number>()
+    if (terms.length) for (const it of data.items) score.set(it.id, matchScore(terms, fields.get(it.id)!))
+    const inFilter = (it: EatItem) => {
       const b = brandMap[it.b]
       if (brand ? it.b !== brand : kind !== 'all' && b?.kind !== kind) return false
-      if (q && !`${it.n}${it.cat ?? ''}${b?.name ?? ''}`.includes(q)) return false
       return quick.every((k) => QUICK.find((x) => x.id === k)!.test(it))
-    })
-    return out.sort((a, b) => (sort === 'kcal' ? a.k - b.k : sort === 'protein' ? (b.p ?? -1) - (a.p ?? -1) : eatScore(b) - eatScore(a)))
-  }, [data, brandMap, brand, kind, q, quick, sort])
+    }
+    const hit = (it: EatItem) => !terms.length || score.get(it.id)! > 0
+    const tier = (it: EatItem) => (terms.length ? scoreTier(score.get(it.id)!) : 0)
+    const list = data.items
+      .filter((it) => hit(it) && inFilter(it))
+      .sort(
+        (a, b) =>
+          tier(b) - tier(a) || (sort === 'kcal' ? a.k - b.k : sort === 'protein' ? (b.p ?? -1) - (a.p ?? -1) : eatScore(b) - eatScore(a)),
+      )
+    // 篩選之外但名字很像的，最多 8 項
+    const outside = terms.length
+      ? data.items
+          .filter((it) => hit(it) && !inFilter(it))
+          .sort((a, b) => score.get(b.id)! - score.get(a.id)! || eatScore(b) - eatScore(a))
+          .slice(0, 8)
+      : []
+    return { list, outside }
+  }, [data, fields, brandMap, brand, kind, dq, quick, sort])
+  const filtered = brand !== null || kind !== 'all' || quick.length > 0
 
   if (error && !data)
     return (
@@ -151,7 +174,32 @@ export function EatOutBrowser({ onPick, compact = false }: { onPick: (it: EatIte
           再顯示 {Math.min(60, list.length - limit)} 項
         </Button>
       )}
-      {!list.length && <p className="py-8 text-center text-sm text-muted">找不到符合的品項</p>}
+      {!list.length && <p className="py-8 text-center text-sm text-muted">{outside.length ? '篩選裡沒有符合的品項' : '找不到符合的品項'}</p>}
+      {outside.length > 0 && filtered && list.length <= limit && (
+        <div className="space-y-2 pt-1">
+          <div className="flex items-center gap-1 px-1 text-xs font-medium text-muted">
+            <Icon name="search" size={15} />
+            篩選之外，可能是你要找的
+            <Tap
+              onClick={() => {
+                setKind('all')
+                setBrand(null)
+                setQuick([])
+              }}
+              className="ml-auto rounded-full bg-leaf-soft/60 px-2.5 py-1 text-[11px] text-leaf-dark"
+            >
+              清除篩選
+            </Tap>
+          </div>
+          <ul className="space-y-2">
+            {outside.map((it, i) => (
+              <motion.li key={it.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ ...spring, delay: Math.min(i, 8) * 0.03 }}>
+                <ItemRow it={it} brand={brandMap[it.b]} onTap={() => onPick(it, brandMap[it.b], data)} />
+              </motion.li>
+            ))}
+          </ul>
+        </div>
+      )}
     </div>
   )
 }

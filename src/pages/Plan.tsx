@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from 'framer-motion'
-import { startTransition, useEffect, useMemo, useRef, useState } from 'react'
+import { startTransition, useDeferredValue, useEffect, useMemo, useRef, useState } from 'react'
 import { RecipePicker } from '../components/RecipePicker'
 import { useBatchCook } from '../components/BatchCook'
 import { copyDay, copyLastWeek, emptySlots, QuickPickSheet } from '../components/QuickPick'
@@ -12,19 +12,20 @@ import { RecipePhoto } from '../components/RecipePhoto'
 import { useRecipeEditor } from '../components/RecipeEditor'
 import { useComposer } from '../components/Composer'
 import { Button, listContainer, listItem, Segmented, Sheet, Tap, useToast } from '../components/ui'
-import { RECIPE_MAP } from '../data/recipes'
+import { RECIPE_MAP, RECIPES } from '../data/recipes'
 import { db } from '../db'
 import { addDays, fromKey, monthDay, todayKey, weekDays, weekdayLabel, weekStart } from '../lib/date'
 import { haptic, spring } from '../lib/feedback'
 import { resolveDay } from '../lib/dietPlan'
 import { useMarks, usePlans } from '../lib/hooks'
-import { autoPlan, recipesFor, tasteScore } from '../lib/meal'
+import { autoPlan, fitsProfile, recipesFor, tasteScore } from '../lib/meal'
+import { matchScore, parseQuery, prepare, scoreTier, type Prepared } from '../lib/search'
 import { getTaste, useRecipesVersion } from '../lib/recipeStore'
 import type { IconName } from '../lib/icons'
-import { CUISINES, type Cuisine } from '../data/cuisine'
+import { CUISINE_LABEL, CUISINES, KIND_LABEL, type Cuisine } from '../data/cuisine'
 import { MealTitle } from './Today'
 import { EatOutView } from '../components/EatOut'
-import { MEAL_LABEL, MEAL_SLOTS, type MealSlot, type PlanEntry, type Profile } from '../types'
+import { MEAL_LABEL, MEAL_SLOTS, type MealSlot, type PlanEntry, type Profile, type Recipe } from '../types'
 import { Art } from '../components/Art'
 import { usePantryPlan } from '../components/PantryPlan'
 import { DayTraining, TrainBadge } from '../components/TrainSchedule'
@@ -436,11 +437,11 @@ function Library({ profile }: { profile: Profile }) {
   const openComposer = useComposer()
   const taste = getTaste(profile)
   useRecipesVersion()
-  const q = query.trim()
+  const dq = useDeferredValue(query.trim())
   // 一次只畫一部分，捲到底再補（一次畫 160 張照片卡會讓手機卡住）
   const [limit, setLimit] = useState(24)
   const more = useRef<HTMLDivElement>(null)
-  useEffect(() => setLimit(24), [meal, group, query])
+  useEffect(() => setLimit(24), [meal, group, dq])
   useEffect(() => {
     const el = more.current
     if (!el) return
@@ -448,20 +449,6 @@ function Library({ profile }: { profile: Profile }) {
     io.observe(el)
     return () => io.disconnect()
   })
-  const list = recipesFor(meal === 'all' ? null : meal, profile)
-    .filter((r) => !q || r.name.includes(q) || r.tags.some((t) => t.includes(q)))
-    .filter((r) =>
-      group === 'all'
-        ? true
-        : group === 'fav'
-          ? taste.favorites.includes(r.id)
-          : group === 'mine'
-            ? r.custom
-            : group === 'shake'
-              ? r.tags.includes('蛋白飲')
-              : r.cuisine === group,
-    )
-    .sort((a, b) => tasteScore(b, profile) - tasteScore(a, profile))
   const groups: { id: typeof group; label: string; icon?: IconName }[] = [
     { id: 'all', label: '全部料理' },
     { id: 'fav', label: '我的最愛', icon: 'favorite' },
@@ -469,6 +456,42 @@ function Library({ profile }: { profile: Profile }) {
     { id: 'shake', label: '蛋白飲', icon: 'water_drop' },
     ...CUISINES.map((c) => ({ id: c.id, label: c.label })),
   ]
+  const inGroup = (r: Recipe) =>
+    group === 'all'
+      ? true
+      : group === 'fav'
+        ? taste.favorites.includes(r.id)
+        : group === 'mine'
+          ? !!r.custom
+          : group === 'shake'
+            ? r.tags.includes('蛋白飲')
+            : r.cuisine === group
+  const terms = useMemo(() => parseQuery(dq), [dq])
+  const scores = new Map<string, number>()
+  const scoreOf = (r: Recipe) => {
+    let v = scores.get(r.id)
+    if (v === undefined) scores.set(r.id, (v = matchScore(terms, searchFields(r))))
+    return v
+  }
+  const list = recipesFor(meal === 'all' ? null : meal, profile)
+    .filter((r) => !terms.length || scoreOf(r) > 0)
+    .filter(inGroup)
+    .sort((a, b) => (terms.length ? scoreTier(scoreOf(b)) - scoreTier(scoreOf(a)) : 0) || tasteScore(b, profile) - tasteScore(a, profile))
+  // 篩選之外但可能是要找的：搜尋有結果、只是被早午晚餐、分類或飲食設定擋掉
+  const shown = new Set(list.map((r) => r.id))
+  const outside = terms.length
+    ? RECIPES.filter((r) => !r.eatout && !shown.has(r.id) && scoreOf(r) > 0)
+        .sort((a, b) => scoreOf(b) - scoreOf(a))
+        .slice(0, 6)
+        .map((r) => ({
+          r,
+          why: !fitsProfile(r, profile)
+            ? '不符合飲食設定'
+            : meal !== 'all' && !r.meals.includes(meal)
+              ? `不在${MEAL_LABEL[meal]}`
+              : `不在${groups.find((g) => g.id === group)?.label ?? ''}`,
+        }))
+    : []
   return (
     <div className="space-y-3">
       <div className="flex gap-2">
@@ -522,49 +545,80 @@ function Library({ profile }: { profile: Profile }) {
       {list.length === 0 && (
         <div className="py-10 text-center text-sm text-muted">
           {(group === 'fav' || group === 'mine') && <Art name={group === 'fav' ? 'empty-favorites' : 'empty-myrecipes'} width={130} className="mb-2" />}
-          {group === 'fav' ? '還沒有最愛，在食譜頁點愛心就會出現在這裡' : group === 'mine' ? '還沒有自己的食譜，點右上角「新增」' : '沒有符合的食譜'}
+          {group === 'fav' ? '還沒有最愛，在食譜頁點愛心就會出現在這裡' : group === 'mine' ? '還沒有自己的食譜，點右上角「新增」' : outside.length ? '篩選裡沒有符合的食譜' : '沒有符合的食譜'}
         </div>
       )}
       <motion.div key={`${meal}-${group}`} variants={listContainer} initial="hidden" animate="show" className="grid grid-cols-2 gap-3">
-        {list.slice(0, limit).map((r) => {
-          const layoutId = `lib-${r.id}`
-          return (
-            <motion.button
-              key={r.id}
-              variants={listItem}
-              whileTap={{ scale: 0.96 }}
-              onClick={() => openDetail(r.id, layoutId)}
-              className="relative aspect-[4/5] overflow-hidden rounded-3xl text-left shadow-card"
-            >
-              <motion.div layoutId={layoutId} className="absolute inset-0">
-                <RecipePhoto recipe={r} />
-              </motion.div>
-      {list.length > limit && <div ref={more} className="h-10" />}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/10 to-transparent" />
-              {taste.favorites.includes(r.id) && (
-                <span className="absolute right-2 top-2 grid h-7 w-7 place-items-center rounded-full bg-card/90 text-tomato shadow">
-                  <Icon name="favorite" size={16} fill />
-                </span>
-              )}
-              {r.custom && (
-                <span className="absolute left-2 top-2 rounded-full bg-card/90 px-2 py-0.5 text-[10px] font-medium text-leaf-dark shadow">
-                  我的
-                </span>
-              )}
-              <div className="absolute inset-x-3 bottom-3 text-white">
-                <div className="text-[15px] font-bold leading-snug drop-shadow">{r.name}</div>
-                <div className="mt-0.5 flex items-center gap-1 text-[11px] text-white/85">
-                  <Icon name="local_fire_department" size={13} fill />
-                  {r.nutrition.kcal} kcal
-                  <span className="mx-0.5 opacity-60">·</span>
-                  <Icon name="timer" size={13} />
-                  {r.minutes} 分
-                </div>
-              </div>
-            </motion.button>
-          )
-        })}
+        {list.slice(0, limit).map((r) => (
+          <LibCard key={r.id} recipe={r} fav={taste.favorites.includes(r.id)} onOpen={openDetail} />
+        ))}
       </motion.div>
+      {list.length > limit && <div ref={more} className="h-10" />}
+      {outside.length > 0 && list.length <= limit && (
+        <div className="space-y-2 pt-2">
+          <p className="flex items-center gap-1 px-1 text-xs font-medium text-muted">
+            <Icon name="search" size={15} />
+            篩選之外，可能是你要找的
+          </p>
+          <motion.div key={`out-${dq}`} variants={listContainer} initial="hidden" animate="show" className="grid grid-cols-2 gap-3">
+            {outside.map(({ r, why }) => (
+              <LibCard key={r.id} recipe={r} fav={taste.favorites.includes(r.id)} onOpen={openDetail} note={why} />
+            ))}
+          </motion.div>
+        </div>
+      )}
     </div>
+  )
+}
+
+const fieldCache = new WeakMap<Recipe, Prepared>()
+/** 搜尋看品名、標籤、料理類型、食材 */
+const searchFields = (r: Recipe) => {
+  let f = fieldCache.get(r)
+  if (!f) {
+    f = prepare([
+      [r.name, 1],
+      [r.tags.join(' '), 0.8],
+      [r.cuisine && CUISINE_LABEL[r.cuisine], 0.8],
+      [r.kind && KIND_LABEL[r.kind], 0.8],
+      ...r.ingredients.map((x): [string, number] => [x.name, 0.6]),
+    ])
+    fieldCache.set(r, f)
+  }
+  return f
+}
+
+function LibCard({ recipe: r, fav, note, onOpen }: { recipe: Recipe; fav: boolean; note?: string; onOpen: (id: string, layoutId: string) => void }) {
+  const layoutId = `lib-${note ? 'out-' : ''}${r.id}`
+  return (
+    <motion.button
+      variants={listItem}
+      whileTap={{ scale: 0.96 }}
+      onClick={() => onOpen(r.id, layoutId)}
+      className="relative aspect-[4/5] overflow-hidden rounded-3xl text-left shadow-card"
+    >
+      <motion.div layoutId={layoutId} className="absolute inset-0">
+        <RecipePhoto recipe={r} />
+      </motion.div>
+      <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/10 to-transparent" />
+      {fav && (
+        <span className="absolute right-2 top-2 grid h-7 w-7 place-items-center rounded-full bg-card/90 text-tomato shadow">
+          <Icon name="favorite" size={16} fill />
+        </span>
+      )}
+      {(note || r.custom) && (
+        <span className="absolute left-2 top-2 rounded-full bg-card/90 px-2 py-0.5 text-[10px] font-medium text-leaf-dark shadow">{note ?? '我的'}</span>
+      )}
+      <div className="absolute inset-x-3 bottom-3 text-white">
+        <div className="text-[15px] font-bold leading-snug drop-shadow">{r.name}</div>
+        <div className="mt-0.5 flex items-center gap-1 text-[11px] text-white/85">
+          <Icon name="local_fire_department" size={13} fill />
+          {r.nutrition.kcal} kcal
+          <span className="mx-0.5 opacity-60">·</span>
+          <Icon name="timer" size={13} />
+          {r.minutes} 分
+        </div>
+      </div>
+    </motion.button>
   )
 }
