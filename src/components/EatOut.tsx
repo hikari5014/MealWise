@@ -2,7 +2,7 @@ import { AnimatePresence, motion } from 'framer-motion'
 import { createContext, useContext, useMemo, useState, type ReactNode } from 'react'
 import { db } from '../db'
 import { addDays, todayKey } from '../lib/date'
-import { EAT_KINDS, eatNutrition, itemImage, eatScore, eatToRecipe, useEatOut, type EatBrand, type EatData, type EatItem, type EatKind } from '../lib/eatout'
+import { EAT_KINDS, eatNutrition, plainBrand, itemImage, eatScore, eatToRecipe, useEatOut, type EatBrand, type EatData, type EatItem, type EatKind } from '../lib/eatout'
 import { haptic, spring } from '../lib/feedback'
 import { saveCustomRecipe } from '../lib/recipeStore'
 import { MEAL_LABEL, MEAL_SLOTS, type MealSlot } from '../types'
@@ -218,7 +218,7 @@ export function EatItemSheet({
   const log = async () => {
     if (!item) return
     const n = eatNutrition(item)
-    const name = brand && brand.kind !== 'generic' ? `${brand.name} ${item.n}` : item.n
+    const name = plainBrand(brand) ? item.n : `${brand!.name} ${item.n}`
     const id = (await db.logs.add({ date, meal, recipeId: '', custom: { name, nutrition: n }, portion: 1, createdAt: Date.now() })) as number
     haptic([10, 40, 10, 40, 20])
     onClose()
@@ -308,7 +308,7 @@ export function EatItemSheet({
           {(item.src ?? brand?.source) && (
             <a href={item.src ?? brand?.source} target="_blank" rel="noreferrer" className="flex items-center gap-1 px-1 text-[11px] text-muted underline">
               <Icon name="open_in_new" size={13} />
-              資料來源：{brand?.kind === 'generic' ? '衛福部食品營養成分資料庫' : `${brand?.name ?? ''}官方公布`}
+              資料來源：{plainBrand(brand) ? '衛福部食品營養成分資料庫' : `${brand?.name ?? ''}官方公布`}
               {brand?.fetchedAt ? `（${brand.fetchedAt} 取得）` : ''}
             </a>
           )}

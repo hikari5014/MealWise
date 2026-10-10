@@ -3,7 +3,7 @@ import type { FoodImage } from '../data/foodImages'
 import type { MealSlot, Nutrition, Recipe } from '../types'
 
 /** 外食天地：資料在 public/eatout/data.json，由 scripts/build-eatout.mjs 產生，GitHub Actions 每天更新 */
-export type EatKind = 'fastfood' | 'cafe' | 'asian' | 'drink' | 'convenience' | 'generic'
+export type EatKind = 'fastfood' | 'cafe' | 'asian' | 'drink' | 'convenience' | 'bakery' | 'generic'
 
 export interface EatBrand {
   id: string
@@ -49,13 +49,19 @@ export const EAT_KINDS: { id: EatKind; label: string; image: FoodImage }[] = [
   { id: 'cafe', label: '咖啡早午餐', image: 'eo-hot-beverage' },
   { id: 'asian', label: '中日式連鎖', image: 'eo-bento-box' },
   { id: 'drink', label: '手搖飲', image: 'eo-bubble-tea' },
+  { id: 'bakery', label: '麵包店', image: 'eo-croissant' },
   { id: 'generic', label: '一般小吃', image: 'eo-dumpling' },
 ]
+/** 衛福部資料的「店家」是統稱，品名前面不加店名 */
+export const plainBrand = (b?: EatBrand) => !b || b.kind === 'generic' || b.kind === 'bakery'
+
 export const KIND_IMAGE = Object.fromEntries(EAT_KINDS.map((k) => [k.id, k.image])) as Record<EatKind, FoodImage>
 
 /** 外食品項一律用可愛的 icon（Fluent Emoji 3D）；順序有意義，先比較具體的 */
 const NAME_IMAGE: [RegExp, FoodImage][] = [
   [/飯糰|手卷|飯卷/, 'eo-rice-ball'],
+  [/^(白|全穀|紅豆|厚片)?吐司$|漢堡麵包|餐包|雙胞胎/, 'eo-bread'],
+  [/太陽餅|牛舌餅|綠豆椪|月餅/, 'eo-moon-cake'],
   [/三明治|潛艇|帕尼尼|吐司/, 'eo-sandwich'],
   [/大亨堡|熱狗|香腸/, 'eo-hot-dog'],
   [/漢堡|堡/, 'eo-hamburger'],
@@ -127,6 +133,7 @@ const KIND_FALLBACK: Record<EatKind, FoodImage> = {
   cafe: 'eo-hot-beverage',
   asian: 'eo-bento-box',
   drink: 'eo-bubble-tea',
+  bakery: 'eo-bread',
   generic: 'eo-shallow-pan-of-food',
 }
 
@@ -173,7 +180,7 @@ export const eatNutrition = (it: EatItem): Nutrition => ({ kcal: Math.round(it.k
 
 const guessMeals = (it: EatItem, brand?: EatBrand): MealSlot[] => {
   const t = `${it.cat ?? ''}${it.n}`
-  if (brand?.kind === 'drink' || /飲|茶|咖啡|拿鐵|奶|果汁|湯|甜點|蛋糕|優格/.test(t)) return ['breakfast', 'snack']
+  if (brand?.kind === 'drink' || brand?.kind === 'bakery' || /飲|茶|咖啡|拿鐵|奶|果汁|湯|甜點|蛋糕|優格/.test(t)) return ['breakfast', 'snack']
   if (/早餐|吐司|蛋餅|三明治|貝果|飯糰|麵包/.test(t)) return ['breakfast', 'lunch']
   return ['lunch', 'dinner']
 }
@@ -182,7 +189,7 @@ const guessMeals = (it: EatItem, brand?: EatBrand): MealSlot[] => {
 export function eatToRecipe(it: EatItem, brand?: EatBrand): Recipe {
   return {
     id: `eo-${it.id}`,
-    name: brand && brand.kind !== 'generic' ? `${brand.name} ${it.n}` : it.n,
+    name: plainBrand(brand) ? it.n : `${brand!.name} ${it.n}`,
     image: itemImage(it, brand),
     color: '#fbe7d6',
     meals: guessMeals(it, brand),

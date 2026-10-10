@@ -21,7 +21,7 @@
 }
 ```
 
-- kind：fastfood（速食）、cafe（咖啡早午餐）、asian（中式日式連鎖）、drink（手搖飲）、convenience（便利商店）、generic（一般小吃，衛福部資料）
+- kind：fastfood（速食）、cafe（咖啡早午餐）、asian（中式日式連鎖）、drink（手搖飲）、convenience（便利商店）、bakery（麵包店）、generic（一般小吃，衛福部資料）
 - 數字是每份；protein/carbs/fat/fiber/sugar 單位 g，sodium 單位 mg；不知道的欄位省略，不要猜
 - 一定要是官方公開的數字或政府開放資料，不可自己估算
 - `scripts/eatout/<brandId>.mjs`（選擇性）：能自動重抓最新資料的程式，`export default async function fetchBrand()` 回傳上面同樣格式；抓不到就丟錯，更新流程會保留舊資料

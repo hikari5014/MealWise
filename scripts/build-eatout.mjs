@@ -1,7 +1,7 @@
 // 把 data/eatout/*.json（每個品牌一個檔）合併成 public/eatout/data.json，給 app 下載
 import { mkdirSync, readFileSync, readdirSync, writeFileSync } from 'node:fs'
 
-const KINDS = ['fastfood', 'cafe', 'asian', 'drink', 'convenience', 'generic']
+const KINDS = ['fastfood', 'cafe', 'asian', 'drink', 'convenience', 'bakery', 'generic']
 const num = (v) => (typeof v === 'number' && Number.isFinite(v) ? Math.round(v * 10) / 10 : undefined)
 
 const brands = []
