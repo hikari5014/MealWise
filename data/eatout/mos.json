@@ -6,7 +6,7 @@
     "site": "https://www.mos.com.tw/"
   },
   "source": "https://www.mos.com.tw/menu/set.aspx",
-  "fetchedAt": "2026-10-09",
+  "fetchedAt": "2026-10-11",
   "items": [
     {
       "id": "mos-m001265",
@@ -67,30 +67,6 @@
       "fat": 16.6,
       "sodium": 483,
       "source": "https://www.mos.com.tw/menu/set_detail.aspx?id=M001147"
-    },
-    {
-      "id": "mos-m001247",
-      "name": "咖哩雞腿珍珠堡",
-      "category": "主餐",
-      "serving": "1 份",
-      "kcal": 555.4,
-      "protein": 16.7,
-      "carbs": 73.9,
-      "fat": 21.5,
-      "sodium": 808,
-      "source": "https://www.mos.com.tw/menu/set_detail.aspx?id=M001247"
-    },
-    {
-      "id": "mos-m001246",
-      "name": "柚香洋釀雞腿堡",
-      "category": "主餐",
-      "serving": "1 份",
-      "kcal": 531.1,
-      "protein": 17.3,
-      "carbs": 57.8,
-      "fat": 25.7,
-      "sodium": 1028,
-      "source": "https://www.mos.com.tw/menu/set_detail.aspx?id=M001246"
     },
     {
       "id": "mos-m001210",
