@@ -7,7 +7,7 @@
   },
   "source": "https://www.7-11.com.tw/freshfoods/",
   "kcalOnly": true,
-  "fetchedAt": "2026-10-09",
+  "fetchedAt": "2026-10-13",
   "items": [
     {
       "id": "seven-0-ricerolls_622",
@@ -421,6 +421,13 @@
       "category": "便當",
       "serving": "1 份",
       "kcal": 715
+    },
+    {
+      "id": "seven-3-Snacks_456",
+      "name": "21Plus椒鹽黑皮鹹酥雞",
+      "category": "小食",
+      "serving": "1 份",
+      "kcal": 252
     },
     {
       "id": "seven-3-Snacks_455",
@@ -997,13 +1004,6 @@
       "kcal": 336
     },
     {
-      "id": "seven-5-Noodles_253",
-      "name": "太和殿-藤椒風味烤雞拌麵(辣)",
-      "category": "麵食",
-      "serving": "1 份",
-      "kcal": 483
-    },
-    {
       "id": "seven-5-Noodles_252",
       "name": "極饗-府城鹽水風味意麵",
       "category": "麵食",
@@ -1341,11 +1341,67 @@
       "sodium": 212
     },
     {
-      "id": "seven-10-bread_1291",
+      "id": "seven-10-bread_1302",
+      "name": "貝洛邦雙乳酪核桃",
+      "category": "麵包甜點",
+      "serving": "1 份",
+      "kcal": 439
+    },
+    {
+      "id": "seven-10-bread_1303",
       "name": "吳寶春-荔枝玫瑰軟法",
       "category": "麵包甜點",
       "serving": "1 份",
       "kcal": 257
+    },
+    {
+      "id": "seven-10-bread_1304",
+      "name": "吳寶春-抹茶紅豆麻糬麵包",
+      "category": "麵食",
+      "serving": "1 份",
+      "kcal": 389
+    },
+    {
+      "id": "seven-10-bread_1305",
+      "name": "黑雷神巧克力脆脆麵包",
+      "category": "麵食",
+      "serving": "1 份",
+      "kcal": 481
+    },
+    {
+      "id": "seven-10-bread_1306",
+      "name": "搗蛋鬼雙饗(草莓可可)",
+      "category": "輕食小食",
+      "serving": "1 份",
+      "kcal": 333.3
+    },
+    {
+      "id": "seven-10-bread_1307",
+      "name": "文世成-焦糖海鹽小可頌",
+      "category": "麵包甜點",
+      "serving": "1 份",
+      "kcal": 240.8
+    },
+    {
+      "id": "seven-10-bread_1308",
+      "name": "統一麵包特濃奶酥麵包",
+      "category": "麵食",
+      "serving": "1 份",
+      "kcal": 403
+    },
+    {
+      "id": "seven-10-bread_1309",
+      "name": "黑雷神巧克力脆脆甜甜圈",
+      "category": "麵包甜點",
+      "serving": "1 份",
+      "kcal": 331.7
+    },
+    {
+      "id": "seven-10-bread_1310",
+      "name": "王鵬傑-荔香莓果土司",
+      "category": "麵包甜點",
+      "serving": "1 份",
+      "kcal": 204
     },
     {
       "id": "seven-10-bread_1292",
@@ -1474,13 +1530,6 @@
       "kcal": 5.6
     },
     {
-      "id": "seven-10-bread_1268",
-      "name": "芙菲小圓餅-經典原味",
-      "category": "麵包甜點",
-      "serving": "1 份",
-      "kcal": 340
-    },
-    {
       "id": "seven-10-bread_1270",
       "name": "無框架甜點-金沙雪椪",
       "category": "麵包甜點",
@@ -1507,27 +1556,6 @@
       "category": "麵包甜點",
       "serving": "1 份",
       "kcal": 466.5
-    },
-    {
-      "id": "seven-10-bread_1254",
-      "name": "Semeur冠軍蛋黃酥",
-      "category": "輕食小食",
-      "serving": "1 份",
-      "kcal": 285.5
-    },
-    {
-      "id": "seven-10-bread_1255",
-      "name": "芝麻千層酥",
-      "category": "麵包甜點",
-      "serving": "1 份",
-      "kcal": 257.6
-    },
-    {
-      "id": "seven-10-bread_1256",
-      "name": "高鐵-莓果比利時鬆餅",
-      "category": "麵包甜點",
-      "serving": "1 份",
-      "kcal": 182
     },
     {
       "id": "seven-10-bread_1258",
@@ -1579,13 +1607,6 @@
       "kcal": 361
     },
     {
-      "id": "seven-10-bread_1243",
-      "name": "焦糖海鹽小可頌",
-      "category": "麵包甜點",
-      "serving": "1 份",
-      "kcal": 240.8
-    },
-    {
       "id": "seven-10-bread_1246",
       "name": "夢甜屋北海道霜淇淋風味Q皮鬆餅",
       "category": "霜淇淋",
@@ -1605,20 +1626,6 @@
       "category": "麵包甜點",
       "serving": "1 份",
       "kcal": 273
-    },
-    {
-      "id": "seven-10-bread_1233",
-      "name": "乖乖-奶油椰子堡",
-      "category": "三明治漢堡",
-      "serving": "1 份",
-      "kcal": 382
-    },
-    {
-      "id": "seven-10-bread_1234",
-      "name": "乖乖-香濃巧克力雷仔捲",
-      "category": "麵包甜點",
-      "serving": "1 份",
-      "kcal": 283
     },
     {
       "id": "seven-10-bread_1236",
@@ -1661,13 +1668,6 @@
       "category": "麵包甜點",
       "serving": "1 份",
       "kcal": 326
-    },
-    {
-      "id": "seven-10-bread_1220",
-      "name": "抹茶紅豆土司",
-      "category": "麵包甜點",
-      "serving": "1 份",
-      "kcal": 210
     },
     {
       "id": "seven-10-bread_1222",
@@ -1717,13 +1717,6 @@
       "category": "麵食",
       "serving": "1 份",
       "kcal": 542.7
-    },
-    {
-      "id": "seven-10-bread_1203",
-      "name": "好時-巧克力麻糬軟餅乾",
-      "category": "麵包甜點",
-      "serving": "1 份",
-      "kcal": 294
     },
     {
       "id": "seven-10-bread_1207",
@@ -1880,13 +1873,6 @@
       "kcal": 111
     },
     {
-      "id": "seven-10-bread_1109",
-      "name": "吳寶春-抹茶紅豆麻糬麵包",
-      "category": "麵食",
-      "serving": "1 份",
-      "kcal": 389
-    },
-    {
       "id": "seven-10-bread_1117",
       "name": "光泉純乳優酪",
       "category": "麵包甜點",
@@ -1941,20 +1927,6 @@
       "category": "麵包甜點",
       "serving": "1 份",
       "kcal": 181
-    },
-    {
-      "id": "seven-10-bread_1064",
-      "name": "貝洛邦核桃多穀物",
-      "category": "麵包甜點",
-      "serving": "1 份",
-      "kcal": 461
-    },
-    {
-      "id": "seven-10-bread_1065",
-      "name": "貝洛邦法式經典可頌",
-      "category": "麵包甜點",
-      "serving": "1 份",
-      "kcal": 271
     },
     {
       "id": "seven-10-bread_1068",
@@ -2589,20 +2561,6 @@
       "kcal": 269
     },
     {
-      "id": "seven-15-sandwich_146",
-      "name": "爆蛋流心豬肉堡",
-      "category": "三明治漢堡",
-      "serving": "1 份",
-      "kcal": 461
-    },
-    {
-      "id": "seven-15-sandwich_143",
-      "name": "吉士豬肉堡加蛋",
-      "category": "三明治漢堡",
-      "serving": "1 份",
-      "kcal": 261
-    },
-    {
       "id": "seven-15-sandwich_27",
       "name": "(熱壓土司)厚起司蛋",
       "category": "輕食小食",
@@ -2645,6 +2603,20 @@
       "kcal": 281
     },
     {
+      "id": "seven-16-ohlala_154",
+      "name": "香烤魚排檸檬白醬義大利麵",
+      "category": "麵食",
+      "serving": "1 份",
+      "kcal": 571
+    },
+    {
+      "id": "seven-16-ohlala_155",
+      "name": "瑪格麗特義大利麵",
+      "category": "麵食",
+      "serving": "1 份",
+      "kcal": 632
+    },
+    {
       "id": "seven-16-ohlala_153",
       "name": "焗烤奶油蝦仁通心粉",
       "category": "麵食",
@@ -2678,13 +2650,6 @@
       "category": "麵食",
       "serving": "1 份",
       "kcal": 579
-    },
-    {
-      "id": "seven-16-ohlala_141",
-      "name": "21Plus莎莎醬繽紛雞肉冷義麵",
-      "category": "麵食",
-      "serving": "1 份",
-      "kcal": 346
     },
     {
       "id": "seven-16-ohlala_139",
@@ -2741,6 +2706,13 @@
       "category": "麵食",
       "serving": "1 份",
       "kcal": 609
+    },
+    {
+      "id": "seven-17-veg_179",
+      "name": "祥和茄燒蔬食湯麵",
+      "category": "沙拉蔬食",
+      "serving": "1 份",
+      "kcal": 470
     },
     {
       "id": "seven-17-veg_178",
@@ -2918,11 +2890,18 @@
       "kcal": 133
     },
     {
-      "id": "seven-18-star_348",
+      "id": "seven-18-star_354",
       "name": "晶英-麻辣奶油鮮蝦義大利麵",
       "category": "麵食",
       "serving": "1 份",
       "kcal": 586
+    },
+    {
+      "id": "seven-18-star_355",
+      "name": "可口-半筋半肉紅燒牛肉麵",
+      "category": "麵食",
+      "serving": "1 份",
+      "kcal": 583
     },
     {
       "id": "seven-18-star_350",
@@ -3023,13 +3002,6 @@
       "kcal": 636
     },
     {
-      "id": "seven-18-star_307",
-      "name": "頌丹樂-泰式酸辣雞腿冷麵",
-      "category": "麵食",
-      "serving": "1 份",
-      "kcal": 369
-    },
-    {
       "id": "seven-18-star_304",
       "name": "潮粵坊 楊枝甘露",
       "category": "鮮食",
@@ -3084,13 +3056,6 @@
       "category": "鮮食",
       "serving": "1 份",
       "kcal": 627
-    },
-    {
-      "id": "seven-18-star_295",
-      "name": "可口紅燒牛肉麵",
-      "category": "麵食",
-      "serving": "1 份",
-      "kcal": 610
     },
     {
       "id": "seven-18-star_265",
@@ -3441,6 +3406,20 @@
       "category": "丼飯",
       "serving": "1 份",
       "kcal": 574
+    },
+    {
+      "id": "seven-23-dessert_85",
+      "name": "黑雷神巧克力風味霜淇淋",
+      "category": "霜淇淋",
+      "serving": "1 份",
+      "kcal": 175
+    },
+    {
+      "id": "seven-23-dessert_84",
+      "name": "金黃海鮮餅",
+      "category": "大亨堡",
+      "serving": "1 份",
+      "kcal": 74
     },
     {
       "id": "seven-23-dessert_82",
