@@ -5,7 +5,8 @@ import { db } from '../db'
 import { addDays, monthDay, weekdayLabel } from '../lib/date'
 import { fitsRule, MEAL_RULE_LABEL, resolveDay } from '../lib/dietPlan'
 import { haptic } from '../lib/feedback'
-import { recipesFor, tasteScore } from '../lib/meal'
+import { macroTargets, recipesFor, tasteScore } from '../lib/meal'
+import { mealBudgets, recipeFit, type Budget } from '../lib/nutrition'
 import { MEAL_LABEL, type DayMark, type MealSlot, type PlanEntry, type Profile, type Recipe } from '../types'
 import { Icon } from './Icon'
 import { RecipePhoto } from './RecipePhoto'
@@ -16,6 +17,8 @@ interface Slot {
   date: string
   meal: MealSlot
   rule: ReturnType<typeof resolveDay>['meals'][MealSlot]['rule']
+  /** 這餐大概該吃多少熱量、蛋白質 */
+  budget?: Budget
 }
 
 const MEALS: MealSlot[] = ['breakfast', 'lunch', 'dinner']
@@ -24,17 +27,18 @@ const MEALS: MealSlot[] = ['breakfast', 'lunch', 'dinner']
 export const emptySlots = (days: string[], plans: PlanEntry[], profile: Profile, marks: Record<string, DayMark | undefined>): Slot[] =>
   days.flatMap((date) => {
     const day = resolveDay(date, profile, marks)
+    const budgets = mealBudgets(day, macroTargets({ ...profile, kcal: day.kcal }).protein)
     return MEALS.filter((m) => !plans.some((p) => p.date === date && p.meal === m))
-      .map((meal) => ({ date, meal, rule: day.meals[meal].rule }))
+      .map((meal) => ({ date, meal, rule: day.meals[meal].rule, budget: budgets[meal] }))
       .filter((s) => s.rule !== 'skip' && s.rule !== 'feast')
   })
 
-/** 一餐給 3 個建議：符合規則、偏好優先、這週還沒排過的優先 */
+/** 一餐給 3 個建議：符合規則、熱量蛋白質接近這餐份額、偏好優先、這週還沒排過的優先 */
 const suggest = (slot: Slot, profile: Profile, used: Map<string, number>, seed: number): Recipe[] => {
   let pool = recipesFor(slot.meal, profile).filter((r) => fitsRule(r, slot.rule))
   if (pool.length < 3) pool = recipesFor(null, profile).filter((r) => fitsRule(r, slot.rule))
   const scored = pool
-    .map((r) => ({ r, s: tasteScore(r, profile) * 3 - (used.get(r.id) ?? 0) * 4 + ((r.id.length * 7 + seed * 13) % 11) / 3 }))
+    .map((r) => ({ r, s: recipeFit(r, slot.budget) * 2 + tasteScore(r, profile) * 3 - (used.get(r.id) ?? 0) * 4 + ((r.id.length * 7 + seed * 13) % 11) / 3 }))
     .sort((a, b) => b.s - a.s)
   // 前面幾名裡隨機挑 3 個，換一批時才會不一樣
   const top = scored.slice(0, 12)

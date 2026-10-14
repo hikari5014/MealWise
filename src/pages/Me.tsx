@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion'
 import { useMemo, useState } from 'react'
 import { BodyCard } from '../components/BodyCard'
+import { NeedsCard } from '../components/Needs'
 import { DietPlanCard, DietPlanSheet } from '../components/DietPlan'
 import { TasteCard, TasteSheet } from '../components/Taste'
 import { Icon } from '../components/Icon'
@@ -85,6 +86,7 @@ export default function Me({ profile }: { profile: Profile }) {
       <DietPlanCard profile={profile} onOpen={() => setPlanSheet(true)} />
       <TasteCard profile={profile} onOpen={() => setTasteSheet(true)} />
 
+      <NeedsCard profile={profile} />
       <BodyCard />
 
       <Card>

@@ -1,3 +1,4 @@
+import { mealBudgets, recipeFit } from './nutrition'
 import { recipeAvoidTags } from '../data/avoid'
 import { RECIPES, RECIPE_MAP } from '../data/recipes'
 import { fitsRule, resolveDay } from './dietPlan'
@@ -20,6 +21,9 @@ export const sumNutrition = (logs: LogEntry[]): Nutrition =>
 
 /** 依熱量目標換算三大營養素目標（公克） */
 export const macroTargets = (profile: Profile) => {
+  // 有用身體數據算過：蛋白質、脂肪固定，碳水隨當天熱量（運動日多吃的熱量給碳水）
+  const m = profile.macros
+  if (m) return { protein: m.protein, fat: m.fat, fiber: m.fiber, carbs: Math.max(50, Math.round((profile.kcal - m.protein * 4 - m.fat * 9) / 4)) }
   const ratio: Record<Goal, [number, number, number]> = {
     lose: [0.3, 0.4, 0.3],
     maintain: [0.2, 0.5, 0.3],
@@ -83,6 +87,7 @@ export const autoPlan = (
   existing.forEach((e) => used.set(e.recipeId, (used.get(e.recipeId) ?? 0) + 1))
   for (const date of days) {
     const day = resolveDay(date, profile, marks)
+    const budgets = mealBudgets(day, macroTargets({ ...profile, kcal: day.kcal }).protein)
     for (const meal of ['breakfast', 'lunch', 'dinner'] as MealSlot[]) {
       if (existing.some((e) => e.date === date && e.meal === meal)) continue
       const rule = day.meals[meal].rule
@@ -94,7 +99,12 @@ export const autoPlan = (
       if (!pool.length) pool = base
       if (!pool.length) continue
       const minUse = Math.min(...pool.map((r) => used.get(r.id) ?? 0))
-      const fresh = pool.filter((r) => (used.get(r.id) ?? 0) === minUse)
+      // 沒排過的裡面，挑熱量、蛋白質最接近這餐份額的前幾名再依口味抽
+      const budget = budgets[meal]
+      const fresh = pool
+        .filter((r) => (used.get(r.id) ?? 0) === minUse)
+        .sort((a, b) => recipeFit(b, budget) - recipeFit(a, budget))
+        .slice(0, 8)
       const chosen = pickWeighted(fresh, profile)
       used.set(chosen.id, (used.get(chosen.id) ?? 0) + 1)
       result.push({ date, meal, recipeId: chosen.id })

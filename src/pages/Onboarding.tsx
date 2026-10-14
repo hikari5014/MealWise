@@ -6,6 +6,7 @@ import { Button } from '../components/ui'
 import { db } from '../db'
 import { haptic, spring } from '../lib/feedback'
 import { suggestKcal } from '../lib/meal'
+import { calcNeeds } from '../lib/nutrition'
 import type { IconName } from '../lib/icons'
 import { GOAL_LABEL, type Goal, type Profile } from '../types'
 import { Art } from '../components/Art'
@@ -62,7 +63,12 @@ export default function Onboarding({ initial, onDone }: { initial?: Profile; onD
             whileTap={{ scale: 0.97 }}
             onClick={() => {
               haptic(8)
-              set({ goal: g.value, kcal: suggestKcal(g.value) })
+              // 有填過身體數據就用它重算，沒有才用預設熱量
+              if (p.body) {
+                const body = { ...p.body, goal: g.value, proteinPerKg: undefined }
+                const n = calcNeeds(body)
+                set({ goal: g.value, body, kcal: n.kcal, macros: { protein: n.protein, fat: n.fat, fiber: n.fiber } })
+              } else set({ goal: g.value, kcal: suggestKcal(g.value) })
             }}
             className={`relative flex w-full items-center gap-4 rounded-3xl p-4 text-left shadow-card transition-colors ${
               active ? 'bg-leaf text-on-leaf' : 'bg-card'

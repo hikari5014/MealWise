@@ -115,6 +115,8 @@ export const GOAL_LABEL: Record<Goal, string> = {
   gain: '增肌補能',
 }
 
+import type { BodySpec } from './lib/nutrition'
+
 export interface Profile {
   id: 'me'
   name: string
@@ -129,6 +131,10 @@ export interface Profile {
   plan?: Partial<DietPlan>
   /** 口味偏好 */
   taste?: Taste
+  /** 身體數據（營養需求計算用），見 lib/nutrition.ts */
+  body?: BodySpec
+  /** 算出來的每天蛋白質、脂肪、纖維（g）；碳水依當天熱量補足 */
+  macros?: { protein: number; fat: number; fiber: number }
 }
 
 export interface Taste {
