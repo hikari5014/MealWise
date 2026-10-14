@@ -7,7 +7,7 @@
   },
   "source": "https://www.7-11.com.tw/freshfoods/",
   "kcalOnly": true,
-  "fetchedAt": "2026-10-13",
+  "fetchedAt": "2026-10-14",
   "items": [
     {
       "id": "seven-0-ricerolls_622",
@@ -2611,7 +2611,7 @@
     },
     {
       "id": "seven-16-ohlala_155",
-      "name": "瑪格麗特義大利麵",
+      "name": "瑪格麗特筆管麵",
       "category": "麵食",
       "serving": "1 份",
       "kcal": 632
@@ -2650,13 +2650,6 @@
       "category": "麵食",
       "serving": "1 份",
       "kcal": 579
-    },
-    {
-      "id": "seven-16-ohlala_139",
-      "name": "瑪格麗特筆管麵",
-      "category": "麵食",
-      "serving": "1 份",
-      "kcal": 632
     },
     {
       "id": "seven-16-ohlala_131",
