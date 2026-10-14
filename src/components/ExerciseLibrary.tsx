@@ -1,6 +1,6 @@
 import { AnimatePresence, motion } from 'framer-motion'
 import { useLiveQuery } from 'dexie-react-hooks'
-import { useEffect, useMemo, useState } from 'react'
+import { useDeferredValue, useEffect, useMemo, useState } from 'react'
 import { EXERCISES, type Exercise } from '../data/exercises'
 import { db } from '../db'
 import { haptic, spring } from '../lib/feedback'
@@ -15,10 +15,27 @@ import {
   exerciseStats,
   isCardio,
 } from '../lib/workout'
+import { matchScore, parseQuery, prepare, type Prepared } from '../lib/search'
 import { BodyMap, useBodyPalette } from './BodyMap'
 import { Food } from './Food'
 import { Icon } from './Icon'
 import { Button, Sheet, Tap } from './ui'
+
+const fieldCache = new Map<string, Prepared>()
+/** 動作搜尋看中文名、英文名、器材、練到的肌群 */
+const searchFields = (ex: Exercise) => {
+  let f = fieldCache.get(ex.id)
+  if (!f) {
+    f = prepare([
+      [ex.zh, 1],
+      [ex.en, 0.9],
+      [EQUIP_LABEL[ex.equip], 0.8],
+      [[...ex.primary, ...ex.secondary].map((m) => MUSCLE_ZH[m]).join(' '), 0.7],
+    ])
+    fieldCache.set(ex.id, f)
+  }
+  return f
+}
 
 const LEVEL = { beginner: '新手', intermediate: '進階', expert: '高手' } as const
 
@@ -72,21 +89,26 @@ export function ExerciseLibrary({
   const [equip, setEquip] = useState<string | null>(null)
   const [query, setQuery] = useState('')
   const [detail, setDetail] = useState<Exercise | null>(null)
-  const q = query.trim().toLowerCase()
-  const list = useMemo(
-    () =>
-      EXERCISES.filter((ex) => {
-        if (q && !`${ex.zh}${ex.en.toLowerCase()}`.includes(q)) return false
-        if (equip && ex.equip !== equip) return false
-        if (move && ex.move !== move) return false
-        if (part) {
-          const muscles = BODY_PARTS.find((p) => p.id === part)!.muscles
-          if (!ex.primary.some((m) => muscles.includes(m))) return false
-        }
-        return true
-      }),
-    [q, equip, part, move],
-  )
+  const q = useDeferredValue(query.trim())
+  const list = useMemo(() => {
+    const terms = parseQuery(q)
+    const score = new Map<string, number>()
+    const out = EXERCISES.filter((ex) => {
+      if (terms.length) {
+        const v = matchScore(terms, searchFields(ex))
+        if (!v) return false
+        score.set(ex.id, v)
+      }
+      if (equip && ex.equip !== equip) return false
+      if (move && ex.move !== move) return false
+      if (part) {
+        const muscles = BODY_PARTS.find((p) => p.id === part)!.muscles
+        if (!ex.primary.some((m) => muscles.includes(m))) return false
+      }
+      return true
+    })
+    return terms.length ? out.sort((a, b) => score.get(b.id)! - score.get(a.id)!) : out
+  }, [q, equip, part, move])
   return (
     <>
       <Sheet open={open} onClose={onClose} title={onPick ? '加入動作' : '動作庫'}>
@@ -248,22 +270,39 @@ export function ExerciseDetail({ ex, onClose, actionLabel, onAction }: { ex: Exe
             </section>
           )}
           <div className="rounded-3xl bg-card p-4 shadow-card">
-            <Tap press={0.98} onClick={() => setShowSteps(!showSteps)} className="flex w-full items-center gap-2 text-left text-sm font-bold">
+            <div className="flex items-center gap-2 text-sm font-bold">
               <Icon name="menu_book" size={18} className="text-leaf-dark" />
-              詳細步驟（英文原文）
-              <motion.span animate={{ rotate: showSteps ? 180 : 0 }} className="ml-auto text-muted">
-                <Icon name="expand_more" size={20} />
-              </motion.span>
-            </Tap>
-            <AnimatePresence initial={false}>
-              {showSteps && (
-                <motion.ol initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="list-decimal space-y-1 overflow-hidden pl-5 pt-3 text-xs leading-relaxed text-ink/80">
-                  {ex.steps.map((s) => (
-                    <li key={s}>{s}</li>
-                  ))}
-                </motion.ol>
-              )}
-            </AnimatePresence>
+              動作步驟
+            </div>
+            <ol className="list-decimal space-y-1.5 pl-5 pt-3 text-[13px] leading-relaxed text-ink/85">
+              {(ex.stepsZh ?? ex.steps).map((s, i) => (
+                <li key={i}>{s}</li>
+              ))}
+            </ol>
+            {ex.stepsZh && (
+              <>
+                <Tap press={0.98} onClick={() => setShowSteps(!showSteps)} className="mt-3 flex w-full items-center gap-1 text-left text-xs text-muted">
+                  看英文原文
+                  <motion.span animate={{ rotate: showSteps ? 180 : 0 }} className="ml-auto">
+                    <Icon name="expand_more" size={18} />
+                  </motion.span>
+                </Tap>
+                <AnimatePresence initial={false}>
+                  {showSteps && (
+                    <motion.ol
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: 'auto', opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      className="list-decimal space-y-1 overflow-hidden pl-5 pt-2 text-xs leading-relaxed text-muted"
+                    >
+                      {ex.steps.map((s, i) => (
+                        <li key={i}>{s}</li>
+                      ))}
+                    </motion.ol>
+                  )}
+                </AnimatePresence>
+              </>
+            )}
           </div>
           <p className="px-1 text-[10px] text-muted">動作照片與資料：free-exercise-db（公眾領域）</p>
           {onAction && actionLabel && (

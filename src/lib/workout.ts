@@ -115,10 +115,39 @@ export interface WorkoutSet {
   r: number
   done: boolean
 }
+/** 握把設定：龍門架的配件、握距、手心方向 */
+export interface Grip {
+  bar?: string
+  width?: 'wide' | 'mid' | 'narrow'
+  hand?: 'over' | 'under' | 'neutral'
+}
 export interface WorkoutEntry {
   exerciseId: string
   sets: WorkoutSet[]
+  grip?: Grip
 }
+
+export const GRIP_BARS = ['直桿', '寬握長桿', '曲桿', '繩索', 'V 型把', '單手 D 環', '對握把（MAG）', '划船三角把', '腳踝綁帶']
+export const GRIP_WIDTHS: { id: NonNullable<Grip['width']>; label: string }[] = [
+  { id: 'wide', label: '寬握' },
+  { id: 'mid', label: '中握' },
+  { id: 'narrow', label: '窄握' },
+]
+export const GRIP_HANDS: { id: NonNullable<Grip['hand']>; label: string }[] = [
+  { id: 'over', label: '正手' },
+  { id: 'under', label: '反手' },
+  { id: 'neutral', label: '對握' },
+]
+/** 哪些器材可以設定握把（龍門架才有配件可換） */
+export const gripOptions = (ex?: Exercise) =>
+  !ex || ex.equip === 'cardio' || ex.equip === 'body' || ex.equip === 'kettlebell' || ex.equip === 'other'
+    ? null
+    : { bar: ex.equip === 'cable', width: ex.equip !== 'dumbbell', hand: true }
+export const gripLabel = (g?: Grip) =>
+  g
+    ? [g.bar, GRIP_WIDTHS.find((x) => x.id === g.width)?.label, GRIP_HANDS.find((x) => x.id === g.hand)?.label].filter(Boolean).join('・')
+    : ''
+
 export interface Workout {
   id?: number
   date: string
@@ -139,12 +168,12 @@ export const workoutVolume = (w: Workout) => w.entries.reduce((t, e) => t + volu
 export const doneSets = (w: Workout) => w.entries.reduce((t, e) => t + e.sets.filter((s) => s.done).length, 0)
 
 /** 上一次做這個動作的組數（新增動作時帶入） */
-export async function lastSetsOf(exerciseId: string, beforeId?: number): Promise<WorkoutSet[] | null> {
+export async function lastSetsOf(exerciseId: string, beforeId?: number): Promise<{ sets: WorkoutSet[]; grip?: Grip } | null> {
   const list = await db.workouts.orderBy('startedAt').reverse().limit(60).toArray()
   for (const w of list) {
     if (w.id === beforeId) continue
     const e = w.entries.find((x) => x.exerciseId === exerciseId && x.sets.some((s) => s.done))
-    if (e) return e.sets.filter((s) => s.done).map((s) => ({ ...s, done: false }))
+    if (e) return { sets: e.sets.filter((s) => s.done).map((s) => ({ ...s, done: false })), grip: e.grip }
   }
   return null
 }
