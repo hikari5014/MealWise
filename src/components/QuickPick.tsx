@@ -6,7 +6,7 @@ import { addDays, monthDay, weekdayLabel } from '../lib/date'
 import { fitsRule, MEAL_RULE_LABEL, resolveDay } from '../lib/dietPlan'
 import { haptic } from '../lib/feedback'
 import { macroTargets, recipesFor, tasteScore } from '../lib/meal'
-import { mealBudgets, recipeFit, type Budget } from '../lib/nutrition'
+import { mealBudgets, mealShares, recipeFit, type Budget } from '../lib/nutrition'
 import { MEAL_LABEL, type DayMark, type MealSlot, type PlanEntry, type Profile, type Recipe } from '../types'
 import { Icon } from './Icon'
 import { RecipePhoto } from './RecipePhoto'
@@ -27,7 +27,7 @@ const MEALS: MealSlot[] = ['breakfast', 'lunch', 'dinner']
 export const emptySlots = (days: string[], plans: PlanEntry[], profile: Profile, marks: Record<string, DayMark | undefined>): Slot[] =>
   days.flatMap((date) => {
     const day = resolveDay(date, profile, marks)
-    const budgets = mealBudgets(day, macroTargets({ ...profile, kcal: day.kcal }).protein)
+    const budgets = mealBudgets(day, macroTargets({ ...profile, kcal: day.kcal }).protein, mealShares(profile))
     return MEALS.filter((m) => !plans.some((p) => p.date === date && p.meal === m))
       .map((meal) => ({ date, meal, rule: day.meals[meal].rule, budget: budgets[meal] }))
       .filter((s) => s.rule !== 'skip' && s.rule !== 'feast')

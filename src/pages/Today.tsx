@@ -21,6 +21,7 @@ import { macroTargets, PORTIONS, sumNutrition } from '../lib/meal'
 import { MEAL_COLOR, MEAL_IMAGE, MEAL_LABEL, MEAL_SLOTS, type LogEntry, type MealSlot, type PlanEntry, type Profile } from '../types'
 import { Art } from '../components/Art'
 import { useEatOutPicker } from '../components/EatOut'
+import { NextMealCard } from '../components/NextMeal'
 
 export default function Today({ profile, onGoPlan }: { profile: Profile; onGoPlan: () => void }) {
   const date = todayKey()
@@ -93,6 +94,8 @@ export default function Today({ profile, onGoPlan }: { profile: Profile; onGoPla
           <MacroBar label="纖維" value={total.fiber} target={targets.fiber} color="rgb(var(--leaf))" />
         </div>
       </Card>
+
+      <NextMealCard day={day} logs={logs} plans={plans} total={total} proteinTarget={targets.protein} profile={profile} date={date} />
 
       <TodayPlanCard day={day} onOpenSettings={() => setPlanSheet(true)} />
 

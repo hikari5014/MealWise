@@ -1,4 +1,4 @@
-import { mealBudgets, recipeFit } from './nutrition'
+import { mealBudgets, mealShares, recipeFit } from './nutrition'
 import { recipeAvoidTags } from '../data/avoid'
 import { RECIPES, RECIPE_MAP } from '../data/recipes'
 import { fitsRule, resolveDay } from './dietPlan'
@@ -87,7 +87,7 @@ export const autoPlan = (
   existing.forEach((e) => used.set(e.recipeId, (used.get(e.recipeId) ?? 0) + 1))
   for (const date of days) {
     const day = resolveDay(date, profile, marks)
-    const budgets = mealBudgets(day, macroTargets({ ...profile, kcal: day.kcal }).protein)
+    const budgets = mealBudgets(day, macroTargets({ ...profile, kcal: day.kcal }).protein, mealShares(profile))
     for (const meal of ['breakfast', 'lunch', 'dinner'] as MealSlot[]) {
       if (existing.some((e) => e.date === date && e.meal === meal)) continue
       const rule = day.meals[meal].rule

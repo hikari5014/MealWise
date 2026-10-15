@@ -22,8 +22,32 @@ export interface BodySpec {
   activity: Activity
   goal: Goal
   pace: Pace
-  /** 每公斤體重吃幾克蛋白質；沒填就依目標 */
+  /** 每公斤體重吃幾克蛋白質；沒填就依目標（自訂方案用） */
   proteinPerKg?: number
+  /** 飲食方案：照比例分配三大營養素；custom＝依體重算蛋白質 */
+  preset?: PresetId
+  /** 餐點分配：三餐＋點心、168 斷食（兩餐＋點心） */
+  meals?: MealPattern
+}
+
+export type PresetId = 'cut' | 'balance' | 'bulk' | 'lowcarb' | 'custom'
+export type MealPattern = 'three' | 'if168'
+
+/** 飲食方案：熱量增減與蛋白質／碳水／脂肪比例 */
+export const PRESETS: { id: Exclude<PresetId, 'custom'>; label: string; goal: Goal; kcal: number; ratio: [number, number, number]; hint: string }[] = [
+  { id: 'cut', label: '減脂高蛋白', goal: 'lose', kcal: -400, ratio: [0.35, 0.35, 0.3], hint: '少吃一點、蛋白質拉高保住肌肉' },
+  { id: 'balance', label: '均衡維持', goal: 'maintain', kcal: 0, ratio: [0.25, 0.45, 0.3], hint: '吃多少用多少，體重不變' },
+  { id: 'bulk', label: '增肌高碳水', goal: 'gain', kcal: 300, ratio: [0.25, 0.5, 0.25], hint: '多吃一些，碳水給訓練能量' },
+  { id: 'lowcarb', label: '低碳飲食', goal: 'lose', kcal: -300, ratio: [0.3, 0.15, 0.55], hint: '澱粉很少、油脂提高' },
+]
+
+export const MEAL_PATTERNS: { id: MealPattern; label: string; shares: Record<MealSlot, number> }[] = [
+  { id: 'three', label: '三餐＋點心', shares: { breakfast: 0.25, lunch: 0.35, dinner: 0.3, snack: 0.1 } },
+  { id: 'if168', label: '168 斷食（兩餐＋點心）', shares: { breakfast: 0, lunch: 0.45, dinner: 0.4, snack: 0.15 } },
+]
+export const mealShares = (p?: Profile | BodySpec) => {
+  const id = (p && 'body' in p ? p.body?.meals : (p as BodySpec | undefined)?.meals) ?? 'three'
+  return MEAL_PATTERNS.find((m) => m.id === id)!.shares
 }
 
 export const ACTIVITY: { id: Activity; label: string; hint: string; factor: number }[] = [
@@ -59,6 +83,8 @@ export const defaultSpec = (profile?: Profile, weight?: number, bodyFat?: number
   activity: 'light',
   goal: profile?.goal ?? 'maintain',
   pace: 'normal',
+  preset: ({ lose: 'cut', maintain: 'balance', gain: 'bulk' } as const)[profile?.goal ?? 'maintain'],
+  meals: 'three',
   ...profile?.body,
 })
 
@@ -90,15 +116,23 @@ export function calcNeeds(s: BodySpec): Needs {
     : 10 * s.weight + 6.25 * s.height - 5 * s.age + (s.sex === 'male' ? 5 : -161)
   const factor = ACTIVITY.find((a) => a.id === s.activity)!.factor
   const tdee = bmr * factor
-  const delta = s.goal === 'maintain' ? 0 : PACES[s.goal].find((p) => p.id === s.pace)!.kcal
+  const preset = PRESETS.find((p) => p.id === s.preset)
+  const delta = preset ? preset.kcal : s.goal === 'maintain' ? 0 : PACES[s.goal].find((p) => p.id === s.pace)!.kcal
   const floor = Math.max(bmr, s.sex === 'male' ? 1500 : 1200)
   const raw = tdee + delta
   const kcal = round(Math.max(raw, floor), 10)
-  const perKg = s.proteinPerKg ?? DEFAULT_PROTEIN[s.goal]
   const proteinWeight = bmi >= 30 ? 25 * h * h : s.weight
-  const protein = round(proteinWeight * perKg)
-  const fat = round(Math.max((kcal * 0.27) / 9, s.weight * 0.7))
-  const carbs = round(Math.max(50, (kcal - protein * 4 - fat * 9) / 4))
+  let protein: number, fat: number, carbs: number
+  if (preset) {
+    protein = round((kcal * preset.ratio[0]) / 4)
+    carbs = round((kcal * preset.ratio[1]) / 4)
+    fat = round((kcal * preset.ratio[2]) / 9)
+  } else {
+    protein = round(proteinWeight * (s.proteinPerKg ?? DEFAULT_PROTEIN[s.goal]))
+    fat = round(Math.max((kcal * 0.27) / 9, s.weight * 0.7))
+    carbs = round(Math.max(50, (kcal - protein * 4 - fat * 9) / 4))
+  }
+  const perKg = Math.round((protein / s.weight) * 10) / 10
   const fiber = round((kcal / 1000) * 14)
   const water = round(s.weight * 35 + (factor >= 1.725 ? 500 : 0), 50)
   return { bmr: round(bmr), tdee: round(tdee, 10), kcal, protein, carbs, fat, fiber, water, bmi: Math.round(bmi * 10) / 10, method: katch ? 'katch' : 'mifflin', floored: raw < floor, proteinPerKg: perKg }
@@ -108,8 +142,6 @@ export const bmiLabel = (bmi: number) => (bmi < 18.5 ? '過輕' : bmi < 24 ? '�
 
 /* ───────── 每餐份額：排菜單時挑熱量、蛋白質剛好的料理 ───────── */
 
-/** 一天熱量分配到各餐的比例（點心先留 10%） */
-const SHARE: Record<MealSlot, number> = { breakfast: 0.25, lunch: 0.35, snack: 0.1, dinner: 0.3 }
 
 export interface Budget {
   kcal: number
@@ -117,8 +149,8 @@ export interface Budget {
 }
 
 /** 這天每餐大概該吃多少；有跳過的餐，份額分給其他餐 */
-export function mealBudgets(day: ResolvedDay, protein: number): Partial<Record<MealSlot, Budget>> {
-  const eaten = (Object.keys(SHARE) as MealSlot[]).filter((m) => day.meals[m].rule !== 'skip')
+export function mealBudgets(day: ResolvedDay, protein: number, SHARE: Record<MealSlot, number> = MEAL_PATTERNS[0].shares): Partial<Record<MealSlot, Budget>> {
+  const eaten = (Object.keys(SHARE) as MealSlot[]).filter((m) => day.meals[m].rule !== 'skip' && SHARE[m] > 0)
   const total = eaten.reduce((t, m) => t + SHARE[m], 0)
   if (!total) return {}
   return Object.fromEntries(eaten.map((m) => [m, { kcal: (day.kcal * SHARE[m]) / total, protein: (protein * SHARE[m]) / total }]))

@@ -115,3 +115,33 @@ select {
 :root[data-theme='dark'] .recipe-fallback-bg {
   background-color: rgb(44 44 46) !important;
 }
+
+/* 營養需求的拖拉滑桿：左邊填色、圓形把手 */
+.range {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 6px;
+  border-radius: 999px;
+  background: linear-gradient(to right, rgb(var(--leaf)) var(--pct), rgb(var(--ink) / 0.1) var(--pct));
+  outline: none;
+}
+.range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 22px;
+  height: 22px;
+  border-radius: 999px;
+  background: rgb(var(--card));
+  border: 3px solid rgb(var(--leaf));
+  box-shadow: 0 2px 6px rgb(0 0 0 / 0.2);
+  transition: transform 0.15s;
+}
+.range:active::-webkit-slider-thumb {
+  transform: scale(1.2);
+}
+.range::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border-radius: 999px;
+  background: rgb(var(--card));
+  border: 3px solid rgb(var(--leaf));
+}
