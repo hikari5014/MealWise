@@ -217,8 +217,15 @@ function ItemRow({ it, brand, onTap }: { it: EatItem; brand?: EatBrand; onTap: (
           {it.s ? `・${it.s}` : ''}
         </span>
         <span className="mt-0.5 flex gap-2 text-[11px] tabular-nums text-ink/70">
-          {it.ko ? (
+          {it.ko && !it.es ? (
             <span className="text-muted">官方只公布熱量{it.f !== undefined ? `・脂肪 ${it.f}g` : ''}</span>
+          ) : it.es ? (
+            <>
+              <span className="rounded bg-honey-soft px-1 text-[10px] text-honey-ink">估算</span>
+              <span>蛋白 {it.p}g</span>
+              <span>碳水 {it.c}g</span>
+              <span>脂肪 {it.f}g</span>
+            </>
           ) : (
             <>
               <span>蛋白 {it.p}g</span>
@@ -315,7 +322,11 @@ export function EatItemSheet({
               </div>
             ))}
           </div>
-          {item.ko && <p className="px-1 text-xs text-honey-ink">這家只公布熱量，記錄時蛋白質、碳水、脂肪會算 0；想算準一點可以用「AI 估算」。</p>}
+          {item.ko && (
+            <p className="px-1 text-xs text-honey-ink">
+              {item.es ? '這家只公布熱量；蛋白質、碳水、脂肪是照名字相近、有完整標示的商品比例估算的，僅供參考。' : '這家只公布熱量，蛋白質、碳水、脂肪會算 0。'}
+            </p>
+          )}
           {(item.fi !== undefined || item.su !== undefined || item.na !== undefined) && (
             <div className="flex flex-wrap gap-2 px-1 text-xs text-muted">
               {item.fi !== undefined && <span>膳食纖維 {item.fi}g</span>}

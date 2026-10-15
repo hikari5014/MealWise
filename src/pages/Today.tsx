@@ -325,7 +325,7 @@ function CustomRow({ log, onRemove }: { log: LogEntry; onRemove: () => void }) {
       animate={{ opacity: 1, y: 0, scale: 1 }}
       exit={{ opacity: 0, x: -40, transition: { duration: 0.18 } }}
       transition={spring}
-      className="relative flex min-h-[72px] items-center gap-3 overflow-hidden rounded-2xl bg-gradient-to-r from-white via-white to-tomato-soft py-3 pl-4 pr-3 shadow-card"
+      className="relative flex min-h-[72px] items-center gap-3 overflow-hidden rounded-2xl bg-gradient-to-r from-card via-card to-tomato-soft py-3 pl-4 pr-3 shadow-card"
     >
       <div className="min-w-0 flex-1">
         <div className="flex items-center gap-1.5 truncate font-medium">

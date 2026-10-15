@@ -13,7 +13,7 @@ import { UpdateProvider } from './components/Update'
 import { Tap, ToastProvider } from './components/ui'
 import { haptic, spring } from './lib/feedback'
 import { setCustomRecipes } from './data/recipes'
-import { itemImage } from './lib/eatout'
+import { itemImage, fixZeroMacros } from './lib/eatout'
 import { db } from './db'
 import { useProfile } from './lib/hooks'
 import { RecipesVersion } from './lib/recipeStore'
@@ -41,6 +41,10 @@ export default function App() {
   const profile = useProfile()
   // 自訂食譜：讀到後放進全部食譜清單；版本字串讓有快取的畫面重新計算
   const customs = useLiveQuery(() => db.recipes.orderBy('createdAt').toArray())
+  // 舊的「只有熱量」外食紀錄，補上估算的三大營養素（沒有要補的就不下載資料）
+  useEffect(() => {
+    fixZeroMacros().catch(() => {})
+  }, [])
   const recipesVersion = useMemo(() => {
     // 外食品項的圖示一律照品名重新對應（舊版存的是別的圖）
     setCustomRecipes((customs ?? []).map((r) => (r.eatout ? { ...r, image: itemImage({ id: r.id, b: r.eatout.brandId, n: r.name, k: 0 }) } : r)))

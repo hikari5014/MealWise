@@ -28,6 +28,8 @@ export interface EatItem {
   f?: number
   /** 只有熱量 */
   ko?: 1
+  /** 只有熱量的品項，三大營養素是估算的 */
+  es?: 1
   cat?: string
   s?: string
   fi?: number
@@ -207,3 +209,45 @@ export function eatToRecipe(it: EatItem, brand?: EatBrand): Recipe {
 
 /** 推薦分數：蛋白質多、熱量合理的在前面 */
 export const eatScore = (it: EatItem) => (it.ko ? 0.05 : ((it.p ?? 0) * 4) / Math.max(it.k, 60)) + (it.k >= 250 && it.k <= 650 ? 0.15 : 0)
+
+const zero = (n: Nutrition) => n.kcal > 0 && !n.protein && !n.carbs
+
+/**
+ * 以前記錄的「只有熱量」外食（蛋白質、碳水都是 0），
+ * 資料有估算值後補上：照當時記錄的熱量等比例換算。
+ */
+export async function fixZeroMacros() {
+  const { db } = await import('../db')
+  const logs = (await db.logs.toArray()).filter((l) => l.custom && zero(l.custom.nutrition))
+  const recipes = (await db.recipes.toArray()).filter((r) => r.eatout && zero(r.nutrition))
+  if (!logs.length && !recipes.length) return 0
+  const data = await loadEatOut()
+  const brands = Object.fromEntries(data.brands.map((b) => [b.id, b]))
+  const byName = new Map<string, EatItem>()
+  const byId = new Map<string, EatItem>()
+  for (const it of data.items) {
+    if (!it.es) continue
+    byId.set(`eo-${it.id}`, it)
+    const b = brands[it.b]
+    byName.set(plainBrand(b) ? it.n : `${b.name} ${it.n}`, it)
+  }
+  const scaled = (n: Nutrition, it: EatItem): Nutrition => {
+    const k = n.kcal / it.k
+    const r = (v?: number) => Math.round((v ?? 0) * k * 10) / 10
+    return { ...n, protein: r(it.p), carbs: r(it.c), fat: r(it.f) }
+  }
+  let fixed = 0
+  for (const l of logs) {
+    const it = byName.get(l.custom!.name)
+    if (!it) continue
+    await db.logs.update(l.id!, { custom: { ...l.custom!, nutrition: scaled(l.custom!.nutrition, it) } })
+    fixed++
+  }
+  for (const r of recipes) {
+    const it = byId.get(r.id)
+    if (!it) continue
+    await db.recipes.update(r.id, { nutrition: scaled(r.nutrition, it) })
+    fixed++
+  }
+  return fixed
+}

@@ -1,5 +1,6 @@
 // 全站點擊回饋規則：可以點的東西一律用 <Tap> 或 <Button>（src/components/ui.tsx），
 // 需要特殊動畫才用 motion.button，而且一定要有 whileTap。違反就讓 build 失敗。
+// 另外檢查底色不能寫死白色（深色主題會看不清楚）。
 import { readdirSync, readFileSync, statSync } from 'node:fs'
 import { join } from 'node:path'
 
@@ -24,6 +25,8 @@ for (const file of walk('src')) {
     }
     if (!src.slice(m.index, i).includes('whileTap')) problems.push(`${file}:${line(m.index)} motion.button 少了 whileTap`)
   }
+  // 深色主題：底色要用 bg-card／from-card，寫死白色在深色模式會變成白底白字
+  for (const m of src.matchAll(/\b(?:bg|from|via|to)-white\b(?!\/)/g)) problems.push(`${file}:${line(m.index)} 用了 ${m[0]}，請改用 card 色（深色主題才看得清楚）`)
 }
 
 if (problems.length) {
