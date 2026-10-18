@@ -14,7 +14,7 @@ import { useMarks } from '../lib/hooks'
 import { DayTraining, TrainBadge } from '../components/TrainSchedule'
 import type { Profile } from '../types'
 import { spring } from '../lib/feedback'
-import { BODY_PARTS, MUSCLE_ZH, doneSets, weeklyBodyData, weeklyMuscles, workoutVolume, type FxMuscle } from '../lib/workout'
+import { BODY_PARTS, MUSCLE_ZH, doneSets, weeklyBodyData, weeklyMuscles, workoutVolume, type FxMuscle, workoutCardio } from '../lib/workout'
 
 export default function Train({ profile }: { profile: Profile }) {
   const today = todayKey()
@@ -97,7 +97,7 @@ export default function Train({ profile }: { profile: Profile }) {
         </span>
         <span className="flex-1">
           <span className="block font-bold">動作庫</span>
-          <span className="block text-xs text-muted">100 多個動作・依器材和部位分類・示範動畫與受力肌群</span>
+          <span className="block text-xs text-muted">200 多個動作・依器材和部位分類・示範動畫與受力肌群</span>
         </span>
         <Icon name="chevron_right" size={22} className="text-muted" />
       </Tap>
@@ -118,7 +118,9 @@ export default function Train({ profile }: { profile: Profile }) {
                       {w.type && <TrainBadge type={w.type} />}
                     </span>
                     <span className="text-xs text-muted">
-                      {Math.round((w.endedAt! - w.startedAt) / 60000)} 分・{doneSets(w)} 組・{Math.round(workoutVolume(w))} kg
+                      {Math.round((w.endedAt! - w.startedAt) / 60000)} 分・{doneSets(w)} 組
+                      {workoutVolume(w) > 0 && `・${Math.round(workoutVolume(w))} kg`}
+                      {workoutCardio(w).min > 0 && `・有氧 ${Math.round(workoutCardio(w).min)} 分${workoutCardio(w).km ? ` ${workoutCardio(w).km} km` : ''}`}
                     </span>
                   </span>
                   <span className="mt-1 block truncate text-xs text-muted">

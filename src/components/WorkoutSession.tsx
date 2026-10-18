@@ -18,12 +18,15 @@ import {
   isCardio,
   lastSetsOf,
   moveFor,
+  workoutCardio,
   workoutVolume,
   type Grip,
   type Workout,
   type WorkoutSet,
 } from '../lib/workout'
 import { ExerciseAnim, ExerciseDetail, ExerciseLibrary } from './ExerciseLibrary'
+import { BlockCard, CardioSegments, ComboPicker } from './CardioViews'
+import type { ComboTemplate } from '../data/cardio'
 import { Icon } from './Icon'
 import { Button, CheckButton, Sheet, Tap, useToast } from './ui'
 
@@ -35,6 +38,12 @@ export function WorkoutSession({ id, onClose }: { id: number | null; onClose: ()
   const toast = useToast()
   const w = useLiveQuery(() => (id ? db.workouts.get(id) : undefined), [id])
   const [adding, setAdding] = useState(false)
+  /** 加到哪個有氧組合裡 */
+  const [addingTo, setAddingTo] = useState<string | null>(null)
+  const [combo, setCombo] = useState(false)
+  const profile = useLiveQuery(() => db.profile.get('me'))
+  const latestWeight = useLiveQuery(() => db.body.orderBy('date').reverse().filter((r) => !!r.weight).first())
+  const weight = latestWeight?.weight ?? profile?.body?.weight ?? 60
   /** 換成別的動作：記第幾個 */
   const [swapIdx, setSwapIdx] = useState<number | null>(null)
   /** 已完成的訓練預設只能看，按「修改紀錄」才能改 */
@@ -81,11 +90,36 @@ export function WorkoutSession({ id, onClose }: { id: number | null; onClose: ()
       toast(`${old?.zh ?? '動作'} 已換成 ${ex.zh}，重量組數不變`)
       return
     }
+    if (addingTo) {
+      const block = addingTo
+      update((x) => x.entries.push({ exerciseId: ex.id, sets: [{ w: 0, r: 0, done: false }], block }))
+      setAddingTo(null)
+      toast(`已加入一站：${ex.zh}`)
+      return
+    }
     const sets: WorkoutSet[] =
       last?.sets ?? (isCardio(ex) ? [{ w: 0, r: 20, done: false }] : Array.from({ length: 3 }, () => ({ w: isBodyweight(ex) ? 0 : 20, r: 10, done: false })))
     update((x) => x.entries.push({ exerciseId: ex.id, sets, ...(last?.grip ? { grip: last.grip } : {}) }))
     setAdding(false)
     toast(last ? `已加入 ${ex.zh}，帶入上次的重量` : `已加入 ${ex.zh}`)
+  }
+
+  const addCombo = (c: ComboTemplate) => {
+    const id = `b${Date.now().toString(36)}`
+    const stations = c.stations(profile?.body?.sex ?? 'female')
+    update((x) => {
+      x.blocks = [...(x.blocks ?? []), { id, name: c.name, ms: 0, lapMs: 0 }]
+      for (const st of stations) {
+        const t = st.target
+        x.entries.push({ exerciseId: st.exerciseId, block: id, sets: [{ w: 0, r: t.min ?? 0, done: false, ...Object.fromEntries(Object.entries(t).filter(([k]) => k !== 'min')) }] })
+      }
+    })
+    setCombo(false)
+    haptic([10, 30, 10])
+    if (!stations.length) {
+      setAddingTo(id)
+      toast('先加入第一站')
+    } else toast(`已加入 ${c.name}，按「開始」計時`)
   }
 
   const finish = async () => {
@@ -132,13 +166,36 @@ export function WorkoutSession({ id, onClose }: { id: number | null; onClose: ()
             <div className="grid grid-cols-3 gap-2 text-center">
               <Mini label="時間" value={`${minutes} 分`} />
               <Mini label="完成組數" value={String(doneSets(w))} />
-              <Mini label="總重量" value={`${Math.round(workoutVolume(w))} kg`} />
+              {workoutVolume(w) > 0 || !workoutCardio(w, weight).min ? (
+                <Mini label="總重量" value={`${Math.round(workoutVolume(w))} kg`} />
+              ) : (
+                <Mini label="有氧消耗" value={`約 ${workoutCardio(w, weight).kcal} kcal`} />
+              )}
             </div>
 
             <AnimatePresence initial={false}>
               {w.entries.map((e, ei) => {
                 const ex = EXERCISE_MAP[e.exerciseId]
                 if (!ex) return null
+                if (e.block) {
+                  // 同一個組合只在第一站的位置畫一張卡
+                  if (w.entries.findIndex((x) => x.block === e.block) !== ei) return null
+                  const block = w.blocks?.find((b) => b.id === e.block)
+                  if (!block) return null
+                  return (
+                    <BlockCard
+                      key={`block-${block.id}`}
+                      w={w}
+                      block={block}
+                      locked={locked}
+                      weight={weight}
+                      update={update}
+                      onAddStation={() => setAddingTo(block.id)}
+                      onDetail={setDetail}
+                      onToast={toast}
+                    />
+                  )
+                }
                 const cardio = isCardio(ex)
                 return (
                   <motion.section
@@ -187,6 +244,19 @@ export function WorkoutSession({ id, onClose }: { id: number | null; onClose: ()
                         }
                       />
                     )}
+                    {cardio ? (
+                      <CardioSegments
+                        ex={ex}
+                        entry={e}
+                        locked={locked}
+                        weight={weight}
+                        onSet={(si, patch) => update((x) => Object.assign(x.entries[ei].sets[si], patch))}
+                        onDone={(si) => update((x) => (x.entries[ei].sets[si].done = !e.sets[si].done))}
+                        onAdd={() => update((x) => x.entries[ei].sets.push({ ...(e.sets[e.sets.length - 1] ?? { w: 0, r: 10 }), done: false }))}
+                        onRemoveLast={() => update((x) => x.entries[ei].sets.pop())}
+                      />
+                    ) : (
+                    <>
                     <div className="grid grid-cols-[22px_1fr_22px_1fr_34px] items-center gap-x-1.5 gap-y-1.5 text-center text-[11px] text-muted">
                       <span>組</span>
                       <span>{cardio ? '' : isBodyweight(ex) ? '加重 kg' : '重量 kg'}</span>
@@ -235,16 +305,24 @@ export function WorkoutSession({ id, onClose }: { id: number | null; onClose: ()
                       )}
                     </div>
                     )}
+                    </>
+                    )}
                   </motion.section>
                 )
               })}
             </AnimatePresence>
 
             {!locked && (
-            <Tap press={0.97} onClick={() => setAdding(true)} className="flex w-full items-center justify-center gap-1.5 rounded-3xl border-2 border-dashed border-leaf/40 py-4 text-sm text-leaf-dark">
-              <Icon name="add_circle" size={20} />
-              加入動作
-            </Tap>
+              <div className="flex gap-2">
+                <Tap press={0.97} onClick={() => setAdding(true)} className="flex flex-1 items-center justify-center gap-1.5 rounded-3xl border-2 border-dashed border-leaf/40 py-4 text-sm text-leaf-dark">
+                  <Icon name="add_circle" size={20} />
+                  加入動作
+                </Tap>
+                <Tap press={0.97} onClick={() => setCombo(true)} className="flex flex-1 items-center justify-center gap-1.5 rounded-3xl border-2 border-dashed border-sky/50 py-4 text-sm text-sky">
+                  <Icon name="timer" size={20} />
+                  有氧組合
+                </Tap>
+              </div>
             )}
 
             {!w.endedAt && (
@@ -313,13 +391,15 @@ export function WorkoutSession({ id, onClose }: { id: number | null; onClose: ()
         )}
       </Sheet>
       <ExerciseLibrary
-        open={adding || swapIdx !== null}
-        pickLabel={swapIdx !== null ? '換成這個動作' : undefined}
+        open={adding || swapIdx !== null || addingTo !== null}
+        pickLabel={swapIdx !== null ? '換成這個動作' : addingTo ? '加進這組' : undefined}
         onClose={() => {
           setAdding(false)
           setSwapIdx(null)
-        }} onPick={addExercise} defaultMove={moveFor(w?.type)} />
+          setAddingTo(null)
+        }} onPick={addExercise} defaultMove={addingTo ? 'cardio' : moveFor(w?.type)} />
       <ExerciseDetail ex={detail} onClose={() => setDetail(null)} />
+      <ComboPicker open={combo} onClose={() => setCombo(false)} onPick={addCombo} />
     </>
   )
 }

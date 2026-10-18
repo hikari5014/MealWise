@@ -14,10 +14,14 @@ import {
   exerciseImage,
   exerciseStats,
   isCardio,
+  cardioSummary,
+  fmtDuration,
+  type Workout,
 } from '../lib/workout'
+import { METRIC } from '../data/cardio'
 import { matchScore, parseQuery, prepare, type Prepared } from '../lib/search'
 import { BodyMap, useBodyPalette } from './BodyMap'
-import { Food } from './Food'
+import { Food, foodSrc } from './Food'
 import { Icon } from './Icon'
 import { Button, Sheet, Tap } from './ui'
 
@@ -41,6 +45,26 @@ const LEVEL = { beginner: '新手', intermediate: '進階', expert: '高手' } a
 
 /** 兩張照片交替＝簡單的動作動畫 */
 export function ExerciseAnim({ ex, className = '', play = true }: { ex: Exercise; className?: string; play?: boolean }) {
+  if (ex.noPhoto) return <IconAnim ex={ex} className={className} play={play} />
+  return <PhotoAnim ex={ex} className={className} play={play} />
+}
+
+/** 沒有示範照片的有氧：大圖示輕輕跳動 */
+function IconAnim({ ex, className, play }: { ex: Exercise; className: string; play: boolean }) {
+  return (
+    <div className={`relative grid place-items-center overflow-hidden bg-gradient-to-br from-sky-soft to-leaf-soft ${className}`}>
+      <motion.div
+        className="h-[62%] w-[62%]"
+        animate={play ? { y: [0, -6, 0], rotate: [0, -4, 4, 0] } : undefined}
+        transition={{ repeat: Infinity, duration: 1.6, ease: 'easeInOut' }}
+      >
+        <img src={foodSrc(ex.icon ?? 'cx-dash')} alt="" draggable={false} className="h-full w-full object-contain" />
+      </motion.div>
+    </div>
+  )
+}
+
+function PhotoAnim({ ex, className, play }: { ex: Exercise; className: string; play: boolean }) {
   const [frame, setFrame] = useState(0)
   useEffect(() => {
     if (!play) return
@@ -213,10 +237,20 @@ export function ExerciseDetail({ ex, onClose, actionLabel, onAction }: { ex: Exe
             <Icon name="lightbulb" size={18} fill className="mt-0.5 text-honey" />
             <span>{ex.cue}</span>
           </div>
-          {!isCardio(ex) && (
+          {ex.metrics && (
+            <div className="flex flex-wrap items-center gap-1.5 px-1 text-xs text-muted">
+              每段可以記：
+              {ex.metrics.map((m) => (
+                <span key={m} className="rounded-full bg-sky-soft px-2 py-0.5 text-ink/80">
+                  {METRIC[m].label}（{METRIC[m].unit}）
+                </span>
+              ))}
+            </div>
+          )}
+          {ex.primary.length > 0 && (
             <section className="rounded-3xl bg-card p-4 shadow-card">
               <div className="mb-2 flex items-center justify-between">
-                <span className="text-sm font-bold">受力肌群</span>
+                <span className="text-sm font-bold">{isCardio(ex) ? '主要用到的肌群' : '受力肌群'}</span>
                 <span className="flex items-center gap-2 text-[11px] text-muted">
                   <span className="flex items-center gap-1">
                     <span className="h-2.5 w-2.5 rounded-full" style={{ background: load[1] }} />
@@ -249,11 +283,15 @@ export function ExerciseDetail({ ex, onClose, actionLabel, onAction }: { ex: Exe
                 <Food id="rule-training" size={22} />
                 我的紀錄
               </div>
-              <div className="grid grid-cols-3 gap-2 text-center">
-                <Stat label="做過" value={`${stats.sessions.length} 次`} />
-                <Stat label="最重" value={stats.heaviest ? `${stats.heaviest} kg` : '—'} />
-                <Stat label="估計 1RM" value={stats.bestRm ? `${Math.round(stats.bestRm)} kg` : '—'} />
-              </div>
+              {isCardio(ex) ? (
+                <CardioStats ex={ex} workouts={workouts} />
+              ) : (
+                <div className="grid grid-cols-3 gap-2 text-center">
+                  <Stat label="做過" value={`${stats.sessions.length} 次`} />
+                  <Stat label="最重" value={stats.heaviest ? `${stats.heaviest} kg` : '—'} />
+                  <Stat label="估計 1RM" value={stats.bestRm ? `${Math.round(stats.bestRm)} kg` : '—'} />
+                </div>
+              )}
               <ul className="mt-3 space-y-1 text-xs text-muted">
                 {stats.sessions
                   .slice(-5)
@@ -262,7 +300,7 @@ export function ExerciseDetail({ ex, onClose, actionLabel, onAction }: { ex: Exe
                     <li key={i} className="flex justify-between">
                       <span>{s.date.slice(5).replace('-', '/')}</span>
                       <span className="tabular-nums">
-                        {isCardio(ex) ? `${s.top.r} 分鐘` : `最佳 ${s.top.w ? `${s.top.w}kg × ` : ''}${s.top.r} 下${s.volume ? `・總量 ${Math.round(s.volume)}kg` : ''}`}
+                        {isCardio(ex) ? `${Math.round(s.top.r * 10) / 10} 分鐘` : `最佳 ${s.top.w ? `${s.top.w}kg × ` : ''}${s.top.r} 下${s.volume ? `・總量 ${Math.round(s.volume)}kg` : ''}`}
                       </span>
                     </li>
                   ))}
@@ -279,7 +317,7 @@ export function ExerciseDetail({ ex, onClose, actionLabel, onAction }: { ex: Exe
                 <li key={i}>{s}</li>
               ))}
             </ol>
-            {ex.stepsZh && (
+            {ex.stepsZh && ex.steps.length > 0 && (
               <>
                 <Tap press={0.98} onClick={() => setShowSteps(!showSteps)} className="mt-3 flex w-full items-center gap-1 text-left text-xs text-muted">
                   看英文原文
@@ -323,6 +361,30 @@ function Stat({ label, value }: { label: string; value: string }) {
     <div className="rounded-2xl bg-cream py-2">
       <div className="text-sm font-bold tabular-nums">{value}</div>
       <div className="text-[10px] text-muted">{label}</div>
+    </div>
+  )
+}
+
+/** 有氧的個人紀錄：總時間、總距離、最快配速 */
+function CardioStats({ ex, workouts }: { ex: Exercise; workouts: Workout[] }) {
+  let min = 0
+  let km = 0
+  let best = 0
+  for (const w of workouts) {
+    for (const e of w.entries) {
+      if (e.exerciseId !== ex.id) continue
+      const c = cardioSummary(ex, e.sets, 60)
+      min += c.min
+      km += c.km
+      const p = c.split || c.pace
+      if (p && (!best || p < best)) best = p
+    }
+  }
+  return (
+    <div className="grid grid-cols-3 gap-2 text-center">
+      <Stat label="總時間" value={`${Math.round(min)} 分`} />
+      <Stat label="總距離" value={km ? `${Math.round(km * 10) / 10} km` : '—'} />
+      <Stat label={ex.metrics?.includes('m') ? '最快 500 m' : '最快配速'} value={best ? fmtDuration(best) : '—'} />
     </div>
   )
 }

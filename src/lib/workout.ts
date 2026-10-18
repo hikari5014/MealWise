@@ -114,6 +114,19 @@ export interface WorkoutSet {
   /** 次數（有氧為分鐘） */
   r: number
   done: boolean
+  // 有氧每一段的數字（見 data/cardio.ts 的 METRIC）
+  km?: number
+  m?: number
+  kcal?: number
+  hr?: number
+  spd?: number
+  inc?: number
+  lvl?: number
+  rpm?: number
+  spm?: number
+  reps?: number
+  floors?: number
+  kg?: number
 }
 /** 握把設定：龍門架的配件、握距、手心方向 */
 export interface Grip {
@@ -125,6 +138,20 @@ export interface WorkoutEntry {
   exerciseId: string
   sets: WorkoutSet[]
   grip?: Grip
+  /** 屬於哪個有氧組合（Hyrox、器材循環…） */
+  block?: string
+}
+
+/** 有氧組合：一個碼錶計時，完成一站就記下這站花的時間 */
+export interface CardioBlock {
+  id: string
+  name: string
+  /** 暫停前累積的毫秒 */
+  ms: number
+  /** 正在計時：開始的時間 */
+  startedAt?: number
+  /** 上一站完成時碼錶的毫秒 */
+  lapMs: number
 }
 
 export const GRIP_BARS = ['直桿', '寬握長桿', '曲桿', '繩索', 'V 型把', '單手 D 環', '對握把（MAG）', '划船三角把', '腳踝綁帶']
@@ -156,6 +183,7 @@ export interface Workout {
   startedAt: number
   endedAt?: number
   entries: WorkoutEntry[]
+  blocks?: CardioBlock[]
 }
 
 export const isCardio = (ex?: Exercise) => ex?.equip === 'cardio'
@@ -231,4 +259,69 @@ export function weeklyBodyData(sets: Partial<Record<FxMuscle, number>>) {
     for (let i = 0; i < level; i++) data.push({ name: `${m}-${i}`, muscles: toBody(m) })
   }
   return data
+}
+
+/* ───────── 有氧 ───────── */
+
+export const blockElapsed = (b: CardioBlock, now = Date.now()) => b.ms + (b.startedAt ? now - b.startedAt : 0)
+
+/** 秒數 → 1:05:30 或 5:30 */
+export const fmtDuration = (sec: number) => {
+  const s = Math.max(0, Math.round(sec))
+  const h = Math.floor(s / 3600)
+  const m = Math.floor((s % 3600) / 60)
+  const r = String(s % 60).padStart(2, '0')
+  return h ? `${h}:${String(m).padStart(2, '0')}:${r}` : `${m}:${r}`
+}
+
+/** 依 MET 估算消耗：MET × 體重 × 小時；跑步有距離時改用速度推 MET */
+export function cardioKcal(ex: Exercise, s: WorkoutSet, weightKg: number) {
+  if (s.kcal) return { kcal: s.kcal, est: false }
+  if (!s.r) return { kcal: 0, est: true }
+  let met = ex.met ?? 7
+  const speed = s.spd ?? (s.km ? s.km / (s.r / 60) : 0)
+  // 跑步依速度推強度，限制在合理範圍（短時間測試或打錯字不會爆量）
+  if (speed && /run|jogging/.test(ex.id)) met = Math.min(16, Math.max(6, speed * 1.02))
+  return { kcal: Math.round(met * weightKg * (s.r / 60)), est: true }
+}
+
+/** 一個有氧動作的加總：時間、距離、消耗、配速 */
+export function cardioSummary(ex: Exercise, sets: WorkoutSet[], weightKg: number) {
+  const done = sets.filter((s) => s.done)
+  const list = done.length ? done : []
+  const min = list.reduce((t, s) => t + (s.r || 0), 0)
+  const km = list.reduce((t, s) => t + (s.km || 0) + (s.m || 0) / 1000, 0)
+  let kcal = 0
+  let est = false
+  for (const s of list) {
+    const k = cardioKcal(ex, s, weightKg)
+    kcal += k.kcal
+    est ||= k.est && k.kcal > 0
+  }
+  return {
+    min,
+    km,
+    kcal,
+    est,
+    /** 每公里幾秒 */
+    pace: km > 0 && min > 0 ? (min * 60) / km : 0,
+    /** 每 500 m 幾秒（划船、滑雪機） */
+    split: km > 0 && min > 0 && ex.metrics?.includes('m') ? (min * 60) / (km * 2) : 0,
+  }
+}
+
+/** 整次訓練的有氧加總 */
+export function workoutCardio(w: Workout, weightKg = 60) {
+  let min = 0
+  let km = 0
+  let kcal = 0
+  for (const e of w.entries) {
+    const ex = EXERCISE_MAP[e.exerciseId]
+    if (!ex || !isCardio(ex)) continue
+    const c = cardioSummary(ex, e.sets, weightKg)
+    min += c.min
+    km += c.km
+    kcal += c.kcal
+  }
+  return { min: Math.round(min * 10) / 10, km: Math.round(km * 100) / 100, kcal: Math.round(kcal) }
 }
