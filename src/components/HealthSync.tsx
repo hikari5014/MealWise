@@ -8,12 +8,14 @@ import {
   parseHealthText,
   runShortcut,
   saveBody,
+  HEALTH_AI_PROMPT,
   SHORTCUT_NAME,
   SHORTCUT_TEMPLATE,
   type HealthData,
 } from '../lib/health'
 import type { IconName } from '../lib/icons'
 import { Food } from './Food'
+import { AiRequirements, IosVersionPicker, useIosChoice } from './IosVersion'
 import { Icon } from './Icon'
 import { CountUp } from './Ring'
 import { Button, Sheet, Tap, useToast } from './ui'
@@ -377,10 +379,80 @@ const STEPS = (onSync: () => void): Step[] => [
   },
 ]
 
+/** iOS 27：用捷徑的 AI 一句話建立 */
+const AI_STEPS = (onSync: () => void): Step[] => {
+  const manual = STEPS(onSync)
+  return [
+    manual[0],
+    { icon: 'auto_awesome', title: '確認可以用 AI 建立捷徑', body: <AiRequirements /> },
+    {
+      icon: 'content_copy',
+      title: '複製描述，貼給捷徑的 AI',
+      body: (
+        <div className="space-y-3 text-sm leading-relaxed">
+          <pre className="whitespace-pre-wrap rounded-2xl bg-card p-3 text-[11px] leading-relaxed shadow-sm">{HEALTH_AI_PROMPT}</pre>
+          <div className="flex flex-wrap gap-2">
+            <CopyChip text={HEALTH_AI_PROMPT} label="複製描述" />
+            <Tap onClick={() => (window.location.href = 'shortcuts://')} className="rounded-full bg-card px-3 py-1 text-xs shadow-sm">
+              打開「捷徑」App
+            </Tap>
+          </div>
+          <p>在「捷徑」App 點右上角「＋」新增捷徑，出現描述捷徑的輸入框後，貼上送出，等它組好。</p>
+        </div>
+      ),
+    },
+    {
+      icon: 'fact_check',
+      title: '檢查 AI 做的對不對',
+      body: (
+        <div className="space-y-3 text-sm leading-relaxed">
+          <p>AI 偶爾會選錯動作，對照一下，應該差不多長這樣：</p>
+          <Blocks>
+            <ActionBlock icon="favorite" color="rgb(var(--rose))" title="尋找健康樣本 ×4" lines={['體重、體脂肪率：最新 1 個', '步數、活動能量：今天']} />
+            <ActionBlock
+              icon="edit"
+              color="rgb(var(--honey))"
+              title="文字"
+              lines={[
+                <span key="t">
+                  好食光|體重=<Token>體重</Token>|體脂=<Token>體脂肪率</Token>…
+                </span>,
+              ]}
+            />
+            <ActionBlock icon="content_paste" color="rgb(var(--sky))" title="拷貝到剪貼簿" />
+          </Blocks>
+          <ul className="list-disc space-y-0.5 pl-5 text-xs text-muted">
+            <li>
+              捷徑名稱要是「<b>{SHORTCUT_NAME}</b>」，一字不差
+            </li>
+            <li>開頭一定要是「好食光|」，好食光才認得</li>
+            <li>少了什麼，直接跟 AI 說，例如「文字裡加上體脂肪率」</li>
+            <li>沒有體脂計也沒關係，只有體重也可以</li>
+          </ul>
+        </div>
+      ),
+    },
+    {
+      ...manual[5],
+      title: '試試看，驗證是否成功',
+      body: (
+        <div className="space-y-3">
+          {manual[5].body}
+          <p className="rounded-2xl bg-leaf-soft p-3 text-xs text-leaf-dark">
+            貼上後看到「同步完成！」和你的體重就成功了；畫面下方會列出還沒抓到的項目，以及要怎麼補。
+          </p>
+        </div>
+      ),
+    },
+    manual[6],
+  ]
+}
+
 function GuideSheet({ step, setStep, onSync }: { step: number | null; setStep: (s: number | null) => void; onSync: () => void }) {
-  const steps = STEPS(onSync)
+  const [choice, setChoice] = useIosChoice()
+  const steps = choice.ver === '27' && choice.mode === 'ai' ? AI_STEPS(onSync) : STEPS(onSync)
   const [dir, setDir] = useState(1)
-  const cur = step ?? 0
+  const cur = Math.min(step ?? 0, steps.length - 1)
   const go = (next: number) => {
     if (next < 0 || next >= steps.length) return
     haptic(6)
@@ -391,6 +463,15 @@ function GuideSheet({ step, setStep, onSync }: { step: number | null; setStep: (
 
   return (
     <Sheet open={step !== null} onClose={() => setStep(null)} title="連結 Apple 健康">
+      <div className="mb-4">
+        <IosVersionPicker
+          choice={choice}
+          onChange={(c) => {
+            setChoice(c)
+            setStep(0)
+          }}
+        />
+      </div>
       <div className="mb-4 flex justify-center gap-1.5">
         {steps.map((_, i) => (
           <Tap key={i} onClick={() => go(i)} aria-label={`第 ${i + 1} 步`} className="relative h-2 w-2 rounded-full bg-ink/10">
@@ -402,7 +483,7 @@ function GuideSheet({ step, setStep, onSync }: { step: number | null; setStep: (
       <div className="relative min-h-[360px] overflow-hidden">
         <AnimatePresence mode="popLayout" initial={false} custom={dir}>
           <motion.div
-            key={cur}
+            key={`${choice.ver}-${choice.mode}-${cur}`}
             custom={dir}
             initial={{ x: dir * 60, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
@@ -515,7 +596,7 @@ function PasteSheet({ open, onClose, onHelp }: { open: boolean; onClose: () => v
     const data = parseHealthText(text)
     if (!data) {
       haptic([30, 40, 30])
-      setError('剪貼簿裡沒有找到健康數據，捷徑可能還沒設定好')
+      setError('剪貼簿裡沒有找到健康數據。請確認捷徑最後有「拷貝到剪貼簿」，而且文字開頭是「好食光|」')
       return
     }
     await saveBody(data, 'health')
@@ -569,6 +650,17 @@ function PasteSheet({ open, onClose, onHelp }: { open: boolean; onClose: () => v
                 <div className="text-xs text-muted">{m.label}</div>
               </motion.div>
             ))}
+            {METRICS.some((m) => result[m.key] === undefined) && (
+              <div className="col-span-2 rounded-2xl bg-cream p-3 text-[11px] text-muted">
+                <div className="mb-1 font-medium text-ink/70">還沒抓到（選用）：</div>
+                {METRICS.filter((m) => result[m.key] === undefined).map((m) => (
+                  <div key={m.key} className="flex items-center gap-1">
+                    <Icon name="radio_button_unchecked" size={13} />
+                    {m.label}：在捷徑的「文字」裡加上「|{m.key === 'bodyFat' ? '體脂' : m.label}=」和對應的健康樣本
+                  </div>
+                ))}
+              </div>
+            )}
           </motion.div>
         ) : (
           <motion.div key="ask" exit={{ opacity: 0, scale: 0.95 }} className="space-y-3">

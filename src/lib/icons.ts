@@ -38,6 +38,7 @@ export const ICON_NAMES = [
   'event',
   'event_available',
   'expand_more',
+  'fact_check',
   'favorite',
   'fitness_center',
   'flip_camera_ios',

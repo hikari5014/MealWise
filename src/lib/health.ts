@@ -8,6 +8,13 @@ export const SHORTCUT_NAME = '好食光同步'
 /** 貼在捷徑「文字」動作裡的範本，[ ] 的地方換成健康樣本變數 */
 export const SHORTCUT_TEMPLATE = '好食光|體重=[體重]|體脂=[體脂肪率]|步數=[步數]|活動=[活動能量]'
 
+/** 給 iOS 27 捷徑 AI 的一段描述：貼進「描述捷徑」就會自動組好 */
+export const HEALTH_AI_PROMPT = `建立一個名為「${SHORTCUT_NAME}」的捷徑：
+1. 從「健康」App 分別找出最新的一筆：體重、體脂肪率、步數（今天的總和）、活動能量（今天的總和）。
+2. 組成一行文字，格式完全照這樣：
+好食光|體重=體重數值|體脂=體脂肪率數值|步數=步數|活動=活動能量
+3. 拷貝到剪貼簿。`
+
 export const isIOS = () =>
   /iPhone|iPad|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)
 
