@@ -26,6 +26,7 @@ import {
 } from '../lib/workout'
 import { ExerciseAnim, ExerciseDetail, ExerciseLibrary } from './ExerciseLibrary'
 import { BlockCard, CardioSegments, ComboPicker } from './CardioViews'
+import { MachineScan } from './MachineScan'
 import type { ComboTemplate } from '../data/cardio'
 import { Icon } from './Icon'
 import { Button, CheckButton, Sheet, Tap, useToast } from './ui'
@@ -41,6 +42,7 @@ export function WorkoutSession({ id, onClose }: { id: number | null; onClose: ()
   /** 加到哪個有氧組合裡 */
   const [addingTo, setAddingTo] = useState<string | null>(null)
   const [combo, setCombo] = useState(false)
+  const [scan, setScan] = useState(false)
   const profile = useLiveQuery(() => db.profile.get('me'))
   const latestWeight = useLiveQuery(() => db.body.orderBy('date').reverse().filter((r) => !!r.weight).first())
   const weight = latestWeight?.weight ?? profile?.body?.weight ?? 60
@@ -313,15 +315,21 @@ export function WorkoutSession({ id, onClose }: { id: number | null; onClose: ()
             </AnimatePresence>
 
             {!locked && (
-              <div className="flex gap-2">
-                <Tap press={0.97} onClick={() => setAdding(true)} className="flex flex-1 items-center justify-center gap-1.5 rounded-3xl border-2 border-dashed border-leaf/40 py-4 text-sm text-leaf-dark">
+              <div className="space-y-2">
+                <Tap press={0.97} onClick={() => setAdding(true)} className="flex w-full items-center justify-center gap-1.5 rounded-3xl border-2 border-dashed border-leaf/40 py-4 text-sm text-leaf-dark">
                   <Icon name="add_circle" size={20} />
                   加入動作
                 </Tap>
-                <Tap press={0.97} onClick={() => setCombo(true)} className="flex flex-1 items-center justify-center gap-1.5 rounded-3xl border-2 border-dashed border-sky/50 py-4 text-sm text-sky">
-                  <Icon name="timer" size={20} />
-                  有氧組合
-                </Tap>
+                <div className="flex gap-2">
+                  <Tap press={0.97} onClick={() => setScan(true)} className="flex flex-1 items-center justify-center gap-1.5 rounded-3xl bg-card py-3 text-sm text-ink shadow-card">
+                    <Icon name="qr_code_scanner" size={20} />
+                    掃器材 QR Code
+                  </Tap>
+                  <Tap press={0.97} onClick={() => setCombo(true)} className="flex flex-1 items-center justify-center gap-1.5 rounded-3xl bg-card py-3 text-sm text-sky shadow-card">
+                    <Icon name="timer" size={20} />
+                    有氧組合
+                  </Tap>
+                </div>
               </div>
             )}
 
@@ -400,6 +408,7 @@ export function WorkoutSession({ id, onClose }: { id: number | null; onClose: ()
         }} onPick={addExercise} defaultMove={addingTo ? 'cardio' : moveFor(w?.type)} />
       <ExerciseDetail ex={detail} onClose={() => setDetail(null)} />
       <ComboPicker open={combo} onClose={() => setCombo(false)} onPick={addCombo} />
+      <MachineScan open={scan} onClose={() => setScan(false)} onAdd={addExercise} />
     </>
   )
 }

@@ -276,7 +276,11 @@ const readQr = (source: CanvasImageSource, w: number, h: number, canvas: HTMLCan
   return jsQR(img.data, img.width, img.height, { inversionAttempts: thorough ? 'attemptBoth' : 'dontInvert' })?.data ?? null
 }
 
-function Scanner({ onClose, onResult }: { onClose: () => void; onResult: (plan: SharedPlan) => void }) {
+/**
+ * 通用的 QR Code 掃描畫面。onText 回傳要在成功動畫後執行的函式；
+ * 回傳字串代表不認得，會顯示成提示文字。
+ */
+export function QrScanner({ title, onClose, onText }: { title: string; onClose: () => void; onText: (text: string) => Promise<(() => void) | string> }) {
   const video = useRef<HTMLVideoElement>(null)
   const canvas = useRef<HTMLCanvasElement>(document.createElement('canvas'))
   const fileInput = useRef<HTMLInputElement>(null)
@@ -288,22 +292,21 @@ function Scanner({ onClose, onResult }: { onClose: () => void; onResult: (plan: 
     async (text: string) => {
       if (busy.current) return
       busy.current = true
-      const code = extractCode(text)
-      const plan = code ? await decodePlan(code) : null
-      if (plan) {
+      const res = await onText(text)
+      if (typeof res === 'function') {
         haptic([12, 40, 12, 40, 20])
         setState('found')
-        window.setTimeout(() => onResult(plan), 650)
+        window.setTimeout(res, 650)
         return
       }
       haptic([30, 50, 30])
-      setHint('這不是好食光的分享碼')
+      setHint(res)
       window.setTimeout(() => {
         setHint('')
         busy.current = false
       }, 1600)
     },
-    [onResult],
+    [onText],
   )
 
   useEffect(() => {
@@ -423,7 +426,7 @@ function Scanner({ onClose, onResult }: { onClose: () => void; onResult: (plan: 
         </motion.button>
         <div className="flex items-center gap-1.5 rounded-full bg-card/15 px-4 py-2 text-sm backdrop-blur">
           <Icon name="qr_code_scanner" size={18} />
-          掃描好食光菜單
+          {title}
         </div>
         <span className="w-11" />
       </div>
@@ -608,4 +611,16 @@ function ImportSheet({ plan, onClose, onDone }: { plan: SharedPlan | null; onClo
       )}
     </Sheet>
   )
+}
+
+function Scanner({ onClose, onResult }: { onClose: () => void; onResult: (plan: SharedPlan) => void }) {
+  const onText = useCallback(
+    async (text: string) => {
+      const code = extractCode(text)
+      const plan = code ? await decodePlan(code) : null
+      return plan ? () => onResult(plan) : '這不是好食光的分享碼'
+    },
+    [onResult],
+  )
+  return <QrScanner title="掃描好食光菜單" onClose={onClose} onText={onText} />
 }

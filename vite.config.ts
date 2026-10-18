@@ -63,6 +63,12 @@ export default defineConfig({
             options: { cacheName: 'eatout-data', networkTimeoutSeconds: 4, expiration: { maxEntries: 2 } },
           },
           {
+            // 器材 QR Code 對照表：有網路拿最新的
+            urlPattern: ({ url }) => url.pathname.endsWith('/machines.json'),
+            handler: 'NetworkFirst',
+            options: { cacheName: 'machines-data', networkTimeoutSeconds: 4, expiration: { maxEntries: 2 } },
+          },
+          {
             urlPattern: ({ url }) => url.pathname.includes('/exercises/'),
             handler: 'CacheFirst',
             options: { cacheName: 'exercise-photos', expiration: { maxEntries: 300 } },

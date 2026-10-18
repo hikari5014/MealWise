@@ -3375,36 +3375,6 @@ export const EXERCISES: Exercise[] = [
   "move": "pull"
  },
  {
-  "id": "cable-hammer-curls---rope-attachment",
-  "zh": "繩索錘式彎舉",
-  "en": "Cable Hammer Curls - Rope Attachment",
-  "equip": "cable",
-  "primary": [
-   "biceps"
-  ],
-  "secondary": [],
-  "level": "beginner",
-  "compound": false,
-  "cue": "手肘貼緊身側，只有前臂移動",
-  "steps": [
-   "Attach a rope attachment to a low pulley and stand facing the machine about 12 inches away from it.",
-   "Grasp the rope with a neutral (palms-in) grip and stand straight up keeping the natural arch of the back and your torso stationary.",
-   "Put your elbows in by your side and keep them there stationary during the entire movement. Tip: Only the forearms should move; not your upper arms. This will be your starting position.",
-   "Using your biceps, pull your arms up as you exhale until your biceps touch your forearms. Tip: Remember to keep the elbows in and your upper arms stationary.",
-   "After a 1 second contraction where you squeeze your biceps, slowly start to bring the weight back to the original position.",
-   "Repeat for the recommended amount of repetitions."
-  ],
-  "stepsZh": [
-   "把繩索握把裝在低位滑輪上，面向機器站在約 30 公分遠的位置。",
-   "以掌心相對的握法握住繩索，站直，保持背部自然弧度，軀幹不動。",
-   "手肘貼在身體兩側，整個動作都固定不動。小提醒：只有前臂動，上臂不要動。這是起始姿勢。",
-   "吐氣，用二頭把手往上彎舉，直到二頭碰到前臂。小提醒：記得手肘夾緊、上臂不動。",
-   "在頂點用力收縮二頭 1 秒，再慢慢把重量放回原位。",
-   "依建議次數重複。"
-  ],
-  "move": "pull"
- },
- {
   "id": "cable-hip-adduction",
   "zh": "繩索髖內收",
   "en": "Cable Hip Adduction",
@@ -6085,34 +6055,6 @@ export const EXERCISES: Exercise[] = [
   "move": "push"
  },
  {
-  "id": "triceps-pushdown---rope-attachment",
-  "zh": "繩索三頭下壓",
-  "en": "Triceps Pushdown - Rope Attachment",
-  "equip": "cable",
-  "primary": [
-   "triceps"
-  ],
-  "secondary": [],
-  "level": "beginner",
-  "compound": false,
-  "cue": "上臂貼緊身體，壓到底時把繩索往兩側拉開",
-  "steps": [
-   "Attach a rope attachment to a high pulley and grab with a neutral grip (palms facing each other).",
-   "Standing upright with the torso straight and a very small inclination forward, bring the upper arms close to your body and perpendicular to the floor. The forearms should be pointing up towards the pulley as they hold the rope with the palms facing each other. This is your starting position.",
-   "Using the triceps, bring the rope down as you bring each side of the rope to the side of your thighs. At the end of the movement the arms are fully extended and perpendicular to the floor. The upper arms should always remain stationary next to your torso and only the forearms should move. Exhale as you perform this movement.",
-   "After holding for a second, at the contracted position, bring the rope slowly up to the starting point. Breathe in as you perform this step.",
-   "Repeat for the recommended amount of repetitions."
-  ],
-  "stepsZh": [
-   "在高位滑輪裝上繩索，用對握（掌心相對）握住。",
-   "身體站直，上半身稍微前傾，上臂貼近身體並垂直地面。前臂朝上指向滑輪，掌心相對握住繩索。這是起始姿勢。",
-   "用三頭把繩索往下壓，同時把繩索兩端分別帶到大腿兩側。動作結束時手臂完全伸直、垂直地面。上臂全程固定在身體旁，只有前臂移動。這段吐氣。",
-   "在收縮位置停留 1 秒後，慢慢把繩索放回起始位置。這段吸氣。",
-   "重複到建議次數。"
-  ],
-  "move": "push"
- },
- {
   "id": "triceps-pushdown---v-bar-attachment",
   "zh": "V 型把三頭下壓",
   "en": "Triceps Pushdown - V-Bar Attachment",
@@ -6242,3 +6184,10 @@ for (const ex of EXERCISES) Object.assign(ex, CARDIO_EXTRA[ex.id])
 EXERCISES.push(...CARDIO_EXERCISES)
 
 export const EXERCISE_MAP: Record<string, Exercise> = Object.fromEntries(EXERCISES.map((x) => [x.id, x]))
+
+// 合併掉的重複動作：舊紀錄照樣找得到
+const MERGED: Record<string, string> = {
+  'cable-hammer-curls---rope-attachment': 'cable-hammer-curls-rope-attachment',
+  'triceps-pushdown---rope-attachment': 'triceps-pushdown-rope-attachment',
+}
+for (const [from, to] of Object.entries(MERGED)) EXERCISE_MAP[from] = EXERCISE_MAP[to]
