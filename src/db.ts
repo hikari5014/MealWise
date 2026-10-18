@@ -63,3 +63,21 @@ db.version(6).stores({
 db.version(7).stores({
   workouts: '++id, date, startedAt',
 })
+
+// v8：雲端同步。自動編號的表加上 uid，跨裝置用 uid 對應同一筆資料
+db.version(8)
+  .stores({
+    plans: '++id, date, [date+meal], uid',
+    logs: '++id, date, planId, recipeId, createdAt, uid',
+    workouts: '++id, date, startedAt, uid',
+  })
+  .upgrade(async (tx) => {
+    for (const t of ['plans', 'logs', 'workouts']) {
+      await tx
+        .table(t)
+        .toCollection()
+        .modify((r: { uid?: string }) => {
+          r.uid ??= crypto.randomUUID()
+        })
+    }
+  })

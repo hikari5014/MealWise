@@ -2,7 +2,8 @@ import { AnimatePresence, motion } from 'framer-motion'
 import { useState } from 'react'
 import { AvoidPicker } from '../components/AvoidPicker'
 import { Icon } from '../components/Icon'
-import { Button } from '../components/ui'
+import { LoginSheet } from '../components/Account'
+import { Button, Tap } from '../components/ui'
 import { db } from '../db'
 import { haptic, spring } from '../lib/feedback'
 import { suggestKcal } from '../lib/meal'
@@ -31,6 +32,7 @@ const DEFAULT: Profile = {
 /** 首次設定（3 步驟），也用在「修改需求」 */
 export default function Onboarding({ initial, onDone }: { initial?: Profile; onDone?: () => void }) {
   const [step, setStep] = useState(0)
+  const [login, setLogin] = useState(false)
   const [dir, setDir] = useState(1)
   const [p, setP] = useState<Profile>(initial ?? DEFAULT)
   const set = (patch: Partial<Profile>) => setP((cur) => ({ ...cur, ...patch }))
@@ -84,6 +86,12 @@ export default function Onboarding({ initial, onDone }: { initial?: Profile; onD
           </motion.button>
         )
       })}
+      {!initial && (
+        <Tap onClick={() => setLogin(true)} className="flex w-full items-center justify-center gap-1.5 py-2 text-sm text-muted">
+          <Icon name="login" size={18} />
+          已經有帳號？<span className="text-leaf-dark underline">登入還原資料</span>
+        </Tap>
+      )}
     </div>,
 
     <div key="diet" className="space-y-4">
@@ -125,6 +133,7 @@ export default function Onboarding({ initial, onDone }: { initial?: Profile; onD
         initial ? 'pb-2 pt-2' : 'min-h-dvh pb-[calc(24px+env(safe-area-inset-bottom))] pt-[calc(24px+env(safe-area-inset-top))]'
       }`}
     >
+      {!initial && <LoginSheet open={login} onClose={() => setLogin(false)} />}
       {!initial && (
         <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="mb-6">
           <Art name="onboard-welcome" width={150} className="!mx-0" />

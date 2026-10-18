@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion'
 import { useMemo, useState } from 'react'
+import { AccountCard } from '../components/Account'
 import { BodyCard } from '../components/BodyCard'
 import { NeedsCard } from '../components/Needs'
 import { DietPlanCard, DietPlanSheet } from '../components/DietPlan'
@@ -83,6 +84,8 @@ export default function Me({ profile }: { profile: Profile }) {
         </div>
       </Card>
 
+      <AccountCard />
+
       <DietPlanCard profile={profile} onOpen={() => setPlanSheet(true)} />
       <TasteCard profile={profile} onOpen={() => setTasteSheet(true)} />
 
@@ -147,7 +150,7 @@ export default function Me({ profile }: { profile: Profile }) {
       <div className="space-y-2 pt-2 text-center text-xs text-muted">
         <p className="flex items-center justify-center gap-1">
           <Icon name="lock" size={14} />
-          資料只存在這台裝置上，不會上傳。
+          沒登入時資料只存在這台裝置；登入後會備份到雲端，只有你看得到。
         </p>
         <Tap className="underline" onClick={() => setConfirmReset(true)}>
           清除所有資料

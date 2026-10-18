@@ -22,6 +22,7 @@ import { MEAL_COLOR, MEAL_IMAGE, MEAL_LABEL, MEAL_SLOTS, type LogEntry, type Mea
 import { Art } from '../components/Art'
 import { useEatOutPicker } from '../components/EatOut'
 import { NextMealCard } from '../components/NextMeal'
+import { AnnouncementBanner } from '../components/Announcements'
 
 export default function Today({ profile, onGoPlan }: { profile: Profile; onGoPlan: () => void }) {
   const date = todayKey()
@@ -77,6 +78,8 @@ export default function Today({ profile, onGoPlan }: { profile: Profile; onGoPla
           <Icon name="waving_hand" size={28} fill className="ml-1 align-[-4px] text-honey" motion="wiggle" />
         </h1>
       </header>
+
+      <AnnouncementBanner />
 
       <Card className="flex items-center gap-5">
         <Ring value={total.kcal} target={day.kcal}>
