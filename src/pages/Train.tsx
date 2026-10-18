@@ -5,6 +5,7 @@ import { BodyMap, useBodyPalette } from '../components/BodyMap'
 import { ExerciseLibrary } from '../components/ExerciseLibrary'
 import { Icon } from '../components/Icon'
 import { WorkoutSession } from '../components/WorkoutSession'
+import { WatchCard } from '../components/WatchSync'
 import { Tap } from '../components/ui'
 import { EXERCISE_MAP } from '../data/exercises'
 import { db } from '../db'
@@ -102,6 +103,8 @@ export default function Train({ profile }: { profile: Profile }) {
         <Icon name="chevron_right" size={22} className="text-muted" />
       </Tap>
 
+      <WatchCard />
+
       <section>
         <h2 className="mb-2 px-1 font-bold">訓練紀錄</h2>
         {!workouts.filter((w) => w.endedAt).length && <p className="px-1 text-sm text-muted">還沒有紀錄</p>}
@@ -121,6 +124,7 @@ export default function Train({ profile }: { profile: Profile }) {
                       {Math.round((w.endedAt! - w.startedAt) / 60000)} 分・{doneSets(w)} 組
                       {workoutVolume(w) > 0 && `・${Math.round(workoutVolume(w))} kg`}
                       {workoutCardio(w).min > 0 && `・有氧 ${Math.round(workoutCardio(w).min)} 分${workoutCardio(w).km ? ` ${workoutCardio(w).km} km` : ''}`}
+                      {w.watch && <Icon name="watch" size={13} className="ml-1 inline align-[-2px] text-leaf-dark" />}
                     </span>
                   </span>
                   <span className="mt-1 block truncate text-xs text-muted">

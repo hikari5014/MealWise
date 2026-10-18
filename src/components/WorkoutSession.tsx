@@ -175,6 +175,19 @@ export function WorkoutSession({ id, onClose }: { id: number | null; onClose: ()
               )}
             </div>
 
+            {w.watch && (
+              <div className="flex flex-wrap items-center gap-x-3 gap-y-1 rounded-2xl bg-ink px-4 py-2.5 text-xs text-cream">
+                <span className="flex items-center gap-1 font-bold">
+                  <Icon name="watch" size={16} />
+                  Apple Watch・{w.watch.type}
+                </span>
+                {w.watch.min !== undefined && <span>{Math.round(w.watch.min)} 分</span>}
+                {w.watch.kcal !== undefined && <span>{w.watch.kcal} kcal</span>}
+                {w.watch.hr !== undefined && <span>♥ {w.watch.hr} bpm</span>}
+                {w.watch.km !== undefined && <span>{Math.round(w.watch.km * 100) / 100} km</span>}
+              </div>
+            )}
+
             <AnimatePresence initial={false}>
               {w.entries.map((e, ei) => {
                 const ex = EXERCISE_MAP[e.exerciseId]

@@ -184,6 +184,10 @@ export interface Workout {
   endedAt?: number
   entries: WorkoutEntry[]
   blocks?: CardioBlock[]
+  /** 從 Apple Watch（健康 App）匯入的數據 */
+  watch?: { type: string; min?: number; kcal?: number; hr?: number; km?: number }
+  /** 匯入來源的鑰匙，避免重複匯入 */
+  importKey?: string
 }
 
 export const isCardio = (ex?: Exercise) => ex?.equip === 'cardio'
