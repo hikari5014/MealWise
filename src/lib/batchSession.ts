@@ -254,12 +254,14 @@ const ORDER: MealSlot[] = ['breakfast', 'lunch', 'dinner', 'snack']
 /**
  * 把每道菜的份數分配到接下來幾天的餐：
  * 放不久的（海鮮、麵）排前面，同一道菜盡量不要連續兩餐出現。
+ * perMeal＞1 時每餐配好幾道（例如主菜＋配菜），一道菜就能分散到好幾天吃。
  */
 export function assignPortions(
   items: { recipeId: string; portions: number }[],
   startDate: string,
   meals: MealSlot[],
   occupied: (date: string, meal: MealSlot) => boolean = () => false,
+  perMeal = 1,
 ) {
   const queue = items
     .map((x) => ({ ...x, recipe: RECIPE_MAP[x.recipeId], left: x.portions }))
@@ -268,18 +270,26 @@ export function assignPortions(
     .sort((a, b) => a.shelf - b.shelf)
   const out: BatchSession['assignments'] = []
   const sortedMeals = ORDER.filter((m) => meals.includes(m))
-  let last = ''
+  let last = new Set<string>()
   for (let d = 0; d < 21 && queue.some((q) => q.left > 0); d++) {
     const date = addDays(startDate, d)
     for (const meal of sortedMeals) {
       if (occupied(date, meal)) continue
-      const avail = queue.filter((q) => q.left > 0 && q.recipe.meals.some((m) => m === meal || (meal !== 'breakfast' && m !== 'breakfast')))
-      const pool = avail.length ? avail : queue.filter((q) => q.left > 0)
-      if (!pool.length) break
-      const pickOne = pool.find((q) => q.recipeId !== last) ?? pool[0]
-      pickOne.left--
-      last = pickOne.recipeId
-      out.push({ date, meal, recipeId: pickOne.recipeId })
+      const picked = new Set<string>()
+      for (let k = 0; k < perMeal; k++) {
+        const left = queue.filter((q) => q.left > 0 && !picked.has(q.recipeId))
+        const fits = left.filter((q) => q.recipe.meals.some((m) => m === meal || (meal !== 'breakfast' && m !== 'breakfast')))
+        const pool = fits.length ? fits : left
+        if (!pool.length) break
+        // 一餐配多道時，第二道起先挑還剩比較多份的，才會平均分到每一天
+        const ordered = k === 0 ? pool : [...pool].sort((a, b) => b.left - a.left)
+        const one = ordered.find((q) => !last.has(q.recipeId)) ?? ordered[0]
+        one.left--
+        picked.add(one.recipeId)
+        out.push({ date, meal, recipeId: one.recipeId })
+      }
+      if (!picked.size) break
+      last = picked
     }
   }
   return out

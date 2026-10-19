@@ -97,6 +97,12 @@ function BatchWizard({
   const [startDate, setStartDate] = useState(addDays(today, 1))
   const [meals, setMeals] = useState<MealSlot[]>(['lunch', 'dinner'])
   const [replace, setReplace] = useState(false)
+  const [people, setPeople] = useState(profile.servings)
+  const [perMeal, setPerMeal] = useState(1)
+  /** 手動調整過的分配（null＝用自動的） */
+  const [edits, setEdits] = useState<BatchSession['assignments'] | null>(null)
+  const [slot, setSlot] = useState<{ date: string; meal: MealSlot; index?: number } | null>(null)
+  const [extraDays, setExtraDays] = useState(0)
 
   useEffect(() => {
     if (!open) return
@@ -108,6 +114,11 @@ function BatchWizard({
     setStartDate(addDays(today, 1))
     setMeals(['lunch', 'dinner'])
     setReplace(false)
+    setPeople(profile.servings)
+    setPerMeal(1)
+    setEdits(null)
+    setSlot(null)
+    setExtraDays(0)
   }, [open])
 
   const pool = useMemo(
@@ -165,12 +176,29 @@ function BatchWizard({
   const range = useMemo(() => Array.from({ length: 24 }, (_, i) => addDays(prepDay, i)), [prepDay])
   const existing = useLiveQuery(() => db.plans.where('date').anyOf(range).toArray(), [range.join()]) ?? []
   const items = chosen.map(([recipeId, portions]) => ({ recipeId, portions }))
-  const assignments = useMemo(
-    () =>
-      step === 'assign'
-        ? assignPortions(items, startDate, meals, (d, m) => !replace && existing.some((p) => p.date === d && p.meal === m))
-        : [],
-    [step, JSON.stringify(items), startDate, meals.join(), existing.length, replace],
+  const isTaken = (d: string, m: MealSlot) => existing.some((p) => p.date === d && p.meal === m)
+  const auto = useMemo(
+    () => (step === 'assign' ? assignPortions(items, startDate, meals, (d, m) => !replace && isTaken(d, m), perMeal) : []),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [step, JSON.stringify(items), startDate, meals.join(), existing.length, replace, perMeal],
+  )
+  // 改了設定就重新自動分配
+  useEffect(() => {
+    setEdits(null)
+    setSlot(null)
+    setExtraDays(0)
+  }, [JSON.stringify(items), startDate, meals.join(), replace, perMeal])
+  const assignments = edits ?? auto
+  const edit = (next: BatchSession['assignments']) => {
+    haptic(6)
+    setEdits([...next].sort((a, b) => a.date.localeCompare(b.date) || MEAL_ORDER.indexOf(a.meal) - MEAL_ORDER.indexOf(b.meal)))
+  }
+  const used = (id: string) => assignments.filter((a) => a.recipeId === id).length
+  const unplaced = items.reduce((n, x) => n + Math.max(0, x.portions - used(x.recipeId)), 0)
+  const lastDate = assignments.reduce((m, a) => (a.date > m ? a.date : m), startDate)
+  const dates = Array.from(
+    { length: Math.round((fromKey(lastDate).getTime() - fromKey(startDate).getTime()) / 86400000) + 1 + extraDays },
+    (_, i) => addDays(startDate, i),
   )
 
   const create = async (addToPlan: boolean) => {
@@ -195,7 +223,7 @@ function BatchWizard({
       items,
       assignments,
       planIds,
-      servings: profile.servings,
+      servings: people,
     }
     await db.batches.put(session)
     haptic([10, 40, 10, 40, 20])
@@ -234,7 +262,7 @@ function BatchWizard({
     >
       {step === 'pick' ? (
         <div className="space-y-3">
-          <p className="text-xs text-muted">選幾道菜、決定各做幾餐，接下來會幫你排好採買、備料、開火順序和分裝。</p>
+          <p className="text-xs text-muted">選幾道菜、決定各做幾份（1 份＝1 個人吃 1 次），接下來會幫你排好採買、備料、開火順序和分裝。</p>
           <div className="flex gap-2">
             <input
               value={query}
@@ -270,7 +298,7 @@ function BatchWizard({
           </ul>
           <div className="sticky bottom-0 -mx-5 bg-gradient-to-t from-cream via-cream to-transparent px-5 pb-1 pt-4">
             <Button className="w-full" disabled={!chosen.length} onClick={() => setStep('assign')}>
-              {chosen.length ? `下一步：${chosen.length} 道、共 ${totalPortions} 餐` : '先選幾道菜'}
+              {chosen.length ? `下一步：${chosen.length} 道、共 ${totalPortions} 份` : '先選幾道菜'}
             </Button>
           </div>
         </div>
@@ -297,6 +325,21 @@ function BatchWizard({
               </Chip>
             ))}
           </Choice>
+          <div className="flex items-center justify-between rounded-2xl bg-card px-3 py-2 shadow-card">
+            <div>
+              <div className="text-sm font-medium">幫幾個人做</div>
+              <div className="text-[11px] text-muted">採買和食材份量會乘上人數</div>
+            </div>
+            <div className="flex items-center gap-1">
+              <Tap aria-label="少一人" onClick={() => setPeople((n) => Math.max(1, n - 1))} className="grid h-8 w-8 place-items-center rounded-full bg-cream">
+                <Icon name="remove" size={18} />
+              </Tap>
+              <span className="w-10 text-center text-sm font-bold tabular-nums">{people} 人</span>
+              <Tap aria-label="多一人" onClick={() => setPeople((n) => Math.min(12, n + 1))} className="grid h-8 w-8 place-items-center rounded-full bg-cream">
+                <Icon name="add" size={18} />
+              </Tap>
+            </div>
+          </div>
           <Choice label="排在哪幾餐">
             {(['breakfast', 'lunch', 'dinner'] as MealSlot[]).map((m) => (
               <Chip
@@ -308,6 +351,16 @@ function BatchWizard({
               </Chip>
             ))}
           </Choice>
+          <Choice label="每餐吃幾道">
+            {[1, 2, 3].map((n) => (
+              <Chip key={n} active={perMeal === n} onClick={() => setPerMeal(n)}>
+                {n === 1 ? '1 道' : n === 2 ? '2 道（主菜＋配菜）' : '3 道'}
+              </Chip>
+            ))}
+          </Choice>
+          <p className="-mt-2 px-1 text-[11px] text-muted">
+            {perMeal === 1 ? '一份就是一餐。' : `每餐配 ${perMeal} 道，同一道菜會分散到好幾天，每天都吃一點。`}
+          </p>
           <Choice label="已經排了菜的餐">
             <Chip active={!replace} onClick={() => setReplace(false)}>
               保留，往後排
@@ -317,40 +370,132 @@ function BatchWizard({
             </Chip>
           </Choice>
           <div className="rounded-3xl bg-card p-4 shadow-card">
-            <div className="mb-2 flex items-baseline justify-between">
+            <div className="mb-1 flex items-baseline justify-between">
               <span className="font-bold">分配結果</span>
-              <span className="text-[11px] text-muted">放不久的排前面</span>
+              {edits ? (
+                <Tap onClick={() => setEdits(null)} className="flex items-center gap-0.5 text-[11px] text-leaf-dark">
+                  <Icon name="refresh" size={14} />
+                  重新自動分配
+                </Tap>
+              ) : (
+                <span className="text-[11px] text-muted">放不久的排前面</span>
+              )}
             </div>
-            {assignments[0] && assignments[0].date > addDays(startDate, 1) && (
+            <p className="mb-2 text-[11px] text-muted">點菜名可以換或拿掉，點「＋」自己加。</p>
+            {!edits && assignments[0] && assignments[0].date > addDays(startDate, 1) && (
               <p className="mb-2 rounded-xl bg-honey-soft px-2.5 py-1.5 text-xs text-honey-ink">
                 {dayLabel(startDate)}到{dayLabel(addDays(assignments[0].date, -1))}都已經排了菜，所以從 {dayLabel(assignments[0].date)} 開始。想取代就選上面的「換成備餐的菜」。
               </p>
             )}
-            <ul className="space-y-1.5">
-              {[...new Set(assignments.map((a) => a.date))].map((date) => (
-                <li key={date} className="flex gap-2 text-sm">
-                  <span className="w-[86px] shrink-0 text-xs leading-6 text-muted">{dayLabel(date)}</span>
-                  <div className="flex min-w-0 flex-1 flex-wrap gap-1">
-                    {assignments
-                      .filter((a) => a.date === date)
-                      .map((a) => {
-                        const r = RECIPE_MAP[a.recipeId]
-                        const st = storageFor(storageOf(r), Math.round((fromKey(date).getTime() - fromKey(prepDay).getTime()) / 86400000))
+            <div className="mb-3 flex flex-wrap gap-1">
+              {items.map((x) => {
+                const n = used(x.recipeId)
+                return (
+                  <span
+                    key={x.recipeId}
+                    className={`rounded-full px-2 py-0.5 text-[11px] ${n === x.portions ? 'bg-leaf-soft text-leaf-dark' : n > x.portions ? 'bg-tomato-soft text-tomato' : 'bg-honey-soft text-honey-ink'}`}
+                  >
+                    {RECIPE_MAP[x.recipeId]?.name} {n}/{x.portions}
+                  </span>
+                )
+              })}
+            </div>
+            <ul className="space-y-2.5">
+              {dates.map((date) => {
+                const dayMeals = MEAL_ORDER.filter((m) => meals.includes(m) || assignments.some((a) => a.date === date && a.meal === m))
+                return (
+                  <li key={date} className="flex gap-2 text-sm">
+                    <span className="w-[74px] shrink-0 text-xs leading-7 text-muted">{dayLabel(date)}</span>
+                    <div className="min-w-0 flex-1 space-y-1">
+                      {dayMeals.map((meal) => {
+                        const here = assignments.map((a, i) => ({ a, i })).filter(({ a }) => a.date === date && a.meal === meal)
+                        const open = slot?.date === date && slot.meal === meal
                         return (
-                          <motion.span
-                            key={a.meal}
-                            layout
-                            transition={spring}
-                            className={`max-w-full truncate rounded-full px-2 py-0.5 text-xs ${STORAGE_STYLE[st]}`}
-                          >
-                            {MEAL_LABEL[a.meal]}・{r.name}
-                          </motion.span>
+                          <div key={meal}>
+                            <div className="flex flex-wrap items-center gap-1">
+                              <span className="w-8 shrink-0 text-[11px] text-muted">{MEAL_LABEL[meal]}</span>
+                              {here.map(({ a, i }) => {
+                                const r = RECIPE_MAP[a.recipeId]
+                                const st = storageFor(storageOf(r), Math.round((fromKey(date).getTime() - fromKey(prepDay).getTime()) / 86400000))
+                                return (
+                                  <Tap
+                                    key={i}
+                                    onClick={() => setSlot(open && slot?.index === i ? null : { date, meal, index: i })}
+                                    className={`max-w-full truncate rounded-full px-2 py-1 text-xs ${STORAGE_STYLE[st]} ${open && slot?.index === i ? 'ring-2 ring-leaf' : ''}`}
+                                  >
+                                    {r?.name}
+                                  </Tap>
+                                )
+                              })}
+                              {!here.length && isTaken(date, meal) && !replace && <span className="text-[11px] text-muted">已排其他菜</span>}
+                              <Tap
+                                aria-label={`${dayLabel(date)}${MEAL_LABEL[meal]}加一道`}
+                                onClick={() => setSlot(open && slot?.index === undefined ? null : { date, meal })}
+                                className={`grid h-6 w-6 place-items-center rounded-full ${open && slot?.index === undefined ? 'bg-leaf text-on-leaf' : 'bg-cream text-muted'}`}
+                              >
+                                <Icon name="add" size={16} />
+                              </Tap>
+                            </div>
+                            <AnimatePresence initial={false}>
+                              {open && (
+                                <motion.div
+                                  initial={{ opacity: 0, height: 0 }}
+                                  animate={{ opacity: 1, height: 'auto' }}
+                                  exit={{ opacity: 0, height: 0 }}
+                                  className="overflow-hidden"
+                                >
+                                  <div className="mt-1 flex flex-wrap gap-1 rounded-2xl bg-cream p-2">
+                                    <span className="w-full text-[11px] text-muted">{slot?.index === undefined ? '加哪一道？' : '換成哪一道？'}</span>
+                                    {items.map((x) => {
+                                      const left = x.portions - used(x.recipeId)
+                                      return (
+                                        <Tap
+                                          key={x.recipeId}
+                                          onClick={() => {
+                                            const next = [...assignments]
+                                            if (slot?.index === undefined) next.push({ date, meal, recipeId: x.recipeId })
+                                            else next[slot.index] = { ...next[slot.index], recipeId: x.recipeId }
+                                            edit(next)
+                                            setSlot(null)
+                                          }}
+                                          className="rounded-full bg-card px-2 py-1 text-xs shadow-card"
+                                        >
+                                          {RECIPE_MAP[x.recipeId]?.name}
+                                          <span className={`ml-1 ${left > 0 ? 'text-leaf-dark' : 'text-muted'}`}>剩 {Math.max(0, left)}</span>
+                                        </Tap>
+                                      )
+                                    })}
+                                    {slot?.index !== undefined && (
+                                      <Tap
+                                        onClick={() => {
+                                          edit(assignments.filter((_, i) => i !== slot.index))
+                                          setSlot(null)
+                                        }}
+                                        className="flex items-center gap-0.5 rounded-full bg-tomato-soft px-2 py-1 text-xs text-tomato"
+                                      >
+                                        <Icon name="delete" size={14} />
+                                        拿掉
+                                      </Tap>
+                                    )}
+                                  </div>
+                                </motion.div>
+                              )}
+                            </AnimatePresence>
+                          </div>
                         )
                       })}
-                  </div>
-                </li>
-              ))}
+                    </div>
+                  </li>
+                )
+              })}
             </ul>
+            <div className="mt-3 flex items-center gap-2">
+              <Tap onClick={() => setExtraDays((n) => n + 1)} className="flex items-center gap-0.5 rounded-full bg-cream px-2.5 py-1 text-xs">
+                <Icon name="add" size={14} />
+                多一天
+              </Tap>
+              <span className={`text-xs ${unplaced ? 'text-honey-ink' : 'text-muted'}`}>{unplaced ? `還有 ${unplaced} 份沒排進去` : '每一份都排好了'}</span>
+            </div>
             <div className="mt-3 flex flex-wrap gap-2 text-[11px]">
               {(['fridge', 'freezer', 'fresh'] as const).map((s) => (
                 <span key={s} className={`rounded-full px-2 py-0.5 ${STORAGE_STYLE[s]}`}>
@@ -372,6 +517,8 @@ function BatchWizard({
     </Sheet>
   )
 }
+
+const MEAL_ORDER: MealSlot[] = ['breakfast', 'lunch', 'dinner', 'snack']
 
 const i18nDay = (d: string, today: string) =>
   d === today ? `今天 ${monthDay(d)}` : d === addDays(today, 1) ? `明天 ${monthDay(d)}` : `${weekdayLabel(d)} ${monthDay(d)}`
@@ -443,13 +590,13 @@ function PickRow({ recipe, ok, n, onChange }: { recipe: Recipe; ok: boolean; n: 
         </motion.button>
       ) : (
         <div className="flex items-center gap-1">
-          <motion.button whileTap={{ scale: 0.85 }} onClick={() => onChange(n - 1)} aria-label="少一餐" className="grid h-8 w-8 place-items-center rounded-full bg-card">
+          <motion.button whileTap={{ scale: 0.85 }} onClick={() => onChange(n - 1)} aria-label="少一份" className="grid h-8 w-8 place-items-center rounded-full bg-card">
             <Icon name="remove" size={18} />
           </motion.button>
           <motion.span key={n} initial={{ scale: 1.4 }} animate={{ scale: 1 }} className="w-9 text-center text-sm font-bold tabular-nums">
-            {n}餐
+            {n}份
           </motion.span>
-          <motion.button whileTap={{ scale: 0.85 }} onClick={() => onChange(n + 1)} aria-label="多一餐" className="grid h-8 w-8 place-items-center rounded-full bg-card">
+          <motion.button whileTap={{ scale: 0.85 }} onClick={() => onChange(n + 1)} aria-label="多一份" className="grid h-8 w-8 place-items-center rounded-full bg-card">
             <Icon name="add" size={18} />
           </motion.button>
         </div>
