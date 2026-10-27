@@ -7,7 +7,7 @@
   },
   "source": "https://www.7-11.com.tw/freshfoods/",
   "kcalOnly": true,
-  "fetchedAt": "2026-10-14",
+  "fetchedAt": "2026-10-27",
   "items": [
     {
       "id": "seven-0-ricerolls_622",
@@ -241,13 +241,6 @@
       "kcal": 32
     },
     {
-      "id": "seven-1-light_1333",
-      "name": "日式鹽醬豆腐",
-      "category": "水果",
-      "serving": "1 份",
-      "kcal": 129
-    },
-    {
       "id": "seven-1-light_1334",
       "name": "21Plus主廚烤雞沙拉",
       "category": "沙拉蔬食",
@@ -421,6 +414,13 @@
       "category": "便當",
       "serving": "1 份",
       "kcal": 715
+    },
+    {
+      "id": "seven-3-Snacks_460",
+      "name": "中一排骨-經典香蒜排骨",
+      "category": "小食",
+      "serving": "1 份",
+      "kcal": 209.4
     },
     {
       "id": "seven-3-Snacks_456",
@@ -920,6 +920,13 @@
       "kcal": 795
     },
     {
+      "id": "seven-5-Noodles_280",
+      "name": "Homeal 紅燒牛肉湯餃",
+      "category": "麵食",
+      "serving": "1 份",
+      "kcal": 344
+    },
+    {
       "id": "seven-5-Noodles_265",
       "name": "蔥鹽增雞蛋白麵",
       "category": "麵食",
@@ -935,21 +942,21 @@
     },
     {
       "id": "seven-5-Noodles_267",
-      "name": "Homeal x SN 剝皮辣椒雞細扁麵",
+      "name": "【冷凍】Homeal x SN 剝皮辣椒雞細扁麵",
       "category": "麵食",
       "serving": "1 份",
       "kcal": 419
     },
     {
       "id": "seven-5-Noodles_268",
-      "name": "Homeal x貳樓雙起司肉醬義大利麵",
+      "name": "【冷凍】Homeal x貳樓雙起司肉醬義大利麵",
       "category": "麵食",
       "serving": "1 份",
       "kcal": 492
     },
     {
       "id": "seven-5-Noodles_269",
-      "name": "Homeal x貳樓烤雞佐青醬義大利麵",
+      "name": "【冷凍】Homeal x貳樓烤雞佐青醬義大利麵",
       "category": "麵食",
       "serving": "1 份",
       "kcal": 529
@@ -967,13 +974,6 @@
       "category": "麵食",
       "serving": "1 份",
       "kcal": 356
-    },
-    {
-      "id": "seven-5-Noodles_259",
-      "name": "極饗-維力炸醬巧克力拌麵",
-      "category": "麵食",
-      "serving": "1 份",
-      "kcal": 660
     },
     {
       "id": "seven-5-Noodles_260",
@@ -1009,13 +1009,6 @@
       "category": "麵食",
       "serving": "1 份",
       "kcal": 586
-    },
-    {
-      "id": "seven-5-Noodles_83",
-      "name": "滿漢大餐酸菜牛肉拌麵",
-      "category": "麵食",
-      "serving": "1 份",
-      "kcal": 546
     },
     {
       "id": "seven-6-Oden_173",
@@ -1684,13 +1677,6 @@
       "kcal": 275.4
     },
     {
-      "id": "seven-10-bread_1224",
-      "name": "晶英酒店糖霜檸檬蛋糕棒",
-      "category": "麵包甜點",
-      "serving": "1 份",
-      "kcal": 112.2
-    },
-    {
       "id": "seven-10-bread_1194",
       "name": "新感覺雙重巧克力夾心",
       "category": "麵包甜點",
@@ -1845,25 +1831,11 @@
       "kcal": 69.1
     },
     {
-      "id": "seven-10-bread_1120",
-      "name": "愛餡大亨-爆漿卡士達脆糖菠蘿",
-      "category": "麵包甜點",
-      "serving": "1 份",
-      "kcal": 345
-    },
-    {
       "id": "seven-10-bread_1124",
       "name": "LaDears提拉米蘇蛋糕杯",
       "category": "麵包甜點",
       "serving": "1 份",
       "kcal": 197
-    },
-    {
-      "id": "seven-10-bread_1125",
-      "name": "日式麻糬泡芙",
-      "category": "麵包甜點",
-      "serving": "1 份",
-      "kcal": 140
     },
     {
       "id": "seven-10-bread_1126",
@@ -1983,13 +1955,6 @@
       "category": "麵食",
       "serving": "1 份",
       "kcal": 277
-    },
-    {
-      "id": "seven-10-bread_959",
-      "name": "台式馬卡龍",
-      "category": "麵包甜點",
-      "serving": "1 份",
-      "kcal": 170
     },
     {
       "id": "seven-10-bread_939",
@@ -2267,6 +2232,13 @@
       "kcal": 236
     },
     {
+      "id": "seven-13-luwei_257",
+      "name": "御料小館纖穀元氣飯",
+      "category": "麵食",
+      "serving": "1 份",
+      "kcal": 339
+    },
+    {
       "id": "seven-13-luwei_254",
       "name": "御料小館 x SN-炸裂椒麻腿",
       "category": "麵食",
@@ -2279,6 +2251,27 @@
       "category": "焗烤",
       "serving": "1 份",
       "kcal": 272
+    },
+    {
+      "id": "seven-13-luwei_252",
+      "name": "御料小館美式經典紐奧良烤雞翅",
+      "category": "焗烤",
+      "serving": "1 份",
+      "kcal": 292
+    },
+    {
+      "id": "seven-13-luwei_260",
+      "name": "御料小館麻辣大鍋貼",
+      "category": "麵食",
+      "serving": "1 份",
+      "kcal": 421
+    },
+    {
+      "id": "seven-13-luwei_251",
+      "name": "御料小館四季紅油雞丁",
+      "category": "麵食",
+      "serving": "1 份",
+      "kcal": 223
     },
     {
       "id": "seven-13-luwei_237",
@@ -2302,11 +2295,11 @@
       "kcal": 294
     },
     {
-      "id": "seven-13-luwei_229",
-      "name": "御料小館韓風洋釀炸雞",
+      "id": "seven-13-luwei_264",
+      "name": "大大大香辣鹽酥雞",
       "category": "麵食",
       "serving": "1 份",
-      "kcal": 234
+      "kcal": 238.1
     },
     {
       "id": "seven-13-luwei_243",
@@ -2442,18 +2435,25 @@
       "kcal": 327
     },
     {
+      "id": "seven-13-luwei_85",
+      "name": "御料小館番茄肉醬義大利麵",
+      "category": "麵食",
+      "serving": "1 份",
+      "kcal": 335
+    },
+    {
+      "id": "seven-13-luwei_82",
+      "name": "御料小館蔥抓餅",
+      "category": "麵食",
+      "serving": "1 份",
+      "kcal": 411
+    },
+    {
       "id": "seven-13-luwei_110",
       "name": "松稜糖燻雞翅",
       "category": "麵食",
       "serving": "1 份",
       "kcal": 238
-    },
-    {
-      "id": "seven-13-luwei_35",
-      "name": "爆炒滷雞胗",
-      "category": "麵食",
-      "serving": "1 份",
-      "kcal": 173
     },
     {
       "id": "seven-13-luwei_32",
@@ -2680,13 +2680,6 @@
       "kcal": 642
     },
     {
-      "id": "seven-16-ohlala_140",
-      "name": "SAY CHEESE培根筆管麵",
-      "category": "麵食",
-      "serving": "1 份",
-      "kcal": 733
-    },
-    {
       "id": "seven-16-ohlala_125",
       "name": "香蒜奶油雙拼義大利麵",
       "category": "麵食",
@@ -2699,6 +2692,20 @@
       "category": "麵食",
       "serving": "1 份",
       "kcal": 609
+    },
+    {
+      "id": "seven-17-veg_180",
+      "name": "八寶冬粉",
+      "category": "麵食",
+      "serving": "1 份",
+      "kcal": 155
+    },
+    {
+      "id": "seven-17-veg_181",
+      "name": "陽明春天古早味香菇竹筍粥",
+      "category": "輕食小食",
+      "serving": "1 份",
+      "kcal": 150
     },
     {
       "id": "seven-17-veg_179",
@@ -2825,13 +2832,6 @@
       "category": "飯糰",
       "serving": "1 份",
       "kcal": 213
-    },
-    {
-      "id": "seven-17-veg_97",
-      "name": "陽明春天古早味香菇竹筍粥",
-      "category": "輕食小食",
-      "serving": "1 份",
-      "kcal": 189
     },
     {
       "id": "seven-17-veg_165",
@@ -2981,13 +2981,6 @@
       "kcal": 469
     },
     {
-      "id": "seven-18-star_311",
-      "name": "富錦樹-剝皮辣椒雞燴飯",
-      "category": "鮮食",
-      "serving": "1 份",
-      "kcal": 605
-    },
-    {
       "id": "seven-18-star_318",
       "name": "米香-催淚蛋親子丼飯",
       "category": "丼飯",
@@ -3030,20 +3023,6 @@
       "kcal": 175
     },
     {
-      "id": "seven-18-star_284",
-      "name": "晶英-起司火腿雙餡土司",
-      "category": "鮮食",
-      "serving": "1 份",
-      "kcal": 335
-    },
-    {
-      "id": "seven-18-star_286",
-      "name": "晶英酒店奶凍蜜瓜包",
-      "category": "鮮食",
-      "serving": "1 份",
-      "kcal": 258
-    },
-    {
       "id": "seven-18-star_266",
       "name": "米香-蟹黃蝦仁豆腐煲燴飯",
       "category": "鮮食",
@@ -3052,7 +3031,7 @@
     },
     {
       "id": "seven-18-star_265",
-      "name": "帕泰家-泰式辣炒雞肉拌飯",
+      "name": "【冷凍】帕泰家-泰式辣炒雞肉拌飯",
       "category": "鮮食",
       "serving": "1 份",
       "kcal": 556
@@ -3066,7 +3045,7 @@
     },
     {
       "id": "seven-18-star_219",
-      "name": "晶英-港式醬燜牛肉燴飯",
+      "name": "【冷凍】晶英-港式醬燜牛肉燴飯",
       "category": "鮮食",
       "serving": "1 份",
       "kcal": 488
@@ -3077,13 +3056,6 @@
       "category": "鮮食",
       "serving": "1 份",
       "kcal": 224
-    },
-    {
-      "id": "seven-18-star_190",
-      "name": "星級饗宴x晶華法式牛肉丸焗烤飯",
-      "category": "焗烤",
-      "serving": "1 份",
-      "kcal": 379
     },
     {
       "id": "seven-19-panini_11",
@@ -3352,6 +3324,13 @@
       "kcal": 289.5
     },
     {
+      "id": "seven-22-rice_77",
+      "name": "極饗-椒鹽重量級雞排便當",
+      "category": "便當",
+      "serving": "1 份",
+      "kcal": 862
+    },
+    {
       "id": "seven-22-rice_69",
       "name": "21Plus嘉義風味雞肉飯",
       "category": "丼飯",
@@ -3360,14 +3339,14 @@
     },
     {
       "id": "seven-22-rice_66",
-      "name": "Homeal 韓式牛肉拌飯",
+      "name": "【冷凍】Homeal 韓式牛肉拌飯",
       "category": "丼飯",
       "serving": "1 份",
       "kcal": 546
     },
     {
       "id": "seven-22-rice_68",
-      "name": "Homeal 香辣醬肉絲炒飯",
+      "name": "【冷凍】Homeal 香辣醬肉絲炒飯",
       "category": "丼飯",
       "serving": "1 份",
       "kcal": 610
@@ -3401,6 +3380,43 @@
       "kcal": 574
     },
     {
+      "id": "seven-22-rice_73",
+      "name": "【冷凍】Homeal x 壹番屋 奶油咖哩雞肉飯",
+      "category": "丼飯",
+      "serving": "1 份",
+      "kcal": 592
+    },
+    {
+      "id": "seven-22-rice_40",
+      "name": "【冷凍】Homeal x鄧師傅-客家小炒",
+      "category": "丼飯",
+      "serving": "1 份",
+      "kcal": 310
+    },
+    {
+      "id": "seven-22-rice_41",
+      "name": "【冷凍】Homeal x鄧師傅-塔香風味炒花蛤",
+      "category": "丼飯",
+      "serving": "1 份",
+      "kcal": 295.5
+    },
+    {
+      "id": "seven-22-rice_42",
+      "name": "【冷凍】Homeal x鄧師傅-鳳梨糖醋肉",
+      "category": "丼飯",
+      "serving": "1 份",
+      "kcal": 408.5
+    },
+    {
+      "id": "seven-23-dessert_87",
+      "name": "爆汁美式熱狗",
+      "category": "大亨堡",
+      "serving": "1 份",
+      "kcal": 203,
+      "fat": 16.3,
+      "sodium": 440
+    },
+    {
       "id": "seven-23-dessert_85",
       "name": "黑雷神巧克力風味霜淇淋",
       "category": "霜淇淋",
@@ -3413,13 +3429,6 @@
       "category": "大亨堡",
       "serving": "1 份",
       "kcal": 74
-    },
-    {
-      "id": "seven-23-dessert_82",
-      "name": "爆汁美式熱狗",
-      "category": "大亨堡",
-      "serving": "1 份",
-      "kcal": 203
     },
     {
       "id": "seven-23-dessert_78",
