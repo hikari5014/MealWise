@@ -6,7 +6,7 @@
     "site": "https://www.mos.com.tw/"
   },
   "source": "https://www.mos.com.tw/menu/set.aspx",
-  "fetchedAt": "2026-10-11",
+  "fetchedAt": "2026-10-31",
   "items": [
     {
       "id": "mos-m001265",
@@ -489,18 +489,6 @@
       "source": "https://www.mos.com.tw/menu/breakfast_detail.aspx?id=M001097"
     },
     {
-      "id": "mos-m001203",
-      "name": "青梅豬排堡",
-      "category": "早餐",
-      "serving": "1 份",
-      "kcal": 385.3,
-      "protein": 14.8,
-      "carbs": 42.6,
-      "fat": 17.4,
-      "sodium": 855,
-      "source": "https://www.mos.com.tw/menu/breakfast_detail.aspx?id=M001203"
-    },
-    {
       "id": "mos-m001002",
       "name": "摩斯豬排堡",
       "category": "早餐",
@@ -717,18 +705,6 @@
       "source": "https://www.mos.com.tw/menu/Detail.aspx?id=M001164"
     },
     {
-      "id": "mos-m001204",
-      "name": "灑粉薯條(可可咖哩)",
-      "category": "副餐",
-      "serving": "1 份",
-      "kcal": 503,
-      "protein": 6.1,
-      "carbs": 51,
-      "fat": 33,
-      "sodium": 142,
-      "source": "https://www.mos.com.tw/menu/Detail.aspx?id=M001204"
-    },
-    {
       "id": "mos-m000935",
       "name": "薯條",
       "category": "副餐",
@@ -787,18 +763,6 @@
       "fat": 11.7,
       "sodium": 260,
       "source": "https://www.mos.com.tw/menu/Detail.aspx?id=M001120"
-    },
-    {
-      "id": "mos-m001205",
-      "name": "和風雞腿塊(可可咖哩)",
-      "category": "副餐",
-      "serving": "1 份",
-      "kcal": 286.8,
-      "protein": 18.4,
-      "carbs": 14,
-      "fat": 17.5,
-      "sodium": 697,
-      "source": "https://www.mos.com.tw/menu/Detail.aspx?id=M001205"
     },
     {
       "id": "mos-m000937",
