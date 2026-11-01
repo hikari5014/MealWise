@@ -6,7 +6,7 @@
     "site": "https://www.mos.com.tw/"
   },
   "source": "https://www.mos.com.tw/menu/set.aspx",
-  "fetchedAt": "2026-10-31",
+  "fetchedAt": "2026-11-01",
   "items": [
     {
       "id": "mos-m001265",
@@ -1291,6 +1291,18 @@
       "fat": 11.7,
       "sodium": 110,
       "source": "https://www.mos.com.tw/menu/Detail.aspx?id=M001243"
+    },
+    {
+      "id": "mos-m001276",
+      "name": "蜜香紅茶泡芙(冷凍販售)",
+      "category": "甜點",
+      "serving": "1 份",
+      "kcal": 139.3,
+      "protein": 2.4,
+      "carbs": 12.6,
+      "fat": 8.8,
+      "sodium": 39,
+      "source": "https://www.mos.com.tw/menu/Detail.aspx?id=M001276"
     },
     {
       "id": "mos-m001067",
