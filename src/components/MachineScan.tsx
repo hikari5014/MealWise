@@ -15,6 +15,7 @@ import {
 } from '../lib/machines'
 import { EQUIP_LABEL } from '../lib/workout'
 import { aiErrorText, identifyMachine } from '../lib/machineAi'
+import { identifyLocal, localModelCached, type LocalGuess } from '../lib/machineLocal'
 import { nfcSupported, readNfc, writeNfc } from '../lib/nfc'
 import { appUrl, getSession } from '../lib/cloud'
 import { ExerciseAnim, ExerciseLibrary } from './ExerciseLibrary'
@@ -47,6 +48,9 @@ export function MachineScan({ open, onClose, onAdd }: { open: boolean; onClose: 
   const [found, setFound] = useState<Found | null>(null)
   const [picking, setPicking] = useState(false)
   const [busy, setBusy] = useState('')
+  /** 手機小模型猜的幾種器材（null＝還沒拍） */
+  const [guesses, setGuesses] = useState<LocalGuess[] | null>(null)
+  const photo = useRef<File | null>(null)
   const [err, setErr] = useState('')
   const fileRef = useRef<HTMLInputElement>(null)
   const nfcAbort = useRef<AbortController | null>(null)
@@ -57,6 +61,7 @@ export function MachineScan({ open, onClose, onAdd }: { open: boolean; onClose: 
       setMode('menu')
       setErr('')
       setBusy('')
+      setGuesses(null)
     } else nfcAbort.current?.abort()
   }, [open])
 
@@ -87,11 +92,37 @@ export function MachineScan({ open, onClose, onAdd }: { open: boolean; onClose: 
     }
   }
 
+  /** 先用手機上的小模型（免費、不用登入）；猜的都不對再交給雲端 AI */
   const onPhoto = async (file?: File) => {
     if (!file) return
+    if (fileRef.current) fileRef.current.value = ''
+    photo.current = file
     setErr('')
+    setGuesses(null)
     setMode('photo')
-    setBusy('AI 正在看這是什麼器材…')
+    setBusy(localModelCached() ? '正在看這是什麼器材…' : '第一次使用，下載辨識模型中…')
+    try {
+      const g = await identifyLocal(file, (pct) => setBusy(`第一次使用，下載辨識模型中… ${pct}%（約 30 MB，只要一次）`))
+      haptic(8)
+      setGuesses(g)
+    } catch {
+      setErr('手機上的辨識沒辦法用，可以改用 AI 仔細看')
+      setGuesses([])
+    } finally {
+      setBusy('')
+    }
+  }
+
+  const pickGuess = (g: LocalGuess) => {
+    haptic([8, 30, 8])
+    setFound({ key: '', via: 'photo', text: g.rule.name, rule: g.rule })
+  }
+
+  const askCloud = async () => {
+    const file = photo.current
+    if (!file) return
+    setErr('')
+    setBusy('AI 正在仔細看這是什麼器材…')
     try {
       const g = await identifyMachine(file)
       haptic([8, 30, 8])
@@ -159,9 +190,49 @@ export function MachineScan({ open, onClose, onAdd }: { open: boolean; onClose: 
               </motion.span>
               <p className="text-sm">{busy || '把手機背面靠近器材上的 NFC 貼紙'}</p>
               {err && <p className="text-sm text-tomato">{err}</p>}
-              <Tap onClick={() => { nfcAbort.current?.abort(); setMode('menu'); setErr('') }} className="text-xs text-muted underline">
+              <Tap onClick={() => { nfcAbort.current?.abort(); setMode('menu'); setErr(''); setGuesses(null) }} className="text-xs text-muted underline">
                 取消
               </Tap>
+            </div>
+          ) : mode === 'photo' && guesses ? (
+            <div className="space-y-2">
+              {guesses.length ? (
+                <p className="px-1 text-sm text-muted">最像的是這幾種，點對的那一個：</p>
+              ) : (
+                <p className="rounded-2xl bg-honey-soft px-3 py-2 text-sm text-honey-ink">認不太出來，可以換個角度再拍，或請 AI 仔細看。</p>
+              )}
+              {guesses.map((g, i) => (
+                <Tap key={g.rule.id} press={0.98} onClick={() => pickGuess(g)} className="flex w-full items-center gap-3 rounded-2xl bg-card p-3 text-left shadow-card">
+                  <span className={`grid h-9 w-9 shrink-0 place-items-center rounded-full text-sm font-bold ${i === 0 ? 'bg-leaf text-on-leaf' : 'bg-cream text-muted'}`}>{i + 1}</span>
+                  <span className="min-w-0 flex-1">
+                    <span className="block font-medium">{g.rule.name}</span>
+                    <span className="block text-[11px] text-muted">{g.rule.exercises.length} 個動作</span>
+                  </span>
+                  <span className="h-1.5 w-16 overflow-hidden rounded-full bg-cream">
+                    <span className="block h-full rounded-full bg-leaf" style={{ width: `${Math.max(8, Math.round((g.score / guesses[0].score) * 100))}%` }} />
+                  </span>
+                </Tap>
+              ))}
+              <Button
+                variant="soft"
+                className="flex w-full items-center justify-center gap-1.5"
+                disabled={!getSession()}
+                onClick={askCloud}
+              >
+                <Icon name="auto_awesome" size={18} />
+                {guesses.length ? '都不是，請 AI 仔細看' : '請 AI 仔細看'}
+              </Button>
+              {!getSession() && <p className="px-1 text-center text-[11px] text-muted">AI 仔細看要先登入會員（「我的」頁）</p>}
+              {err && <p className="px-1 text-sm text-tomato">{err}</p>}
+              <div className="flex justify-between px-1 pt-1 text-xs">
+                <Tap onClick={() => fileRef.current?.click()} className="flex items-center gap-1 py-1 text-leaf-dark">
+                  <Icon name="photo_camera" size={16} />
+                  再拍一張
+                </Tap>
+                <Tap onClick={() => { setMode('menu'); setGuesses(null); setErr('') }} className="py-1 text-muted">
+                  換別的方式
+                </Tap>
+              </div>
             </div>
           ) : (
             <>
@@ -176,8 +247,7 @@ export function MachineScan({ open, onClose, onAdd }: { open: boolean; onClose: 
               <MethodButton
                 icon="photo_camera"
                 title="拍照辨識"
-                sub={getSession() ? '拍一張器材的照片，AI 幫你認' : '要先登入會員（「我的」頁）才能用'}
-                disabled={!getSession()}
+                sub="拍一張器材的照片，手機上直接認，不用登入、不用網路"
                 onClick={() => fileRef.current?.click()}
               />
               {err && <p className="px-1 pt-1 text-sm text-tomato">{err}</p>}
@@ -240,6 +310,7 @@ export function MachineScan({ open, onClose, onAdd }: { open: boolean; onClose: 
                 onClick={() => {
                   setFound(null)
                   setMode('menu')
+                  setGuesses(null)
                 }}
                 className="flex items-center gap-1 py-1 text-muted"
               >
