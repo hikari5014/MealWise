@@ -1,7 +1,7 @@
 // 會員帳號：登入（Email 驗證碼／Google／Apple）、同步狀態、登出、刪除帳號，管理員多一個後台入口
 import { useState } from 'react'
 import { db } from '../db'
-import { accountAction, authErrorText, sendEmailCode, signInWith, signOut, useMember, useSession, verifyEmailCode } from '../lib/cloud'
+import { accountAction, authErrorText, sendEmailCode, signInWith, signOut, useMember, useProviders, useSession, verifyEmailCode } from '../lib/cloud'
 import { resetSyncMarks, syncNow, useSyncState } from '../lib/sync'
 import { AdminSheet } from './Admin'
 import { Icon } from './Icon'
@@ -103,6 +103,9 @@ export function LoginSheet({ open, onClose }: { open: boolean; onClose: () => vo
   const [busy, setBusy] = useState(false)
   const [err, setErr] = useState('')
   const toast = useToast()
+  const providers = useProviders()
+  // 讀不到設定時照樣給按（按了會顯示白話的錯誤）
+  const on = (k: 'google' | 'apple') => !providers || !!providers[k]
 
   const run = async (f: () => Promise<{ error: unknown }>) => {
     setBusy(true)
@@ -129,11 +132,11 @@ export function LoginSheet({ open, onClose }: { open: boolean; onClose: () => vo
     <Sheet open={open} onClose={close} title="登入會員">
       <div className="space-y-3">
         <p className="text-sm text-muted">登入後，菜單、紀錄、訓練和設定會自動備份，在別的手機登入同一個帳號就會出現。</p>
-        <Tap disabled={busy} onClick={() => run(() => signInWith('google'))} className="flex w-full items-center justify-center gap-2 rounded-2xl bg-card py-3 font-bold shadow-card">
-          <GoogleMark />用 Google 登入
+        <Tap disabled={busy || !on('google')} onClick={() => run(() => signInWith('google'))} className="flex w-full items-center justify-center gap-2 rounded-2xl bg-card py-3 font-bold shadow-card disabled:opacity-40">
+          <GoogleMark />用 Google 登入{!on('google') && <span className="text-xs font-normal text-muted">（尚未開放）</span>}
         </Tap>
-        <Tap disabled={busy} onClick={() => run(() => signInWith('apple'))} className="flex w-full items-center justify-center gap-2 rounded-2xl bg-ink py-3 font-bold text-cream">
-          <AppleMark />用 Apple 登入
+        <Tap disabled={busy || !on('apple')} onClick={() => run(() => signInWith('apple'))} className="flex w-full items-center justify-center gap-2 rounded-2xl bg-ink py-3 font-bold text-cream disabled:opacity-40">
+          <AppleMark />用 Apple 登入{!on('apple') && <span className="text-xs font-normal opacity-70">（尚未開放）</span>}
         </Tap>
         <div className="flex items-center gap-2 py-1 text-xs text-muted">
           <span className="h-px flex-1 bg-ink/10" />或用 Email<span className="h-px flex-1 bg-ink/10" />
@@ -164,13 +167,13 @@ export function LoginSheet({ open, onClose }: { open: boolean; onClose: () => vo
             <p className="flex items-start gap-1.5 text-sm">
               <Icon name="mail" size={18} className="mt-0.5 text-leaf-dark" />
               <span>
-                驗證碼已寄到 <b>{email}</b>，把信裡的 6 位數字填進來（沒看到請找一下垃圾信件）。
+                驗證碼已寄到 <b>{email}</b>，把信裡的數字驗證碼填進來（沒看到請找一下垃圾信件）。
               </span>
             </p>
             <input
               inputMode="numeric"
               autoComplete="one-time-code"
-              maxLength={6}
+              maxLength={10}
               value={code}
               onChange={(e) => setCode(e.target.value.replace(/\D/g, ''))}
               placeholder="000000"

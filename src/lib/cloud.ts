@@ -73,6 +73,18 @@ export const signInWith = (provider: 'google' | 'apple') => supabase.auth.signIn
 
 export const signOut = () => supabase.auth.signOut()
 
+/** 後台開了哪些登入方式（沒開的按鈕就先不要給按，免得跳到錯誤頁） */
+export function useProviders() {
+  const [p, setP] = useState<Record<string, boolean> | null>(null)
+  useEffect(() => {
+    fetch(`${SUPABASE_URL}/auth/v1/settings`, { headers: { apikey: SUPABASE_KEY } })
+      .then((r) => r.json())
+      .then((d: { external?: Record<string, boolean> }) => setP(d.external ?? {}))
+      .catch(() => setP(null))
+  }, [])
+  return p
+}
+
 /** 呼叫雲端帳號小程式（刪除帳號、停用會員） */
 export async function accountAction(body: Record<string, unknown>) {
   const { data, error } = await supabase.functions.invoke('account', { body })
