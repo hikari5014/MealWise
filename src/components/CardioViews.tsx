@@ -6,6 +6,7 @@ import { haptic, spring } from '../lib/feedback'
 import { blockElapsed, cardioKcal, cardioSummary, fmtDuration, type CardioBlock, type Workout, type WorkoutEntry, type WorkoutSet } from '../lib/workout'
 import { Food } from './Food'
 import { ExerciseAnim, exercisePhotoCredit } from './ExerciseLibrary'
+import { CARDIO_ART } from './CardioArt'
 import { Icon } from './Icon'
 import { CheckButton, Sheet, Tap } from './ui'
 
@@ -287,7 +288,7 @@ export function BlockCard({
             <li key={`${e.exerciseId}-${i}`} className={isCurrent ? 'bg-leaf-soft/50' : ''}>
               <Tap press={0.99} onClick={() => setOpen(open === i ? null : i)} className="flex w-full items-center gap-2.5 px-3 py-2 text-left">
                 <span className={`w-5 text-center text-xs font-bold tabular-nums ${s?.done ? 'text-leaf' : 'text-muted'}`}>{k + 1}</span>
-                {exercisePhotoCredit(ex.id) ? <ExerciseAnim ex={ex} play={false} className="h-7 w-9 shrink-0 rounded-lg" /> : <Food id={ex.icon ?? 'cx-dash'} size={28} />}
+                {exercisePhotoCredit(ex.id) || CARDIO_ART[ex.id] ? <ExerciseAnim ex={ex} play={false} className="h-7 w-9 shrink-0 rounded-lg" /> : <Food id={ex.icon ?? 'cx-dash'} size={28} />}
                 <span className="min-w-0 flex-1">
                   <span className="block truncate text-sm font-medium">{ex.zh}</span>
                   <span className="block truncate text-[11px] text-muted">{s ? targetText(ex, s) : ''}</span>

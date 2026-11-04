@@ -1,1 +1,155 @@
-{}
+{
+  "cx-outdoor-run": {
+    "title": "Running Woman",
+    "creator": "mrhayata",
+    "source": "flickr",
+    "license": "by-sa",
+    "licenseVersion": "2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0/",
+    "landingUrl": "https://www.flickr.com/photos/36516818@N00/268651671"
+  },
+  "cx-walk": {
+    "title": "Brisk walk to the ocean",
+    "creator": "photofarmer",
+    "source": "flickr",
+    "license": "by",
+    "licenseVersion": "2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/2.0/",
+    "landingUrl": "https://www.flickr.com/photos/62528187@N00/8217196522"
+  },
+  "cx-spin-class": {
+    "title": "Cycle Class at the Gym",
+    "creator": "theglobalpanorama",
+    "source": "flickr",
+    "license": "by-sa",
+    "licenseVersion": "2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0/",
+    "landingUrl": "https://www.flickr.com/photos/121483302@N02/13899780126"
+  },
+  "cx-assault-bike": {
+    "title": "Assault Bike Spartan Games 2",
+    "creator": "HybridFitty",
+    "source": "wikimedia",
+    "license": "by",
+    "licenseVersion": "4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+    "landingUrl": "https://commons.wikimedia.org/w/index.php?curid=145705190"
+  },
+  "cx-ski-erg": {
+    "title": "CrossFit workout on SkiErg DSC1807",
+    "creator": "Kiet Le (photos · photo sets)",
+    "source": "wikimedia",
+    "license": "by",
+    "licenseVersion": "2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/2.0/",
+    "landingUrl": "https://commons.wikimedia.org/w/index.php?curid=185168330"
+  },
+  "cx-swimming": {
+    "title": "Freestyle swimming technique",
+    "creator": "simplyswimuk",
+    "source": "flickr",
+    "license": "by-sa",
+    "licenseVersion": "2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0/",
+    "landingUrl": "https://www.flickr.com/photos/94322861@N08/8589583606"
+  },
+  "cx-boxing": {
+    "title": "Me at a Frisco Boxing Workout",
+    "creator": "boltron-",
+    "source": "flickr",
+    "license": "by-sa",
+    "licenseVersion": "2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0/",
+    "landingUrl": "https://www.flickr.com/photos/46213661@N00/4098869023"
+  },
+  "cx-dance": {
+    "title": "Aerobithon - U.S. Army Garrison Humphreys, South Korea - 19 May 2012",
+    "creator": "USAG-Humphreys",
+    "source": "flickr",
+    "license": "by",
+    "licenseVersion": "2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/2.0/",
+    "landingUrl": "https://www.flickr.com/photos/31687107@N07/7239588274"
+  },
+  "cx-hiking": {
+    "title": "Hiker Mountains",
+    "creator": "Burst",
+    "source": "stocksnap",
+    "license": "cc0",
+    "licenseVersion": "1.0",
+    "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "landingUrl": "https://stocksnap.io/photo/hiker-mountains-WESFMRUJB2"
+  },
+  "cx-hiit": {
+    "title": "Jumping jack pose",
+    "creator": "m01229",
+    "source": "flickr",
+    "license": "by",
+    "licenseVersion": "2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/2.0/",
+    "landingUrl": "https://www.flickr.com/photos/39908901@N06/7491892300"
+  },
+  "cx-burpee": {
+    "title": "180611-N-UP035-0276",
+    "creator": "U.S. Department of Defense Current Photos",
+    "source": "flickr",
+    "license": "pdm",
+    "licenseVersion": "1.0",
+    "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
+    "landingUrl": "https://www.flickr.com/photos/39955793@N07/28899399878"
+  },
+  "cx-hyrox-run": {
+    "title": "Finish: St. Coca's 5KM Road Race and Fun Run 2014",
+    "creator": "Peter Mooney",
+    "source": "flickr",
+    "license": "by",
+    "licenseVersion": "2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/2.0/",
+    "landingUrl": "https://www.flickr.com/photos/25874444@N00/14522259385"
+  },
+  "cx-sled-push": {
+    "title": "DSC_8149",
+    "creator": "Fort Drum & 10th Mountain Division (LI)",
+    "source": "flickr",
+    "license": "pdm",
+    "licenseVersion": "1.0",
+    "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
+    "landingUrl": "https://www.flickr.com/photos/62309569@N03/33717036408"
+  },
+  "cx-burpee-broad-jump": {
+    "title": "Competition Brings Community to Soldiers at Latvian Base",
+    "creator": "U.S. Army Europe",
+    "source": "flickr",
+    "license": "pdm",
+    "licenseVersion": "1.0",
+    "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
+    "landingUrl": "https://www.flickr.com/photos/37585279@N03/15651229345"
+  },
+  "cx-farmers-carry": {
+    "title": "HARRY S. TRUMAN (CVN 75)_130910-N-ZG705-244",
+    "creator": "U.S. Naval Forces Central Command/U.S. Fifth Fleet",
+    "source": "flickr",
+    "license": "by",
+    "licenseVersion": "2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/2.0/",
+    "landingUrl": "https://www.flickr.com/photos/48776503@N05/9723681082"
+  },
+  "cx-sandbag-lunges": {
+    "title": "250919-A-CI474-1183",
+    "creator": "3d U.S. Infantry Regiment (The Old Guard)",
+    "source": "flickr",
+    "license": "pdm",
+    "licenseVersion": "1.0",
+    "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
+    "landingUrl": "https://www.flickr.com/photos/63526116@N03/54800005346"
+  },
+  "cx-wall-balls": {
+    "title": "District Crossfit Class Warfare-234",
+    "creator": "ROSE PHYSICAL THERAPY GROUP (photos · photo sets)",
+    "source": "wikimedia",
+    "license": "by",
+    "licenseVersion": "2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/2.0/",
+    "landingUrl": "https://commons.wikimedia.org/w/index.php?curid=149869984"
+  }
+}

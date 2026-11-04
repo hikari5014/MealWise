@@ -1,5 +1,6 @@
 import { AnimatePresence, motion } from 'framer-motion'
 import exerciseCredits from '../data/exerciseCredits.json'
+import { CARDIO_ART } from './CardioArt'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { useDeferredValue, useEffect, useMemo, useState } from 'react'
 import { EXERCISES, type Exercise } from '../data/exercises'
@@ -60,6 +61,13 @@ export const exercisePhotoCredit = (id: string): ExCredit | undefined => EX_CRED
 /** 兩張照片交替＝簡單的動作動畫 */
 export function ExerciseAnim({ ex, className = '', play = true }: { ex: Exercise; className?: string; play?: boolean }) {
   if (ex.noPhoto && EX_CREDITS[ex.id]) return <SinglePhotoAnim ex={ex} className={className} play={play} />
+  const Art = CARDIO_ART[ex.id]
+  if (ex.noPhoto && Art)
+    return (
+      <div className={`relative overflow-hidden bg-gradient-to-br from-sky-soft to-leaf-soft text-leaf-dark ${className}`}>
+        <Art play={play} />
+      </div>
+    )
   if (ex.noPhoto) return <IconAnim ex={ex} className={className} play={play} />
   return <PhotoAnim ex={ex} className={className} play={play} />
 }
