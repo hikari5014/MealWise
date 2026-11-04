@@ -1,4 +1,4 @@
-import { AnimatePresence, motion } from 'framer-motion'
+import { AnimatePresence, motion, Reorder, useDragControls } from 'framer-motion'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { useEffect, useRef, useState } from 'react'
 import { EXERCISE_MAP, type Exercise } from '../data/exercises'
@@ -18,6 +18,8 @@ import {
   isCardio,
   lastSetsOf,
   moveFor,
+  reorderEntries,
+  workoutUnits,
   workoutCardio,
   workoutVolume,
   type Grip,
@@ -52,6 +54,9 @@ export function WorkoutSession({ id, onClose }: { id: number | null; onClose: ()
   const [editing, setEditing] = useState(false)
   useEffect(() => setEditing(false), [id])
   const [detail, setDetail] = useState<Exercise | null>(null)
+  /** 調整大項目順序的模式 */
+  const [sorting, setSorting] = useState(false)
+  useEffect(() => setSorting(false), [id])
   const [restFor, setRestFor] = useState(90)
   const [restEnd, setRestEnd] = useState<number | null>(null)
   const [now, setNow] = useState(Date.now())
@@ -188,6 +193,21 @@ export function WorkoutSession({ id, onClose }: { id: number | null; onClose: ()
               </div>
             )}
 
+            {!locked && workoutUnits(w).length > 1 && (
+              <div className="flex justify-end">
+                <Tap
+                  onClick={() => setSorting((v) => !v)}
+                  className={`flex items-center gap-1 rounded-full px-3 py-1.5 text-xs ${sorting ? 'bg-leaf text-on-leaf' : 'bg-card text-ink shadow-card'}`}
+                >
+                  <Icon name={sorting ? 'check' : 'swap_vert'} size={16} />
+                  {sorting ? '排好了' : '調整順序'}
+                </Tap>
+              </div>
+            )}
+
+            {sorting && !locked ? (
+              <SortList w={w} onSave={(entries) => update((x) => (x.entries = entries))} />
+            ) : (
             <AnimatePresence initial={false}>
               {w.entries.map((e, ei) => {
                 const ex = EXERCISE_MAP[e.exerciseId]
@@ -326,6 +346,7 @@ export function WorkoutSession({ id, onClose }: { id: number | null; onClose: ()
                 )
               })}
             </AnimatePresence>
+            )}
 
             {!locked && (
               <div className="space-y-2">
@@ -336,7 +357,7 @@ export function WorkoutSession({ id, onClose }: { id: number | null; onClose: ()
                 <div className="flex gap-2">
                   <Tap press={0.97} onClick={() => setScan(true)} className="flex flex-1 items-center justify-center gap-1.5 rounded-3xl bg-card py-3 text-sm text-ink shadow-card">
                     <Icon name="qr_code_scanner" size={20} />
-                    掃器材 QR Code
+                    辨識器材
                   </Tap>
                   <Tap press={0.97} onClick={() => setCombo(true)} className="flex flex-1 items-center justify-center gap-1.5 rounded-3xl bg-card py-3 text-sm text-sky shadow-card">
                     <Icon name="timer" size={20} />
@@ -553,5 +574,101 @@ function GripPicker({ grip, options, onChange }: { grip?: Grip; options: { bar: 
         )}
       </AnimatePresence>
     </div>
+  )
+}
+
+/** 調整大項目順序：拖曳左邊的把手，或按上下箭頭 */
+function SortList({ w, onSave }: { w: Workout; onSave: (entries: Workout['entries']) => void }) {
+  const units = workoutUnits(w)
+  const [order, setOrder] = useState(units.map((u) => u.key))
+  // 資料變了（例如刪掉動作）就跟著更新
+  const sig = units.map((u) => u.key).join()
+  useEffect(() => setOrder(units.map((u) => u.key)), [sig])
+  const byKey = new Map(units.map((u) => [u.key, u]))
+  const commit = (keys: string[]) => {
+    if (keys.join() !== sig) onSave(reorderEntries(w, keys))
+  }
+  const move = (i: number, d: number) => {
+    const j = i + d
+    if (j < 0 || j >= order.length) return
+    haptic(8)
+    const next = [...order]
+    ;[next[i], next[j]] = [next[j], next[i]]
+    setOrder(next)
+    commit(next)
+  }
+  return (
+    <div className="space-y-2">
+      <p className="px-1 text-[11px] text-muted">按住左邊的 ⋮⋮ 拖曳，或按右邊的箭頭上下移動。</p>
+      <Reorder.Group axis="y" values={order} onReorder={setOrder} className="space-y-2">
+        {order.map((k, i) => {
+          const u = byKey.get(k)
+          if (!u) return null
+          return <SortRow key={k} value={k} w={w} unit={u} first={i === 0} last={i === order.length - 1} onMove={(d) => move(i, d)} onDrop={() => commit(order)} />
+        })}
+      </Reorder.Group>
+    </div>
+  )
+}
+
+function SortRow({
+  value,
+  w,
+  unit,
+  first,
+  last,
+  onMove,
+  onDrop,
+}: {
+  value: string
+  w: Workout
+  unit: ReturnType<typeof workoutUnits>[number]
+  first: boolean
+  last: boolean
+  onMove: (d: number) => void
+  onDrop: () => void
+}) {
+  const controls = useDragControls()
+  const block = unit.block ? w.blocks?.find((b) => b.id === unit.block) : undefined
+  const ex = EXERCISE_MAP[w.entries[unit.idx[0]].exerciseId]
+  const title = block ? block.name : ex?.zh ?? '動作'
+  const sub = block ? `${unit.idx.length} 站` : `${w.entries[unit.idx[0]].sets.length} 組`
+  return (
+    <Reorder.Item
+      value={value}
+      dragListener={false}
+      dragControls={controls}
+      onDragEnd={onDrop}
+      whileDrag={{ scale: 1.03, boxShadow: '0 12px 28px rgba(0,0,0,0.18)' }}
+      className="flex items-center gap-2 rounded-2xl bg-card p-2 shadow-card"
+    >
+      <span
+        onPointerDown={(e) => {
+          haptic(6)
+          controls.start(e)
+        }}
+        aria-label={`拖曳${title}`}
+        className="grid h-10 w-8 shrink-0 cursor-grab touch-none place-items-center text-muted"
+      >
+        <Icon name="drag_indicator" size={22} />
+      </span>
+      {block ? (
+        <span className="grid h-10 w-12 shrink-0 place-items-center rounded-xl bg-sky-soft text-sky">
+          <Icon name="timer" size={22} />
+        </span>
+      ) : (
+        ex && <ExerciseAnim ex={ex} play={false} className="h-10 w-12 shrink-0 rounded-xl" />
+      )}
+      <div className="min-w-0 flex-1">
+        <div className="truncate text-sm font-medium">{title}</div>
+        <div className="text-[11px] text-muted">{sub}</div>
+      </div>
+      <Tap aria-label={`${title}往上`} disabled={first} onClick={() => onMove(-1)} className="grid h-9 w-9 place-items-center rounded-full bg-cream disabled:opacity-30">
+        <Icon name="keyboard_arrow_up" size={22} />
+      </Tap>
+      <Tap aria-label={`${title}往下`} disabled={last} onClick={() => onMove(1)} className="grid h-9 w-9 place-items-center rounded-full bg-cream disabled:opacity-30">
+        <Icon name="keyboard_arrow_down" size={22} />
+      </Tap>
+    </Reorder.Item>
   )
 }

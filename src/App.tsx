@@ -28,6 +28,7 @@ import Plan from './pages/Plan'
 import Today from './pages/Today'
 import { PantryPlanProvider } from './components/PantryPlan'
 import { EatOutPickerProvider } from './components/EatOut'
+import { WorkoutSessionProvider } from './components/ActiveWorkout'
 import Train from './pages/Train'
 
 const TABS = [
@@ -90,13 +91,14 @@ export default function App() {
               <ComposerProvider>
               <PantryPlanProvider>
               <EatOutPickerProvider>
+              <WorkoutSessionProvider>
                 {profile === undefined ? (
                   <Splash />
                 ) : profile === null ? (
                   <Onboarding />
                 ) : (
                   <>
-                    <main className="mx-auto max-w-lg px-4 pb-[calc(96px+env(safe-area-inset-bottom))] pt-[calc(12px+env(safe-area-inset-top))]">
+                    <main className="mx-auto max-w-lg px-4 pb-[calc(96px+env(safe-area-inset-bottom))] pt-[calc(12px+env(safe-area-inset-top)+var(--pill-h,0px))] transition-[padding] duration-300">
                       {/* 只做「進場」動畫：換頁不必等舊頁離場，切換更跟手也更穩定 */}
                       <motion.div
                         key={tab}
@@ -114,6 +116,7 @@ export default function App() {
                     <BottomNav tab={navTab} onChange={go} />
                   </>
                 )}
+              </WorkoutSessionProvider>
               </EatOutPickerProvider>
               </PantryPlanProvider>
               </ComposerProvider>

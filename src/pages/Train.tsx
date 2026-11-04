@@ -4,7 +4,7 @@ import { useMemo, useState } from 'react'
 import { BodyMap, useBodyPalette } from '../components/BodyMap'
 import { ExerciseLibrary } from '../components/ExerciseLibrary'
 import { Icon } from '../components/Icon'
-import { WorkoutSession } from '../components/WorkoutSession'
+import { useWorkoutSession } from '../components/ActiveWorkout'
 import { WatchCard } from '../components/WatchSync'
 import { Tap } from '../components/ui'
 import { EXERCISE_MAP } from '../data/exercises'
@@ -20,7 +20,7 @@ import { BODY_PARTS, MUSCLE_ZH, doneSets, weeklyBodyData, weeklyMuscles, workout
 export default function Train({ profile }: { profile: Profile }) {
   const today = todayKey()
   const workouts = useLiveQuery(() => db.workouts.orderBy('startedAt').reverse().toArray()) ?? []
-  const [openId, setOpenId] = useState<number | null>(null)
+  const { open: setOpenId } = useWorkoutSession()
   const [library, setLibrary] = useState(false)
   const next7 = useMemo(() => Array.from({ length: 7 }, (_, i) => addDays(today, i)), [today])
   const marks = useMarks(next7)
@@ -136,10 +136,6 @@ export default function Train({ profile }: { profile: Profile }) {
         </ul>
       </section>
 
-      <WorkoutSession
-        id={openId}
-        onClose={() => setOpenId(null)}
-      />
       <ExerciseLibrary open={library} onClose={() => setLibrary(false)} />
     </div>
   )

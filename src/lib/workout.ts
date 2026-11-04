@@ -329,3 +329,33 @@ export function workoutCardio(w: Workout, weightKg = 60) {
   }
   return { min: Math.round(min * 10) / 10, km: Math.round(km * 100) / 100, kcal: Math.round(kcal) }
 }
+
+/** 訓練裡的「大項目」：單一動作，或一整個有氧組合（裡面好幾站） */
+export interface WorkoutUnit {
+  key: string
+  block?: string
+  idx: number[]
+}
+
+export function workoutUnits(w: Workout): WorkoutUnit[] {
+  const units: WorkoutUnit[] = []
+  // 鑰匙不能用位置（排完順序位置就變了）：用動作 id＋第幾次出現
+  const seen: Record<string, number> = {}
+  w.entries.forEach((e, i) => {
+    if (e.block) {
+      const u = units.find((x) => x.block === e.block)
+      if (u) u.idx.push(i)
+      else units.push({ key: `b:${e.block}`, block: e.block, idx: [i] })
+    } else {
+      const n = (seen[e.exerciseId] = (seen[e.exerciseId] ?? 0) + 1)
+      units.push({ key: `e:${e.exerciseId}#${n}`, idx: [i] })
+    }
+  })
+  return units
+}
+
+/** 照新的大項目順序重排動作（同一組合的各站保持原本先後） */
+export function reorderEntries(w: Workout, keys: string[]): WorkoutEntry[] {
+  const map = new Map(workoutUnits(w).map((u) => [u.key, u]))
+  return keys.flatMap((k) => map.get(k)?.idx.map((i) => w.entries[i]) ?? [])
+}

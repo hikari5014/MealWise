@@ -20,6 +20,10 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+      # 順便叫醒 Supabase：免費方案一週沒人用會自動暫停
+      - name: Keep Supabase awake
+        continue-on-error: true
+        run: curl -fsS -o /dev/null "https://tkzduoxcmnlolksnvgqt.supabase.co/rest/v1/announcements?select=id&limit=1" -H "apikey: sb_publishable_Xwy2FxyhxyCcbhqPTos4HQ_yp3OU82c"
       - run: node scripts/update-eatout.mjs
       - name: Commit if changed
         run: |

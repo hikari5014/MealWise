@@ -10,7 +10,7 @@ import { TRAIN_MAP, TRAIN_TYPES, doneSets, workoutVolume, type TrainType } from 
 import type { DayMark } from '../types'
 import { Food } from './Food'
 import { Icon } from './Icon'
-import { WorkoutSession } from './WorkoutSession'
+import { useWorkoutSession } from './ActiveWorkout'
 import { Tap, useToast } from './ui'
 
 /** 開始（或補記）某一天的訓練，類型照那天的排程 */
@@ -42,7 +42,7 @@ export function DayTraining({ date, mark, weeklyTraining, compact = false }: { d
   const today = todayKey()
   const workouts = useLiveQuery(() => db.workouts.where('date').equals(date).toArray(), [date]) ?? []
   const [repeat, setRepeat] = useState(false)
-  const [openId, setOpenId] = useState<number | null>(null)
+  const { open: setOpenId } = useWorkoutSession()
   const current: TrainType | 'rest' | null = mark?.train ?? (mark?.training === false ? 'rest' : null)
 
   const choose = async (t: TrainType | 'rest' | null) => {
@@ -169,7 +169,6 @@ export function DayTraining({ date, mark, weeklyTraining, compact = false }: { d
           {current ? TRAIN_MAP[current].label.replace('重訓・', '') + '日' : ''}訓練
         </Tap>
       )}
-      <WorkoutSession id={openId} onClose={() => setOpenId(null)} />
     </section>
   )
 }

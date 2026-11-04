@@ -1,4 +1,5 @@
 import { AnimatePresence, motion } from 'framer-motion'
+import exerciseCredits from '../data/exerciseCredits.json'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { useDeferredValue, useEffect, useMemo, useState } from 'react'
 import { EXERCISES, type Exercise } from '../data/exercises'
@@ -43,8 +44,22 @@ const searchFields = (ex: Exercise) => {
 
 const LEVEL = { beginner: '新手', intermediate: '進階', expert: '高手' } as const
 
+interface ExCredit {
+  title: string
+  creator: string
+  source: string
+  license: 'cc0' | 'pdm' | 'by' | 'by-sa'
+  licenseVersion?: string
+  licenseUrl: string
+  landingUrl: string
+}
+const EX_CREDITS = exerciseCredits as Record<string, ExCredit>
+/** 有氧動作的實景照片（免費商用授權）；沒有的才用圖示 */
+export const exercisePhotoCredit = (id: string): ExCredit | undefined => EX_CREDITS[id]
+
 /** 兩張照片交替＝簡單的動作動畫 */
 export function ExerciseAnim({ ex, className = '', play = true }: { ex: Exercise; className?: string; play?: boolean }) {
+  if (ex.noPhoto && EX_CREDITS[ex.id]) return <SinglePhotoAnim ex={ex} className={className} play={play} />
   if (ex.noPhoto) return <IconAnim ex={ex} className={className} play={play} />
   return <PhotoAnim ex={ex} className={className} play={play} />
 }
@@ -60,6 +75,23 @@ function IconAnim({ ex, className, play }: { ex: Exercise; className: string; pl
       >
         <img src={foodSrc(ex.icon ?? 'cx-dash')} alt="" draggable={false} className="h-full w-full object-contain" />
       </motion.div>
+    </div>
+  )
+}
+
+/** 只有一張實景照片：慢慢放大縮小，看起來比較有動感 */
+function SinglePhotoAnim({ ex, className, play }: { ex: Exercise; className: string; play: boolean }) {
+  return (
+    <div className={`relative overflow-hidden bg-card ${className}`}>
+      <motion.img
+        src={`${import.meta.env.BASE_URL}exercises/${ex.id}.webp`}
+        alt=""
+        loading="lazy"
+        draggable={false}
+        animate={play ? { scale: [1, 1.08, 1] } : { scale: 1 }}
+        transition={{ repeat: Infinity, duration: 6, ease: 'easeInOut' }}
+        className="absolute inset-0 h-full w-full object-cover"
+      />
     </div>
   )
 }
@@ -227,6 +259,7 @@ export function ExerciseDetail({ ex, onClose, actionLabel, onAction }: { ex: Exe
       {ex && (
         <div className="space-y-4">
           <ExerciseAnim ex={ex} className="aspect-[3/2] rounded-3xl shadow-card" />
+          <ExerciseCreditLine id={ex.id} />
           <div className="flex flex-wrap items-center gap-1.5 text-xs">
             <span className="rounded-full bg-leaf-soft px-2 py-0.5 text-leaf-dark">{EQUIP_LABEL[ex.equip]}</span>
             <span className="rounded-full bg-card px-2 py-0.5 text-muted shadow-sm">{LEVEL[ex.level]}</span>
@@ -386,5 +419,29 @@ function CardioStats({ ex, workouts }: { ex: Exercise; workouts: Workout[] }) {
       <Stat label="總距離" value={km ? `${Math.round(km * 10) / 10} km` : '—'} />
       <Stat label={ex.metrics?.includes('m') ? '最快 500 m' : '最快配速'} value={best ? fmtDuration(best) : '—'} />
     </div>
+  )
+}
+
+const EX_LICENSE: Record<ExCredit['license'], string> = { cc0: 'CC0 公眾領域', pdm: '公眾領域', by: 'CC BY', 'by-sa': 'CC BY-SA' }
+
+function ExerciseCreditLine({ id }: { id: string }) {
+  const c = EX_CREDITS[id]
+  if (!c) return null
+  return (
+    <p className="-mt-2 flex flex-wrap items-center gap-1 px-1 text-[11px] text-muted">
+      <Icon name="image" size={14} />
+      照片：
+      <a href={c.landingUrl} target="_blank" rel="noreferrer" className="underline">
+        {c.creator || c.title || '來源'}
+      </a>
+      <span>
+        （{c.source}・
+        <a href={c.licenseUrl} target="_blank" rel="noreferrer" className="underline">
+          {EX_LICENSE[c.license]}
+          {c.license !== 'cc0' && c.license !== 'pdm' && c.licenseVersion ? ` ${c.licenseVersion}` : ''}
+        </a>
+        ）
+      </span>
+    </p>
   )
 }
