@@ -2,7 +2,7 @@ import { Food } from '../components/Food'
 import { AnimatePresence, motion } from 'framer-motion'
 import { useMemo, useState } from 'react'
 import { HealthTip } from '../components/BodyCard'
-import { AiEstimateSheet } from '../components/AiEstimate'
+import { AiEstimateSheet, buildPrompt } from '../components/AiEstimate'
 import { DietPlanSheet, RuleBadge, TodayPlanCard } from '../components/DietPlan'
 import { RecipePicker } from '../components/RecipePicker'
 import { useShare } from '../components/Share'
@@ -36,6 +36,16 @@ export default function Today({ profile, onGoPlan }: { profile: Profile; onGoPla
   const share = useShare()
   const [picking, setPicking] = useState<MealSlot | null>(null)
   const [eatOut, setEatOut] = useState<MealSlot | null>(null)
+  const [aiCopied, setAiCopied] = useState(false)
+  /** 快速 AI 記錄：按下的當下就把提示詞複製好（要在點擊裡複製，iPhone 才允許） */
+  const quickAi = (meal: MealSlot) => {
+    haptic(8)
+    const done = (ok: boolean) => {
+      setAiCopied(ok)
+      setEatOut(meal)
+    }
+    navigator.clipboard?.writeText(buildPrompt('')).then(() => done(true), () => done(false)) ?? done(false)
+  }
   const [planSheet, setPlanSheet] = useState(false)
   const marks = useMarks(dates)
   const day = resolveDay(date, profile, marks)
@@ -154,7 +164,7 @@ export default function Today({ profile, onGoPlan }: { profile: Profile; onGoPla
             {day.meals[meal].rule === 'feast' && (
               <motion.button
                 whileTap={{ scale: 0.97 }}
-                onClick={() => setEatOut(meal)}
+                onClick={() => { setAiCopied(false); setEatOut(meal) }}
                 className="mb-2 flex w-full items-center gap-3 rounded-2xl bg-gradient-to-br from-tomato-soft to-honey-soft p-3 text-left shadow-card"
               >
                 <span className="grid h-10 w-10 place-items-center rounded-xl bg-card text-tomato">
@@ -199,16 +209,28 @@ export default function Today({ profile, onGoPlan }: { profile: Profile; onGoPla
                   ),
                 )}
               </AnimatePresence>
-              <motion.button
-                whileTap={{ scale: 0.97 }}
-                onClick={() => setPicking(meal)}
-                className="w-full rounded-2xl py-2.5 text-sm text-muted transition-colors hover:bg-ink/5"
-              >
-                <span className="flex items-center justify-center gap-1">
-                  <Icon name="add" size={18} />
-                  {mealPlans.length ? '吃了別的' : '快速記錄'}
-                </span>
-              </motion.button>
+              <div className="flex gap-1">
+                <motion.button
+                  whileTap={{ scale: 0.97 }}
+                  onClick={() => setPicking(meal)}
+                  className="flex-1 rounded-2xl py-2.5 text-sm text-muted transition-colors hover:bg-ink/5"
+                >
+                  <span className="flex items-center justify-center gap-1">
+                    <Icon name="add" size={18} />
+                    {mealPlans.length ? '吃了別的' : '快速記錄'}
+                  </span>
+                </motion.button>
+                <motion.button
+                  whileTap={{ scale: 0.97 }}
+                  onClick={() => quickAi(meal)}
+                  className="flex-1 rounded-2xl py-2.5 text-sm text-leaf-dark transition-colors hover:bg-ink/5"
+                >
+                  <span className="flex items-center justify-center gap-1">
+                    <Icon name="auto_awesome" size={18} />
+                    快速 AI 記錄
+                  </span>
+                </motion.button>
+              </div>
             </div>
           </section>
         )
@@ -220,7 +242,10 @@ export default function Today({ profile, onGoPlan }: { profile: Profile; onGoPla
         profile={profile}
         recent={recent}
         rule={picking ? day.meals[picking].rule : undefined}
-        onEatOut={() => setEatOut(picking)}
+        onEatOut={() => {
+          setAiCopied(false)
+          setEatOut(picking)
+        }}
         onChain={() => picking && openChain({ date, meal: picking })}
         onClose={() => setPicking(null)}
         title={picking ? `${MEAL_LABEL[picking]}吃了什麼？` : ''}
@@ -231,7 +256,7 @@ export default function Today({ profile, onGoPlan }: { profile: Profile; onGoPla
           toast(`已記錄 ${r.name}`, () => db.logs.delete(id))
         }}
       />
-      <AiEstimateSheet open={eatOut !== null} meal={eatOut} date={date} onClose={() => setEatOut(null)} />
+      <AiEstimateSheet open={eatOut !== null} meal={eatOut} date={date} preCopied={aiCopied} onClose={() => setEatOut(null)} />
       <DietPlanSheet open={planSheet} onClose={() => setPlanSheet(false)} profile={profile} />
     </div>
   )

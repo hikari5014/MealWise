@@ -4,15 +4,16 @@ import { db } from '../db'
 import { haptic, spring } from '../lib/feedback'
 import { MEAL_LABEL, type MealSlot, type Nutrition } from '../types'
 import { Icon } from './Icon'
-import { Button, Sheet, useToast } from './ui'
+import { Button, Sheet, Tap, useToast } from './ui'
 import { Art } from './Art'
 
-const buildPrompt = (desc: string) => `你是一位營養師。請根據我附上的照片（以及描述），估算這一餐吃下去的總熱量與營養素。
-如果照片裡有好幾道菜，請合計成一餐；份量不確定時，以台灣常見的一人份估算。
+export const buildPrompt = (desc: string) => `你是一位營養師。請根據我附上的照片（以及描述），估算這一餐每一樣食物的熱量與營養素。
+照片裡有好幾樣食物或飲料時，請「每一樣分開一行」（例如：白飯、滷雞腿、燙青菜、紅茶各一行），不要合計；同一道菜的配料算在那道菜裡。份量不確定時，以台灣常見的一人份估算。
 餐點描述：${desc.trim() || '（無，請看照片）'}
 
-請「只」回覆下面這一行，數字用整數，不要加其他文字或單位：
-好食光|名稱=料理名稱|熱量=0|蛋白質=0|碳水=0|脂肪=0|纖維=0`
+請「只」回覆下面格式，一樣食物一行，數字用整數，不要加其他文字、編號或單位：
+好食光|名稱=食物名稱|熱量=0|蛋白質=0|碳水=0|脂肪=0|纖維=0
+好食光|名稱=食物名稱|熱量=0|蛋白質=0|碳水=0|脂肪=0|纖維=0`
 
 const KEYS: Record<keyof Nutrition, string[]> = {
   kcal: ['熱量', 'kcal', 'calories', '卡路里'],
@@ -49,6 +50,23 @@ export function parseEstimate(raw: string): { name?: string; nutrition: Nutritio
   }
 }
 
+/** 解析好幾樣：每一行「好食光|…」各算一樣；JSON 陣列也可以；都沒有就當成一樣 */
+export function parseEstimates(raw: string): { name?: string; nutrition: Nutrition }[] {
+  const lines = raw.split(/\r?\n/).filter((l) => /好食光\s*\|/.test(l))
+  if (lines.length) return lines.map(parseEstimate).filter((x): x is NonNullable<typeof x> => !!x)
+  try {
+    const j = JSON.parse(raw.slice(raw.indexOf('['), raw.lastIndexOf(']') + 1))
+    if (Array.isArray(j)) {
+      const out = j.map((o) => parseEstimate(JSON.stringify(o))).filter((x): x is NonNullable<typeof x> => !!x)
+      if (out.length) return out
+    }
+  } catch {
+    /* 不是 JSON */
+  }
+  const one = parseEstimate(raw)
+  return one ? [one] : []
+}
+
 const PRESETS: { label: string; kcal: number; n: Nutrition }[] = [
   { label: '簡單外食', kcal: 600, n: { kcal: 600, protein: 25, carbs: 70, fat: 22, fiber: 4 } },
   { label: '一般外食', kcal: 850, n: { kcal: 850, protein: 32, carbs: 95, fat: 35, fiber: 5 } },
@@ -69,25 +87,28 @@ export function AiEstimateSheet({
   onClose,
   date,
   meal,
+  preCopied = false,
 }: {
   open: boolean
   onClose: () => void
   date: string
   meal: MealSlot | null
+  /** 打開前已經自動複製好提示詞了（快速 AI 記錄） */
+  preCopied?: boolean
 }) {
   const toast = useToast()
   const [desc, setDesc] = useState('')
   const [copied, setCopied] = useState(false)
   const [reply, setReply] = useState('')
-  const [result, setResult] = useState<{ name: string; nutrition: Nutrition } | null>(null)
+  const [items, setItems] = useState<{ name: string; nutrition: Nutrition }[] | null>(null)
   const [error, setError] = useState('')
 
   useEffect(() => {
     if (open) {
       setDesc('')
-      setCopied(false)
+      setCopied(preCopied)
       setReply('')
-      setResult(null)
+      setItems(null)
       setError('')
     }
   }, [open])
@@ -103,15 +124,15 @@ export function AiEstimateSheet({
   }
 
   const apply = (text: string) => {
-    const parsed = parseEstimate(text)
-    if (!parsed) {
+    const parsed = parseEstimates(text)
+    if (!parsed.length) {
       haptic([30, 40, 30])
       setError('看不懂這段回覆，確認有包含「熱量=數字」')
       return
     }
     haptic([10, 30, 10])
     setError('')
-    setResult({ name: parsed.name || desc.trim() || '外食', nutrition: parsed.nutrition })
+    setItems(parsed.map((x, i) => ({ name: x.name || (parsed.length > 1 ? `第 ${i + 1} 樣` : desc.trim() || '外食'), nutrition: x.nutrition })))
   }
 
   const pasteReply = async () => {
@@ -125,63 +146,80 @@ export function AiEstimateSheet({
   }
 
   const save = async () => {
-    if (!result || !meal) return
-    await db.logs.add({
-      date,
-      meal,
-      recipeId: '',
-      custom: { name: result.name, nutrition: result.nutrition },
-      portion: 1,
-      createdAt: Date.now(),
-    })
+    if (!items?.length || !meal) return
+    const now = Date.now()
+    const ids = (await db.logs.bulkAdd(
+      items.map((it, i) => ({ date, meal, recipeId: '', custom: { name: it.name, nutrition: it.nutrition }, portion: 1, createdAt: now + i })),
+      { allKeys: true },
+    )) as number[]
     haptic([10, 40, 10, 40, 20])
     onClose()
-    toast(`已記錄 ${result.name}`)
+    toast(items.length > 1 ? `已記錄 ${items.length} 樣` : `已記錄 ${items[0].name}`, () => db.logs.bulkDelete(ids))
   }
+  const setItem = (i: number, patch: Partial<{ name: string; nutrition: Nutrition }>) =>
+    setItems((list) => list && list.map((x, k) => (k === i ? { ...x, ...patch } : x)))
+  const total = (items ?? []).reduce((t, x) => t + x.nutrition.kcal, 0)
 
   return (
     <Sheet open={open} onClose={onClose} title={meal ? `${MEAL_LABEL[meal]}：外食・大餐` : '外食・大餐'}>
       <AnimatePresence mode="wait" initial={false}>
-        {result ? (
+        {items ? (
           <motion.div key="result" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={spring} className="space-y-3">
-            <input
-              value={result.name}
-              onChange={(e) => setResult({ ...result, name: e.target.value })}
-              className="w-full rounded-2xl bg-card px-4 py-3 font-bold shadow-card outline-none ring-leaf/40 focus:ring-2"
-            />
-            <div className="grid grid-cols-5 gap-2">
-              {FIELDS.map((f, i) => (
-                <motion.label
-                  key={f.key}
-                  initial={{ y: 12, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  transition={{ type: 'spring', stiffness: 500, damping: 16, delay: i * 0.05 }}
-                  className="rounded-2xl bg-card p-2 text-center shadow-card"
+            {items.length > 1 && (
+              <div className="flex items-baseline justify-between px-1 text-sm">
+                <span className="font-bold">AI 拆成 {items.length} 樣</span>
+                <span className="tabular-nums text-muted">合計 {total} kcal</span>
+              </div>
+            )}
+            <AnimatePresence initial={false}>
+              {items.map((it, i) => (
+                <motion.div
+                  key={i}
+                  layout
+                  initial={{ opacity: 0, y: 12 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, x: 40 }}
+                  transition={{ ...spring, delay: Math.min(i, 6) * 0.04 }}
+                  className="space-y-2 rounded-3xl bg-card p-3 shadow-card"
                 >
-                  <input
-                    inputMode="numeric"
-                    value={result.nutrition[f.key]}
-                    onChange={(e) =>
-                      setResult({ ...result, nutrition: { ...result.nutrition, [f.key]: Number(e.target.value.replace(/\D/g, '')) || 0 } })
-                    }
-                    className="w-full bg-transparent text-center text-lg font-bold tabular-nums outline-none"
-                  />
-                  <div className="text-[10px] text-muted">
-                    {f.label}
-                    <br />
-                    {f.unit}
+                  <div className="flex items-center gap-2">
+                    <input
+                      value={it.name}
+                      onChange={(e) => setItem(i, { name: e.target.value })}
+                      className="min-w-0 flex-1 rounded-xl bg-cream px-3 py-2 font-bold outline-none ring-leaf/40 focus:ring-2"
+                    />
+                    {items.length > 1 && (
+                      <Tap aria-label={`拿掉${it.name}`} onClick={() => setItems(items.filter((_, k) => k !== i))} className="grid h-8 w-8 place-items-center rounded-full text-muted">
+                        <Icon name="delete" size={18} />
+                      </Tap>
+                    )}
                   </div>
-                </motion.label>
+                  <div className="grid grid-cols-5 gap-1.5">
+                    {FIELDS.map((f) => (
+                      <label key={f.key} className="rounded-xl bg-cream px-1 py-1.5 text-center">
+                        <input
+                          inputMode="numeric"
+                          value={it.nutrition[f.key]}
+                          onChange={(e) => setItem(i, { nutrition: { ...it.nutrition, [f.key]: Number(e.target.value.replace(/\D/g, '')) || 0 } })}
+                          className="w-full bg-transparent text-center font-bold tabular-nums outline-none"
+                        />
+                        <div className="text-[10px] text-muted">
+                          {f.label} {f.unit}
+                        </div>
+                      </label>
+                    ))}
+                  </div>
+                </motion.div>
               ))}
-            </div>
-            <p className="text-xs text-muted">數字可以直接點來修改。AI 估算只是大概，不用太講究。</p>
+            </AnimatePresence>
+            <p className="text-xs text-muted">名稱和數字都可以點來修改；不要的那樣按垃圾桶拿掉。AI 估算只是大概。</p>
             <div className="flex gap-3">
-              <Button variant="soft" onClick={() => setResult(null)}>
+              <Button variant="soft" onClick={() => setItems(null)}>
                 重來
               </Button>
-              <Button className="flex flex-1 items-center justify-center gap-1.5" onClick={save}>
+              <Button className="flex flex-1 items-center justify-center gap-1.5" onClick={save} disabled={!items.length}>
                 <Icon name="check_circle" size={20} fill />
-                記錄這一餐
+                {items.length > 1 ? `記錄這 ${items.length} 樣` : '記錄這一餐'}
               </Button>
             </div>
           </motion.div>
@@ -197,11 +235,20 @@ export function AiEstimateSheet({
             <StepTitle n={1} text="簡單描述一下（可不填）" />
             <input
               value={desc}
-              onChange={(e) => setDesc(e.target.value)}
+              onChange={(e) => {
+                setDesc(e.target.value)
+                setCopied(false)
+              }}
               placeholder="例如：火鍋吃到飽，吃了兩盤肉"
               className="w-full rounded-2xl bg-card px-4 py-3 text-sm shadow-card outline-none ring-leaf/40 focus:ring-2"
             />
 
+            {preCopied && copied && (
+              <p className="flex items-center gap-1.5 rounded-2xl bg-leaf-soft px-3 py-2 text-sm text-leaf-dark">
+                <Icon name="check_circle" size={18} fill />
+                提示詞已經複製好了，直接去 AI 貼上、附上照片
+              </p>
+            )}
             <StepTitle n={2} text="複製提示詞，和照片一起貼給 AI" />
             <Button variant={copied ? 'soft' : 'primary'} className="flex w-full items-center justify-center gap-2" onClick={copyPrompt}>
               <Icon name={copied ? 'check' : 'content_copy'} size={20} motion={copied ? 'pop' : 'none'} />
@@ -247,7 +294,7 @@ export function AiEstimateSheet({
                     whileTap={{ scale: 0.94 }}
                     onClick={() => {
                       haptic(8)
-                      setResult({ name: desc.trim() || p.label, nutrition: p.n })
+                      setItems([{ name: desc.trim() || p.label, nutrition: p.n }])
                     }}
                     className="rounded-2xl bg-card py-3 text-center shadow-sm"
                   >
