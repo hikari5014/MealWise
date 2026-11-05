@@ -7,13 +7,19 @@ import { Icon } from './Icon'
 import { Button, Sheet, Tap, useToast } from './ui'
 import { Art } from './Art'
 
-export const buildPrompt = (desc: string) => `你是一位營養師。請根據我附上的照片（以及描述），估算這一餐每一樣食物的熱量與營養素。
-照片裡有好幾樣食物或飲料時，請「每一樣分開一行」（例如：白飯、滷雞腿、燙青菜、紅茶各一行），不要合計；同一道菜的配料算在那道菜裡。份量不確定時，以台灣常見的一人份估算。
+export const buildPrompt = (desc: string) => `你是一位營養師。請根據我附上的照片（以及描述），估算這一餐「每一樣」食物的熱量與營養素。
+
+拆分規則：
+1. 照片裡有好幾樣食物或飲料時，每一樣分開一行，不要合計。
+2. 便當、自助餐、餐盤、合菜：把裡面的每一道菜都分開，例如主菜（排骨、雞腿）、每一樣配菜（滷蛋、青菜、豆干、酸菜）、白飯或麵、湯，各一行。
+3. 同一道菜裡的醬汁、配料算在那道菜裡；看不清楚的小配菜可以合併成「其他配菜」一行。
+4. 依照照片裡實際的份量估算（例如便當的飯通常約 1 碗、一格配菜約 1/3 碗）；看不出來時以台灣常見的一人份估算。
+
 餐點描述：${desc.trim() || '（無，請看照片）'}
 
 請「只」回覆下面格式，一樣食物一行，數字用整數，不要加其他文字、編號或單位：
-好食光|名稱=食物名稱|熱量=0|蛋白質=0|碳水=0|脂肪=0|纖維=0
-好食光|名稱=食物名稱|熱量=0|蛋白質=0|碳水=0|脂肪=0|纖維=0`
+好食光|名稱=食物名稱|份量=約多少|熱量=0|蛋白質=0|碳水=0|脂肪=0|纖維=0
+好食光|名稱=食物名稱|份量=約多少|熱量=0|蛋白質=0|碳水=0|脂肪=0|纖維=0`
 
 const KEYS: Record<keyof Nutrition, string[]> = {
   kcal: ['熱量', 'kcal', 'calories', '卡路里'],
@@ -38,8 +44,10 @@ export function parseEstimate(raw: string): { name?: string; nutrition: Nutritio
   }
   if (out.kcal === undefined || out.kcal <= 0 || out.kcal > 6000) return null
   const name = text.match(/名稱\s*[=:：]\s*["']?([^|"',}]+)/)?.[1]?.trim() || text.match(/"name"\s*:\s*"([^"]+)"/i)?.[1]
+  // 份量（例如「約 1/3 碗」）接在名稱後面
+  const amount = text.match(/份量\s*[=:：]\s*["']?([^|"',}]+)/)?.[1]?.trim()
   return {
-    name,
+    name: name && amount && !/^(無|-|不明)$/.test(amount) ? `${name}（${amount}）` : name,
     nutrition: {
       kcal: out.kcal,
       protein: out.protein ?? 0,
