@@ -7,7 +7,8 @@ import { Button, Tap } from '../components/ui'
 import { db } from '../db'
 import { haptic, spring } from '../lib/feedback'
 import { suggestKcal } from '../lib/meal'
-import { calcNeeds } from '../lib/nutrition'
+import { calcNeeds, defaultSpec, PACES, useNeeds, type BodySpec } from '../lib/nutrition'
+import { BodyInputs, NeedsMini } from '../components/Needs'
 import type { IconName } from '../lib/icons'
 import { GOAL_LABEL, type Goal, type Profile } from '../types'
 import { Art } from '../components/Art'
@@ -15,6 +16,7 @@ import { Art } from '../components/Art'
 const GOALS: { value: Goal; icon: IconName; hint: string }[] = [
   { value: 'lose', icon: 'spa', hint: '少一點熱量、多一點蛋白質' },
   { value: 'maintain', icon: 'balance', hint: '營養均衡、吃得開心' },
+  { value: 'recomp', icon: 'sync', hint: '熱量差不多平衡、蛋白質拉高，一邊減脂一邊長肌肉' },
   { value: 'gain', icon: 'fitness_center', hint: '多一點熱量與蛋白質' },
 ]
 
@@ -36,8 +38,21 @@ export default function Onboarding({ initial, onDone }: { initial?: Profile; onD
   const [dir, setDir] = useState(1)
   const [p, setP] = useState<Profile>(initial ?? DEFAULT)
   const set = (patch: Partial<Profile>) => setP((cur) => ({ ...cur, ...patch }))
+  // 身體數據：用來自動算熱量和三大營養素（可以跳過）
+  const [spec, setSpec] = useState<BodySpec>(() => ({ ...defaultSpec(initial), goal: (initial ?? DEFAULT).goal, preset: initial?.body?.preset ?? 'custom' }))
+  const [useBody, setUseBody] = useState(initial ? !!initial.body : true)
+  const setBody = (patch: Partial<BodySpec>) => setSpec((x) => ({ ...x, ...patch }))
+  const { needs, errors, ok } = useNeeds(spec)
+  /** 把算出來的目標帶進設定 */
+  const applyBody = () =>
+    set({ body: spec, goal: spec.goal, kcal: needs.kcal, waterMl: needs.water, macros: { protein: needs.protein, fat: needs.fat, fiber: needs.fiber } })
 
   const go = (next: number) => {
+    // 離開「身體數據」這一步時，把算好的目標帶進去
+    if (step === 1 && next > step && useBody) {
+      if (!ok) return
+      applyBody()
+    }
     setDir(next > step ? 1 : -1)
     setStep(next)
   }
@@ -66,8 +81,9 @@ export default function Onboarding({ initial, onDone }: { initial?: Profile; onD
             onClick={() => {
               haptic(8)
               // 有填過身體數據就用它重算，沒有才用預設熱量
+              setBody({ goal: g.value, proteinPerKg: undefined, ...(spec.preset !== 'custom' ? { preset: 'custom' } : {}) })
               if (p.body) {
-                const body = { ...p.body, goal: g.value, proteinPerKg: undefined }
+                const body = { ...p.body, goal: g.value, proteinPerKg: undefined, preset: 'custom' as const }
                 const n = calcNeeds(body)
                 set({ goal: g.value, body, kcal: n.kcal, macros: { protein: n.protein, fat: n.fat, fiber: n.fiber } })
               } else set({ goal: g.value, kcal: suggestKcal(g.value) })
@@ -91,6 +107,36 @@ export default function Onboarding({ initial, onDone }: { initial?: Profile; onD
           <Icon name="login" size={18} />
           已經有帳號？<span className="text-leaf-dark underline">登入還原資料</span>
         </Tap>
+      )}
+    </div>,
+
+    <div key="body" className="space-y-4">
+      <div className="flex items-start justify-between gap-2">
+        <div>
+          <h2 className="text-xl font-bold">你的身體數據</h2>
+          <p className="text-sm text-muted">自動算出每天該吃多少、三大營養素各多少</p>
+        </div>
+        <Tap onClick={() => setUseBody(!useBody)} className="shrink-0 rounded-full bg-card px-3 py-1.5 text-xs text-muted shadow-card">
+          {useBody ? '先跳過' : '改用身體數據'}
+        </Tap>
+      </div>
+      {useBody ? (
+        <>
+          <NeedsMini n={needs} />
+          {spec.goal !== 'maintain' && (
+            <div className="grid grid-cols-3 gap-1.5">
+              {PACES[spec.goal].map((x) => (
+                <Tap key={x.id} onClick={() => setBody({ pace: x.id })} className={`rounded-2xl px-2 py-2 text-center transition-colors ${spec.pace === x.id ? 'bg-leaf text-on-leaf' : 'bg-card shadow-card'}`}>
+                  <div className="text-sm font-medium">{x.label}</div>
+                  <div className={`text-[10px] ${spec.pace === x.id ? 'opacity-80' : 'text-muted'}`}>{x.hint}</div>
+                </Tap>
+              ))}
+            </div>
+          )}
+          <BodyInputs s={spec} set={setBody} n={needs} errors={errors} />
+        </>
+      ) : (
+        <p className="rounded-2xl bg-card p-4 text-sm text-muted shadow-card">沒關係，下一步可以直接選每天的熱量。之後到「我的 → 營養需求」隨時都能補填。</p>
       )}
     </div>,
 
@@ -120,6 +166,7 @@ export default function Onboarding({ initial, onDone }: { initial?: Profile; onD
 
     <div key="amount" className="space-y-4">
       <h2 className="text-xl font-bold">每天的目標</h2>
+      {useBody && p.body && <p className="-mt-2 text-xs text-leaf-dark">已依你的身體數據算好，也可以自己再微調</p>}
       <Stepper icon="local_fire_department" label="熱量" unit="kcal" value={p.kcal} step={100} min={1000} max={4000} onChange={(kcal) => set({ kcal })} />
       <Stepper icon="water_drop" label="喝水" unit="ml" value={p.waterMl} step={250} min={1000} max={5000} onChange={(waterMl) => set({ waterMl })} />
       <Stepper icon="groups" label="幾人份" unit="人" value={p.servings} step={1} min={1} max={8} onChange={(servings) => set({ servings })} />
@@ -170,7 +217,7 @@ export default function Onboarding({ initial, onDone }: { initial?: Profile; onD
             上一步
           </Button>
         )}
-        <Button className="flex-1" onClick={() => (step < steps.length - 1 ? go(step + 1) : finish())}>
+        <Button className="flex-1" disabled={step === 1 && useBody && !ok} onClick={() => (step < steps.length - 1 ? go(step + 1) : finish())}>
           {step < steps.length - 1 ? '下一步' : initial ? '儲存' : '開始使用'}
         </Button>
       </div>

@@ -28,6 +28,7 @@ export const macroTargets = (profile: Profile) => {
     lose: [0.3, 0.4, 0.3],
     maintain: [0.2, 0.5, 0.3],
     gain: [0.3, 0.45, 0.25],
+    recomp: [0.35, 0.4, 0.25],
   }
   const [p, c, f] = ratio[profile.goal]
   return {
@@ -38,7 +39,7 @@ export const macroTargets = (profile: Profile) => {
   }
 }
 
-export const suggestKcal = (goal: Goal) => ({ lose: 1600, maintain: 1900, gain: 2400 })[goal]
+export const suggestKcal = (goal: Goal) => ({ lose: 1600, maintain: 1900, gain: 2400, recomp: 1800 })[goal]
 
 export const fitsProfile = (recipe: Recipe, profile?: Profile) => {
   if (!profile) return true

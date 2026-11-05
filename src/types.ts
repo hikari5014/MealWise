@@ -107,12 +107,13 @@ export interface Recipe {
   eatout?: { brandId: string; brand: string; serving?: string; source?: string; sodium?: number; sugar?: number }
 }
 
-export type Goal = 'lose' | 'maintain' | 'gain'
+export type Goal = 'lose' | 'maintain' | 'gain' | 'recomp'
 
 export const GOAL_LABEL: Record<Goal, string> = {
   lose: '輕盈減脂',
   maintain: '均衡維持',
   gain: '增肌補能',
+  recomp: '身體重組',
 }
 
 import type { BodySpec } from './lib/nutrition'

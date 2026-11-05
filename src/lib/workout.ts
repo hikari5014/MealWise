@@ -359,3 +359,38 @@ export function reorderEntries(w: Workout, keys: string[]): WorkoutEntry[] {
   const map = new Map(workoutUnits(w).map((u) => [u.key, u]))
   return keys.flatMap((k) => map.get(k)?.idx.map((i) => w.entries[i]) ?? [])
 }
+
+/** 重訓：每組含休息約 2.5 分鐘，強度約 5 MET */
+const STRENGTH_MIN_PER_SET = 2.5
+const STRENGTH_MET = 5
+
+/**
+ * 這天運動「額外」消耗多少 kcal：扣掉同一段時間躺著也會用掉的基礎代謝，才不會跟每日總消耗重複算。
+ * 有 Apple Watch 數據就用手錶的活動消耗；有氧照 MET 算；重訓依完成組數估。
+ */
+export function exerciseBurn(ws: Workout[], weightKg: number, bmr: number) {
+  let kcal = 0
+  let min = 0
+  let cardioKcal = 0
+  let strengthKcal = 0
+  const restPerMin = bmr / 1440
+  for (const w of ws) {
+    const c = workoutCardio(w, weightKg)
+    const sets = w.entries.filter((e) => !e.block && !isCardio(EXERCISE_MAP[e.exerciseId])).reduce((t, e) => t + e.sets.filter((s) => s.done).length, 0)
+    const sMin = sets * STRENGTH_MIN_PER_SET
+    const sKcal = (STRENGTH_MET * weightKg * sMin) / 60
+    if (w.watch?.kcal) {
+      // 手錶記的是活動消耗，本來就不含基礎代謝
+      kcal += w.watch.kcal
+      min += w.watch.min ?? c.min + sMin
+      continue
+    }
+    const cNet = Math.max(0, c.kcal - restPerMin * c.min)
+    const sNet = Math.max(0, sKcal - restPerMin * sMin)
+    cardioKcal += cNet
+    strengthKcal += sNet
+    kcal += cNet + sNet
+    min += c.min + sMin
+  }
+  return { kcal: Math.round(kcal), min: Math.round(min), cardioKcal: Math.round(cardioKcal), strengthKcal: Math.round(strengthKcal) }
+}

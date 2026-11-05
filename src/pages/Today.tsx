@@ -22,6 +22,8 @@ import { MEAL_COLOR, MEAL_IMAGE, MEAL_LABEL, MEAL_SLOTS, type LogEntry, type Mea
 import { Art } from '../components/Art'
 import { useEatOutPicker } from '../components/EatOut'
 import { NextMealCard } from '../components/NextMeal'
+import { EnergyBalanceCard } from '../components/EnergyBalance'
+import { NeedsSheet } from '../components/Needs'
 import { AnnouncementBanner } from '../components/Announcements'
 
 export default function Today({ profile, onGoPlan }: { profile: Profile; onGoPlan: () => void }) {
@@ -47,6 +49,7 @@ export default function Today({ profile, onGoPlan }: { profile: Profile; onGoPla
     navigator.clipboard?.writeText(buildPrompt('')).then(() => done(true), () => done(false)) ?? done(false)
   }
   const [planSheet, setPlanSheet] = useState(false)
+  const [needsSheet, setNeedsSheet] = useState(false)
   const marks = useMarks(dates)
   const day = resolveDay(date, profile, marks)
 
@@ -107,6 +110,8 @@ export default function Today({ profile, onGoPlan }: { profile: Profile; onGoPla
           <MacroBar label="纖維" value={total.fiber} target={targets.fiber} color="rgb(var(--leaf))" />
         </div>
       </Card>
+
+      <EnergyBalanceCard profile={profile} date={date} eaten={total.kcal} training={day.training} onSetup={() => setNeedsSheet(true)} />
 
       <NextMealCard day={day} logs={logs} plans={plans} total={total} proteinTarget={targets.protein} profile={profile} date={date} />
 
@@ -258,6 +263,7 @@ export default function Today({ profile, onGoPlan }: { profile: Profile; onGoPla
       />
       <AiEstimateSheet open={eatOut !== null} meal={eatOut} date={date} preCopied={aiCopied} onClose={() => setEatOut(null)} />
       <DietPlanSheet open={planSheet} onClose={() => setPlanSheet(false)} profile={profile} />
+      <NeedsSheet open={needsSheet} onClose={() => setNeedsSheet(false)} profile={profile} />
     </div>
   )
 }

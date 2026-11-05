@@ -6,7 +6,6 @@ import { useBody } from '../lib/hooks'
 import {
   ACTIVITY,
   bmiLabel,
-  calcNeeds,
   defaultSpec,
   DEFAULT_PROTEIN,
   MEAL_PATTERNS,
@@ -14,6 +13,7 @@ import {
   PRESETS,
   PROTEIN_LEVELS,
   mealShares,
+  useNeeds,
   type BodySpec,
   type Needs,
   type PresetId,
@@ -100,10 +100,11 @@ export function NeedsSheet({ open, onClose, profile }: { open: boolean; onClose:
   }, [open])
 
   const set = (patch: Partial<BodySpec>) => setS((x) => ({ ...x, ...patch }))
-  const n = calcNeeds(s)
+  const { needs: n, errors, ok } = useNeeds(s)
   const preset = PRESETS.find((p) => p.id === s.preset)
 
   const apply = async () => {
+    if (!ok) return toast(errors[0])
     haptic([10, 30, 10])
     await db.profile.update('me', {
       body: s,
@@ -153,30 +154,7 @@ export function NeedsSheet({ open, onClose, profile }: { open: boolean; onClose:
           </AnimatePresence>
         </div>
 
-        <Group title="生理性別">
-          <Chips
-            value={s.sex}
-            options={[
-              { id: 'male', label: '男性' },
-              { id: 'female', label: '女性' },
-            ]}
-            onChange={(sex) => set({ sex })}
-          />
-        </Group>
-
-        <div className="grid grid-cols-2 gap-2">
-          <Slider label="年齡" unit="歲" value={s.age} min={15} max={80} step={1} onChange={(age) => set({ age })} />
-          <Slider label="身高" unit="cm" value={s.height} min={140} max={200} step={1} onChange={(height) => set({ height })} />
-          <Slider label="體重" unit="kg" value={s.weight} min={35} max={150} step={0.5} onChange={(weight) => set({ weight })} />
-          <Slider label="體脂（可不填）" unit="%" value={s.bodyFat ?? 0} min={0} max={50} step={0.5} empty="不填" onChange={(v) => set({ bodyFat: v || undefined })} />
-        </div>
-        <p className="-mt-2 px-1 text-[11px] text-muted">
-          BMI {n.bmi}（{bmiLabel(n.bmi)}）{s.bodyFat ? '・有體脂，改用去脂體重算基礎代謝' : '・知道體脂的話填上會更準'}
-        </p>
-
-        <Group title="日常活動量">
-          <ActivityPicker value={s.activity} onChange={(activity) => set({ activity })} />
-        </Group>
+        <BodyInputs s={s} set={set} n={n} errors={errors} />
 
         <Group title="飲食目標與三大營養素比例">
           <div className="grid grid-cols-2 gap-2">
@@ -251,8 +229,9 @@ export function NeedsSheet({ open, onClose, profile }: { open: boolean; onClose:
                   每日總消耗 <b>{n.tdee}</b> kcal＝基礎代謝 × 活動係數 {ACTIVITY.find((a) => a.id === s.activity)!.factor}
                 </li>
                 <li>每日目標＝每日總消耗 {preset ? (preset.kcal ? `${preset.kcal > 0 ? '+' : '−'} ${Math.abs(preset.kcal)}` : '') : s.goal === 'maintain' ? '' : `${PACES[s.goal].find((p) => p.id === s.pace)!.kcal}`} kcal</li>
-                <li>{preset ? `三大營養素照比例分：蛋白質 ${Math.round(preset.ratio[0] * 100)}%、碳水 ${Math.round(preset.ratio[1] * 100)}%、脂肪 ${Math.round(preset.ratio[2] * 100)}%` : `蛋白質＝體重 × ${s.proteinPerKg ?? DEFAULT_PROTEIN[s.goal]} g；脂肪約 27%；剩下給碳水`}</li>
+                <li>{preset ? `三大營養素照比例分：蛋白質 ${Math.round(preset.ratio[0] * 100)}%、碳水 ${Math.round(preset.ratio[1] * 100)}%、脂肪 ${Math.round(preset.ratio[2] * 100)}%` : `蛋白質＝體重 × ${s.proteinPerKg ?? DEFAULT_PROTEIN[s.goal]} g；脂肪每公斤 0.9 g（限制在總熱量 20–30%）；剩下的熱量全部給碳水`}</li>
                 <li>1 g 蛋白質、碳水各 4 kcal，1 g 脂肪 9 kcal</li>
+                <li>活動係數只算平常生活；有運動的那天，首頁會另外加上運動消耗，算出當天的熱量赤字</li>
                 <li>運動日依「飲食計劃」多加的熱量，會自動加在碳水上</li>
               </motion.ul>
             )}
@@ -288,6 +267,12 @@ function Summary({ n, label, activity }: { n: Needs; label: string; activity: (t
         <span className="pb-1 text-sm text-muted">kcal</span>
       </div>
       <div className="text-[11px] text-muted">{label}</div>
+      {n.adjusted.map((t) => (
+        <p key={t} className="mt-1 flex items-start gap-1 text-[11px] text-honey-ink">
+          <Icon name="info" size={14} fill />
+          {t}
+        </p>
+      ))}
       {n.floored && (
         <p className="mt-1 flex items-start gap-1 text-[11px] text-tomato">
           <Icon name="warning" size={14} fill />
@@ -597,7 +582,8 @@ function CustomGoal({ s, set }: { s: BodySpec; set: (p: Partial<BodySpec>) => vo
   const perKg = s.proteinPerKg ?? DEFAULT_PROTEIN[s.goal]
   return (
     <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="space-y-2 overflow-hidden">
-      <Chips value={s.goal} options={(['lose', 'maintain', 'gain'] as Goal[]).map((g) => ({ id: g, label: GOAL_LABEL[g] }))} onChange={(goal) => set({ goal, proteinPerKg: undefined })} />
+      <Chips value={s.goal} options={(['lose', 'maintain', 'recomp', 'gain'] as Goal[]).map((g) => ({ id: g, label: GOAL_LABEL[g] }))} onChange={(goal) => set({ goal, proteinPerKg: undefined })} />
+      <p className="px-1 text-[11px] text-muted">{GOAL_HINT[s.goal]}</p>
       {s.goal !== 'maintain' && (
         <div className="grid grid-cols-3 gap-1.5">
           {PACES[s.goal].map((p) => (
@@ -617,5 +603,126 @@ function CustomGoal({ s, set }: { s: BodySpec; set: (p: Partial<BodySpec>) => vo
         ))}
       </div>
     </motion.div>
+  )
+}
+
+const GOAL_HINT: Record<Goal, string> = {
+  lose: '少吃一點（每天 −300～−500 kcal），蛋白質拉高保住肌肉',
+  maintain: '吃多少用多少，體重維持不變',
+  recomp: '熱量差不多平衡（0～−150 kcal），蛋白質拉到最高，一邊減脂一邊長肌肉',
+  gain: '每天多吃 200～300 kcal，配合重訓長肌肉',
+}
+
+type CompMode = 'none' | 'bodyFat' | 'smm' | 'ffm'
+const COMP_OPTIONS: { id: CompMode; label: string }[] = [
+  { id: 'bodyFat', label: '體脂率' },
+  { id: 'smm', label: '骨骼肌重' },
+  { id: 'ffm', label: '去脂體重' },
+  { id: 'none', label: '不知道' },
+]
+const FFM_SOURCE = { ffm: '你填的', bodyFat: '用體重和體脂率算的', smm: '用骨骼肌重推估的' } as const
+
+/** 身體數據：性別、年齡、身高、體重、體組成（擇一）、活動量；首次設定也用這個 */
+export function BodyInputs({ s, set, n, errors = [] }: { s: BodySpec; set: (p: Partial<BodySpec>) => void; n: Needs; errors?: string[] }) {
+  const current: CompMode = s.ffm !== undefined ? 'ffm' : s.smm !== undefined ? 'smm' : s.bodyFat !== undefined ? 'bodyFat' : 'none'
+  const [mode, setMode] = useState<CompMode>(current)
+  useEffect(() => setMode(current), [current])
+  const choose = (m: CompMode) => {
+    setMode(m)
+    const r1 = (v: number) => Math.round(v * 10) / 10
+    set({
+      bodyFat: m === 'bodyFat' ? s.bodyFat ?? (s.sex === 'male' ? 20 : 28) : undefined,
+      smm: m === 'smm' ? s.smm ?? r1(s.weight * (s.sex === 'male' ? 0.43 : 0.37)) : undefined,
+      ffm: m === 'ffm' ? s.ffm ?? r1(s.weight * (s.sex === 'male' ? 0.8 : 0.72)) : undefined,
+    })
+  }
+  return (
+    <div className="space-y-4">
+      <Group title="生理性別">
+        <Chips
+          value={s.sex}
+          options={[
+            { id: 'male', label: '男性' },
+            { id: 'female', label: '女性' },
+          ]}
+          onChange={(sex) => set({ sex })}
+        />
+      </Group>
+      <div className="grid grid-cols-3 gap-2">
+        <Slider label="年齡" unit="歲" value={s.age} min={15} max={80} step={1} empty="不填" onChange={(age) => set({ age })} />
+        <Slider label="身高" unit="cm" value={s.height} min={140} max={200} step={1} empty="不填" onChange={(height) => set({ height })} />
+        <Slider label="體重" unit="kg" value={s.weight} min={35} max={150} step={0.5} onChange={(weight) => set({ weight })} />
+      </div>
+      <Group title="體組成（知道哪個填哪個，會算得更準）">
+        <Chips value={mode} options={COMP_OPTIONS} onChange={choose} />
+        {mode === 'bodyFat' && <Slider label="體脂率" unit="%" value={s.bodyFat ?? 0} min={3} max={60} step={0.5} onChange={(bodyFat) => set({ bodyFat })} />}
+        {mode === 'smm' && <Slider label="骨骼肌重（SMM，體組成計上看得到）" unit="kg" value={s.smm ?? 0} min={10} max={70} step={0.1} onChange={(smm) => set({ smm })} />}
+        {mode === 'ffm' && <Slider label="去脂體重（FFM）" unit="kg" value={s.ffm ?? 0} min={20} max={110} step={0.1} onChange={(ffm) => set({ ffm })} />}
+        <p className="px-1 text-[11px] text-muted">
+          BMI {n.bmi}（{bmiLabel(n.bmi)}）
+          {n.ffm !== undefined && n.ffmSource
+            ? `・去脂體重 ${n.ffm} kg（${FFM_SOURCE[n.ffmSource]}），基礎代謝用 Katch-McArdle 公式`
+            : '・不知道體組成也沒關係，改用身高、體重、年齡估算'}
+        </p>
+      </Group>
+      {n.assumed.length > 0 && (
+        <p className="-mt-2 flex items-start gap-1 px-1 text-[11px] text-honey-ink">
+          <Icon name="info" size={14} fill />
+          {n.assumed.join('、')}沒填，先用一般值估算；之後補上會更準
+        </p>
+      )}
+      {errors.length > 0 && (
+        <div className="rounded-2xl bg-tomato-soft px-3 py-2 text-[12px] text-tomato">
+          {errors.map((e) => (
+            <div key={e} className="flex items-start gap-1">
+              <Icon name="error" size={14} fill />
+              {e}
+            </div>
+          ))}
+        </div>
+      )}
+      <Group title="日常活動量（不含刻意運動）">
+        <ActivityPicker value={s.activity} onChange={(activity) => set({ activity })} />
+        <p className="px-1 text-[11px] text-muted">運動的消耗會在有運動的那天另外算，這裡只選平常生活的活動量。</p>
+      </Group>
+    </div>
+  )
+}
+
+/** 精簡版結果：首次設定時用 */
+export function NeedsMini({ n }: { n: Needs }) {
+  return (
+    <div className="rounded-3xl bg-leaf-soft p-4">
+      <div className="flex items-end justify-between">
+        <div>
+          <div className="text-xs text-leaf-dark">每日目標攝取</div>
+          <div className="text-3xl font-bold tabular-nums">
+            <CountUp value={n.kcal} />
+            <span className="ml-1 text-sm font-normal text-muted">kcal</span>
+          </div>
+        </div>
+        <div className="text-right text-[11px] leading-5 text-muted">
+          基礎代謝 <b className="tabular-nums text-ink">{n.bmr}</b>
+          <br />
+          每日總消耗 <b className="tabular-nums text-ink">{n.tdee}</b>
+        </div>
+      </div>
+      <div className="mt-2 grid grid-cols-3 gap-1.5 text-center">
+        {(
+          [
+            ['蛋白質', n.protein, n.pct.protein, P],
+            ['碳水', n.carbs, n.pct.carbs, C],
+            ['脂肪', n.fat, n.pct.fat, F],
+          ] as const
+        ).map(([label, g, pct, color]) => (
+          <div key={label} className="rounded-2xl bg-card/80 py-1.5">
+            <div className="text-[11px] text-muted">
+              <span style={{ color }}>●</span> {label} {pct}%
+            </div>
+            <div className="font-bold tabular-nums">{g} g</div>
+          </div>
+        ))}
+      </div>
+    </div>
   )
 }
