@@ -13,12 +13,12 @@ export const WATCH_SAMPLE = [
 ].join('\n')
 
 /** 給 iOS 27 捷徑 AI 的一段描述：貼進「描述捷徑」就會自動組好 */
-export const WATCH_AI_PROMPT = `建立一個名為「${WATCH_SHORTCUT}」的捷徑：
-1. 從「健康」App 找出最近 7 天的體能訓練（最新的在前，最多 10 筆）。
-2. 每一筆體能訓練產生一行文字，格式完全照這樣：
-好食光運動|類型=體能訓練類型|開始=開始日期與時間|分鐘=時間長度（分鐘）|距離=距離（公里）|消耗=動態能量（大卡）|心率=平均心率
-3. 把所有行用換行合併成一段文字。
-4. 拷貝到剪貼簿。`
+export const WATCH_AI_PROMPT = `建立一個名為「${WATCH_SHORTCUT}」的捷徑，請嚴格照下面做：
+1. 用「尋找健康樣本」找「體能訓練」：條件是「開始日期」在「最近 7 天」，依「開始日期」排序、「最新的在前」、限制「10」筆。
+2. 用「重複每一個」對每一筆體能訓練產生一行文字，格式完全照這樣：
+好食光運動|類型=體能訓練類型|開始=開始日期|分鐘=時間長度（分鐘）|距離=距離（公里）|消耗=動態能量（大卡）|心率=平均心率
+3. 重複結束後，用「合併文字」以「換行」把所有行合併。
+4. 用「拷貝到剪貼簿」複製合併後的文字。`
 
 export const runWatchShortcut = () => {
   window.location.href = `shortcuts://run-shortcut?name=${encodeURIComponent(WATCH_SHORTCUT)}`
@@ -138,7 +138,10 @@ export function parseWatchText(raw: string): WatchWorkout[] {
       const hit = TYPE_MAP.find(([re]) => re.test(type))
       const strength = !!hit && hit[1] === null
       const hr = number(field(line, '心率'))
-      const kcal = number(field(line, '消耗'))
+      const kcalText = field(line, '消耗')
+      const kcalRaw = number(kcalText)
+      // 千焦換成大卡
+      const kcal = kcalRaw !== undefined && /kj|千焦/i.test(kcalText) ? kcalRaw / 4.184 : kcalRaw
       return {
         type,
         exerciseId: hit ? hit[1] : 'cx-hiit',
