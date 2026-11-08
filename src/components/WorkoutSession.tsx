@@ -20,6 +20,11 @@ import {
   moveFor,
   reorderEntries,
   workoutUnits,
+  activeMs,
+  endWorkout,
+  pauseWorkout,
+  resumeWorkout,
+  undoneSets,
   workoutCardio,
   workoutVolume,
   type Grip,
@@ -57,6 +62,12 @@ export function WorkoutSession({ id, onClose }: { id: number | null; onClose: ()
   /** 調整大項目順序的模式 */
   const [sorting, setSorting] = useState(false)
   useEffect(() => setSorting(false), [id])
+  // 訓練中每 15 秒更新一次顯示的時間
+  useEffect(() => {
+    if (!id) return
+    const t = window.setInterval(() => setNow(Date.now()), 15000)
+    return () => window.clearInterval(t)
+  }, [id])
   const [restFor, setRestFor] = useState(90)
   const [restEnd, setRestEnd] = useState<number | null>(null)
   const [now, setNow] = useState(Date.now())
@@ -79,8 +90,10 @@ export function WorkoutSession({ id, onClose }: { id: number | null; onClose: ()
   const save = (next: Workout) => db.workouts.put(next)
   const update = (fn: (x: Workout) => void) => {
     if (!w) return
-    const next = structuredClone(w)
+    // 暫停中有動作就自動繼續；記下最後有動作的時間（判斷是不是忘了結束）
+    const next = structuredClone(!w.endedAt && w.pausedAt ? resumeWorkout(w) : w)
     fn(next)
+    if (!next.endedAt) next.lastActiveAt = Date.now()
     save(next)
   }
 
@@ -129,21 +142,52 @@ export function WorkoutSession({ id, onClose }: { id: number | null; onClose: ()
     } else toast(`已加入 ${c.name}，按「開始」計時`)
   }
 
-  const finish = async () => {
+  /** 按「完成訓練」：還有沒打勾的組就先問，不直接結束 */
+  const [confirmEnd, setConfirmEnd] = useState(false)
+  const finish = () => {
     if (!w) return
-    const n = doneSets(w)
-    if (!n) {
-      await db.workouts.delete(w.id!)
-      onClose()
-      toast('沒有完成的組數，這次訓練不保存')
+    if (!doneSets(w) || undoneSets(w)) {
+      haptic(10)
+      setConfirmEnd(true)
       return
     }
+    void endNow(false)
+  }
+  const endNow = async (markAllDone: boolean) => {
+    if (!w) return
+    setConfirmEnd(false)
     setRestEnd(null)
-    await db.workouts.put({ ...w, endedAt: Date.now() })
+    const done = endWorkout(w, { markAllDone })
+    await db.workouts.put(done)
+    const n = doneSets(done)
     await saveMark(w.date, { training: true })
     haptic([10, 40, 10, 40, 20])
     onClose()
     toast(`辛苦了！完成 ${n} 組・已標記為運動日`)
+  }
+  const pause = async () => {
+    if (!w) return
+    setConfirmEnd(false)
+    setRestEnd(null)
+    await db.workouts.put(pauseWorkout(w))
+    haptic([8, 20, 8])
+  }
+  const pauseAndClose = async () => {
+    await pause()
+    onClose()
+    toast('已暫停，頂端的小視窗點一下就能繼續')
+  }
+  const resume = async () => {
+    if (!w) return
+    await db.workouts.put(resumeWorkout(w))
+    haptic(8)
+  }
+  const discard = async () => {
+    if (!w || !window.confirm('確定要放棄這次訓練嗎？記錄的內容會刪除。')) return
+    setConfirmEnd(false)
+    await db.workouts.delete(w.id!)
+    onClose()
+    toast('已放棄這次訓練')
   }
 
   const finishEdit = async () => {
@@ -162,7 +206,7 @@ export function WorkoutSession({ id, onClose }: { id: number | null; onClose: ()
   }
 
   const locked = !!w?.endedAt && !editing
-  const minutes = w ? Math.round(((w.endedAt ?? now) - w.startedAt) / 60000) : 0
+  const minutes = w ? Math.round(activeMs(w, now) / 60000) : 0
   const restLeft = restEnd ? Math.ceil((restEnd - now) / 1000) : 0
 
   return (
@@ -171,7 +215,7 @@ export function WorkoutSession({ id, onClose }: { id: number | null; onClose: ()
         {w && (
           <div className="space-y-4 pb-16">
             <div className="grid grid-cols-3 gap-2 text-center">
-              <Mini label="時間" value={`${minutes} 分`} />
+              <Mini label={w.pausedAt ? '時間（暫停中）' : '時間'} value={`${minutes} 分`} />
               <Mini label="完成組數" value={String(doneSets(w))} />
               {workoutVolume(w) > 0 || !workoutCardio(w, weight).min ? (
                 <Mini label="總重量" value={`${Math.round(workoutVolume(w))} kg`} />
@@ -179,6 +223,20 @@ export function WorkoutSession({ id, onClose }: { id: number | null; onClose: ()
                 <Mini label="有氧消耗" value={`約 ${workoutCardio(w, weight).kcal} kcal`} />
               )}
             </div>
+
+            {w.pausedAt && !w.endedAt && (
+              <div className="flex items-center gap-3 rounded-2xl bg-honey-soft px-4 py-3">
+                <Icon name="pause" size={22} className="text-honey-ink" />
+                <div className="min-w-0 flex-1 text-sm text-honey-ink">
+                  <b>已暫停</b>
+                  <div className="text-[11px] opacity-80">暫停的時間不算進運動時間，記錄任何一組會自動繼續</div>
+                </div>
+                <Tap onClick={resume} className="flex items-center gap-1 rounded-full bg-leaf px-3 py-1.5 text-sm text-on-leaf">
+                  <Icon name="play_arrow" size={18} />
+                  繼續
+                </Tap>
+              </div>
+            )}
 
             {w.watch && (
               <div className="flex flex-wrap items-center gap-x-3 gap-y-1 rounded-2xl bg-ink px-4 py-2.5 text-xs text-cream">
@@ -415,9 +473,15 @@ export function WorkoutSession({ id, onClose }: { id: number | null; onClose: ()
                 )}
               </AnimatePresence>
               {!w.endedAt ? (
-                <Button className="w-full" onClick={finish}>
-                  完成訓練
-                </Button>
+                <div className="flex gap-2">
+                  <Button variant="soft" className="flex items-center justify-center gap-1 px-4" onClick={w.pausedAt ? resume : pauseAndClose}>
+                    <Icon name={w.pausedAt ? 'play_arrow' : 'pause'} size={20} />
+                    {w.pausedAt ? '繼續' : '暫停'}
+                  </Button>
+                  <Button className="flex-1" onClick={finish}>
+                    完成訓練
+                  </Button>
+                </div>
               ) : editing ? (
                 <Button className="w-full" onClick={finishEdit}>
                   完成修改
@@ -429,6 +493,38 @@ export function WorkoutSession({ id, onClose }: { id: number | null; onClose: ()
                 </Button>
               )}
             </div>
+          </div>
+        )}
+      </Sheet>
+      <Sheet open={confirmEnd} onClose={() => setConfirmEnd(false)} title="還有沒打勾的組">
+        {w && (
+          <div className="space-y-2 pb-4">
+            <p className="text-sm text-muted">
+              {doneSets(w) ? `已完成 ${doneSets(w)} 組，還有 ${undoneSets(w)} 組沒打勾。` : `${undoneSets(w)} 組都還沒打勾。`}
+              要怎麼處理？
+            </p>
+            <Button className="flex w-full items-center justify-center gap-1.5" onClick={() => endNow(true)}>
+              <Icon name="task_alt" size={20} />
+              全部都做完了，標成完成並結束
+            </Button>
+            {doneSets(w) > 0 && (
+              <Button variant="soft" className="w-full" onClick={() => endNow(false)}>
+                結束，只算已完成的 {doneSets(w)} 組
+              </Button>
+            )}
+            <Button variant="soft" className="flex w-full items-center justify-center gap-1.5" onClick={pauseAndClose}>
+              <Icon name="pause" size={20} />
+              暫停，等一下再繼續
+            </Button>
+            <Button variant="ghost" className="w-full" onClick={() => setConfirmEnd(false)}>
+              回去繼續練
+            </Button>
+            {!doneSets(w) && (
+              <Tap onClick={discard} className="mx-auto flex items-center gap-1 px-3 py-1 text-xs text-tomato">
+                <Icon name="delete" size={16} />
+                放棄這次訓練
+              </Tap>
+            )}
           </div>
         )}
       </Sheet>

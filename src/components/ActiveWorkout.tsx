@@ -5,17 +5,15 @@ import { createContext, useContext, useEffect, useState, type ReactNode } from '
 import { EXERCISE_MAP } from '../data/exercises'
 import { db } from '../db'
 import { haptic, spring } from '../lib/feedback'
-import { isCardio, type Workout } from '../lib/workout'
+import { saveMark } from '../lib/hooks'
+import { activeMs, doneSets, endWorkout, isCardio, lastActive, pauseWorkout, shouldAskIdle, type Workout } from '../lib/workout'
 import { Icon } from './Icon'
-import { Tap } from './ui'
+import { Button, Sheet, Tap, useToast } from './ui'
 import { WorkoutSession } from './WorkoutSession'
 
 const Ctx = createContext<{ open: (id: number) => void }>({ open: () => {} })
 /** 打開某次訓練的畫面（全 App 共用同一個） */
 export const useWorkoutSession = () => useContext(Ctx)
-
-/** 超過 12 小時還沒按完成的，當作忘了關，不再顯示小視窗 */
-const STALE_MS = 12 * 3600_000
 
 export function WorkoutSessionProvider({ children }: { children: ReactNode }) {
   const [openId, setOpenId] = useState<number | null>(null)
@@ -24,11 +22,23 @@ export function WorkoutSessionProvider({ children }: { children: ReactNode }) {
       db.workouts
         .orderBy('startedAt')
         .reverse()
-        .filter((w) => !w.endedAt && Date.now() - w.startedAt < STALE_MS)
+        .filter((w) => !w.endedAt)
         .first(),
     [],
   )
   const showPill = !!active && openId === null
+  // 很久沒有動作：像 Apple Watch 一樣問要不要結束（每分鐘檢查一次）
+  const [now, setNow] = useState(Date.now())
+  useEffect(() => {
+    const t = window.setInterval(() => setNow(Date.now()), 60_000)
+    const vis = () => document.visibilityState === 'visible' && setNow(Date.now())
+    document.addEventListener('visibilitychange', vis)
+    return () => {
+      window.clearInterval(t)
+      document.removeEventListener('visibilitychange', vis)
+    }
+  }, [])
+  const askIdle = !!active && openId === null && shouldAskIdle(active, now)
 
   // 小視窗出現時，頁面頂端多留一點空間
   useEffect(() => {
@@ -40,6 +50,7 @@ export function WorkoutSessionProvider({ children }: { children: ReactNode }) {
       {children}
       <AnimatePresence>{showPill && active && <ActivePill key="pill" w={active} onOpen={() => setOpenId(active.id!)} />}</AnimatePresence>
       <WorkoutSession id={openId} onClose={() => setOpenId(null)} />
+      <IdleSheet w={askIdle ? active! : null} onOpen={(id) => setOpenId(id)} />
     </Ctx.Provider>
   )
 }
@@ -68,6 +79,7 @@ function ActivePill({ w, onOpen }: { w: Workout; onOpen: () => void }) {
     const t = window.setInterval(() => setNow(Date.now()), 1000)
     return () => window.clearInterval(t)
   }, [])
+  const paused = !!w.pausedAt
   const kind = kindOf(w)
   // 有氧和重訓都有：每 5 秒換一個動作
   const pose = kind === 'both' ? (Math.floor(now / 5000) % 2 ? 'cardio' : 'strength') : kind
@@ -92,15 +104,20 @@ function ActivePill({ w, onOpen }: { w: Workout; onOpen: () => void }) {
         aria-label="打開訓練中的畫面"
         className="pointer-events-auto flex h-9 max-w-[260px] items-center gap-2 rounded-full bg-ink pl-1.5 pr-3 text-cream shadow-card"
       >
-        <span className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-leaf text-on-leaf">
+        <span className={`grid h-7 w-7 shrink-0 place-items-center rounded-full ${paused ? 'bg-honey text-ink' : 'bg-leaf text-on-leaf'}`}>
+          {paused ? (
+            <Icon name="pause" size={18} />
+          ) : (
           <AnimatePresence mode="wait" initial={false}>
             <motion.span key={pose} initial={{ opacity: 0, scale: 0.6 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.6 }} transition={{ duration: 0.2 }}>
               <ExerciseFigure pose={pose} size={22} />
             </motion.span>
           </AnimatePresence>
+          )}
         </span>
-        <span className="text-xs font-bold tabular-nums">{clock(now - w.startedAt)}</span>
-        {name && <span className="min-w-0 truncate text-[11px] text-cream/70">{name}</span>}
+        <span className="text-xs font-bold tabular-nums">{clock(activeMs(w, now))}</span>
+        {paused && <span className="text-[11px] text-honey">暫停中</span>}
+        {name && !paused && <span className="min-w-0 truncate text-[11px] text-cream/70">{name}</span>}
         <Icon name="expand_more" size={16} className="shrink-0 text-cream/70" />
       </Tap>
     </motion.div>
@@ -144,5 +161,72 @@ export function ExerciseFigure({ pose, size = 24 }: { pose: 'cardio' | 'strength
       </motion.g>
       <motion.path {...line} animate={{ d: ['M12 14.5 L9.8 18.5 L9.8 22.5 M12 14.5 L14.2 18.5 L14.2 22.5', 'M12 14.5 L9.2 18 L9.8 22.5 M12 14.5 L14.8 18 L14.2 22.5'] }} transition={lift} />
     </svg>
+  )
+}
+
+const hhmm = (t: number) => new Date(t).toLocaleTimeString('zh-TW', { hour: '2-digit', minute: '2-digit', hour12: false })
+
+/** 很久沒動作時問：結束（算到最後有動作的時間）、暫停，或還在練 */
+function IdleSheet({ w, onOpen }: { w: Workout | null; onOpen: (id: number) => void }) {
+  const toast = useToast()
+  const [shown, setShown] = useState<Workout | null>(null)
+  useEffect(() => {
+    if (w) setShown(w)
+  }, [w?.id, !!w])
+  const close = async (patch?: Partial<Workout>) => {
+    if (shown) await db.workouts.update(shown.id!, { idleAskedAt: Date.now(), ...patch })
+    setShown(null)
+  }
+  if (!shown) return null
+  const last = lastActive(shown)
+  const idleMin = Math.round((Date.now() - last) / 60000)
+  const done = doneSets(shown)
+  return (
+    <Sheet open={!!w && !!shown} onClose={() => close()} title="還在運動嗎？">
+      <div className="space-y-2 pb-4">
+        <p className="text-sm text-muted">
+          已經 {idleMin >= 60 ? `${Math.floor(idleMin / 60)} 小時 ${idleMin % 60} 分鐘` : `${idleMin} 分鐘`}沒有記錄了，是不是忘了按「完成訓練」？
+        </p>
+        <Button
+          className="flex w-full items-center justify-center gap-1.5"
+          onClick={async () => {
+            const cur = (await db.workouts.get(shown.id!)) ?? shown
+            const ended = endWorkout(cur, { at: lastActive(cur) })
+            await db.workouts.put(ended)
+            if (done) await saveMark(shown.date, { training: true })
+            setShown(null)
+            haptic([10, 40, 10])
+            toast(done ? `已結束，時間算到 ${hhmm(last)}（最後一次記錄）` : '已結束這次訓練')
+          }}
+        >
+          <Icon name="task_alt" size={20} />
+          結束訓練（算到 {hhmm(last)}）
+        </Button>
+        <Button
+          variant="soft"
+          className="flex w-full items-center justify-center gap-1.5"
+          onClick={async () => {
+            const cur = (await db.workouts.get(shown.id!)) ?? shown
+            await db.workouts.put({ ...pauseWorkout(cur, lastActive(cur)), idleAskedAt: Date.now() })
+            setShown(null)
+            toast('已暫停，沒動作的這段時間不算進運動時間')
+          }}
+        >
+          <Icon name="pause" size={20} />
+          暫停（從 {hhmm(last)} 開始算暫停）
+        </Button>
+        <Button
+          variant="ghost"
+          className="w-full"
+          onClick={async () => {
+            const id = shown.id!
+            await close({ lastActiveAt: Date.now() })
+            onOpen(id)
+          }}
+        >
+          還在練，打開訓練
+        </Button>
+      </div>
+    </Sheet>
   )
 }

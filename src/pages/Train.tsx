@@ -15,7 +15,7 @@ import { useMarks } from '../lib/hooks'
 import { DayTraining, TrainBadge } from '../components/TrainSchedule'
 import type { Profile } from '../types'
 import { spring } from '../lib/feedback'
-import { BODY_PARTS, MUSCLE_ZH, doneSets, weeklyBodyData, weeklyMuscles, workoutVolume, type FxMuscle, workoutCardio } from '../lib/workout'
+import { BODY_PARTS, MUSCLE_ZH, activeMs, doneSets, weeklyBodyData, weeklyMuscles, workoutVolume, type FxMuscle, workoutCardio } from '../lib/workout'
 
 export default function Train({ profile }: { profile: Profile }) {
   const today = todayKey()
@@ -121,7 +121,7 @@ export default function Train({ profile }: { profile: Profile }) {
                       {w.type && <TrainBadge type={w.type} />}
                     </span>
                     <span className="text-xs text-muted">
-                      {Math.round((w.endedAt! - w.startedAt) / 60000)} 分・{doneSets(w)} 組
+                      {Math.round(activeMs(w) / 60000)} 分・{doneSets(w)} 組
                       {workoutVolume(w) > 0 && `・${Math.round(workoutVolume(w))} kg`}
                       {workoutCardio(w).min > 0 && `・有氧 ${Math.round(workoutCardio(w).min)} 分${workoutCardio(w).km ? ` ${workoutCardio(w).km} km` : ''}`}
                       {w.watch && <Icon name="watch" size={13} className="ml-1 inline align-[-2px] text-leaf-dark" />}

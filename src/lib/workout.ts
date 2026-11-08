@@ -188,6 +188,14 @@ export interface Workout {
   watch?: { type: string; min?: number; kcal?: number; hr?: number; km?: number }
   /** 匯入來源的鑰匙，避免重複匯入 */
   importKey?: string
+  /** 暫停中：從什麼時候開始暫停 */
+  pausedAt?: number
+  /** 之前暫停過的總時間（毫秒），不算進運動時間 */
+  pausedMs?: number
+  /** 最後一次有動作（記組數、加動作…）的時間，用來判斷是不是忘了結束 */
+  lastActiveAt?: number
+  /** 上次問「要結束了嗎？」的時間，避免一直問 */
+  idleAskedAt?: number
 }
 
 export const isCardio = (ex?: Exercise) => ex?.equip === 'cardio'
@@ -394,3 +402,43 @@ export function exerciseBurn(ws: Workout[], weightKg: number, bmr: number) {
   }
   return { kcal: Math.round(kcal), min: Math.round(min), cardioKcal: Math.round(cardioKcal), strengthKcal: Math.round(strengthKcal) }
 }
+
+/** 實際運動的時間（毫秒）：扣掉暫停的時間 */
+export const activeMs = (w: Workout, now = Date.now()) =>
+  Math.max(0, (w.endedAt ?? w.pausedAt ?? now) - w.startedAt - (w.pausedMs ?? 0))
+
+/** 還沒打勾的組數（有氧組合的站也算） */
+export const undoneSets = (w: Workout) => w.entries.reduce((t, e) => t + e.sets.filter((s) => !s.done).length, 0)
+
+/** 暫停：計時停住，正在跑的有氧計時也一起停 */
+export function pauseWorkout(w: Workout, now = Date.now()): Workout {
+  if (w.pausedAt || w.endedAt) return w
+  return {
+    ...w,
+    pausedAt: now,
+    blocks: w.blocks?.map((b) => (b.startedAt ? { ...b, ms: b.ms + (now - b.startedAt), startedAt: undefined } : b)),
+  }
+}
+
+export function resumeWorkout(w: Workout, now = Date.now()): Workout {
+  if (!w.pausedAt) return w
+  return { ...w, pausedMs: (w.pausedMs ?? 0) + (now - w.pausedAt), pausedAt: undefined, lastActiveAt: now }
+}
+
+/** 結束訓練；at＝結束時間（忘了結束時用最後有動作的時間） */
+export function endWorkout(w: Workout, opts: { at?: number; markAllDone?: boolean } = {}): Workout {
+  const at = opts.at ?? Date.now()
+  const base = w.pausedAt ? resumeWorkout(w, Math.max(w.pausedAt, Math.min(at, Date.now()))) : w
+  return {
+    ...base,
+    endedAt: Math.max(base.startedAt, at),
+    entries: opts.markAllDone ? base.entries.map((e) => ({ ...e, sets: e.sets.map((x) => ({ ...x, done: true })) })) : base.entries,
+    blocks: base.blocks?.map((b) => (b.startedAt ? { ...b, ms: b.ms + (Math.max(at, b.startedAt) - b.startedAt), startedAt: undefined } : b)),
+  }
+}
+
+/** 多久沒動作就問要不要結束（Apple Watch 也是類似的做法） */
+export const IDLE_ASK_MS = 45 * 60_000
+export const lastActive = (w: Workout) => Math.max(w.lastActiveAt ?? 0, w.startedAt)
+export const shouldAskIdle = (w: Workout, now = Date.now()) =>
+  !w.endedAt && !w.pausedAt && now - lastActive(w) > IDLE_ASK_MS && now - (w.idleAskedAt ?? 0) > IDLE_ASK_MS
