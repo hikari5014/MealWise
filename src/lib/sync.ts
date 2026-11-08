@@ -64,7 +64,10 @@ const cloudKey = (tbl: string, r: Row) => (AUTO.has(tbl) ? String(r.uid ?? '') :
 
 /* ───────── 記錄本機變動 ───────── */
 
-const tombstones = (): { tbl: string; key: string }[] => {
+/** 刪除記號；id 用來在推送後精準移除送出過的那幾筆 */
+type Tomb = { tbl: string; key: string; id?: string }
+const tombId = (t: Tomb) => t.id ?? `${t.tbl}|${t.key}`
+const tombstones = (): Tomb[] => {
   try {
     return JSON.parse(ls.get(LS.tomb) ?? '[]')
   } catch {
@@ -100,7 +103,7 @@ export function installSyncHooks() {
       if (applyingRemote || localOnly || !obj) return
       const key = auto ? String(obj.uid ?? '') : String(pk)
       if (!key) return
-      ls.set(LS.tomb, JSON.stringify([...tombstones(), { tbl: name, key }].slice(-2000)))
+      ls.set(LS.tomb, JSON.stringify([...tombstones(), { tbl: name, key, id: crypto.randomUUID() }].slice(-2000)))
       scheduleSync()
     })
   }
@@ -174,6 +177,8 @@ async function push(full: boolean) {
   const since = full ? 0 : Number(ls.get(LS.push)) || 0
   const started = Date.now()
   const { toUid } = await planUidMap()
+  // 先拿刪除記號，再掃資料：掃描途中才刪掉的，下次一定會送
+  const tomb = tombstones()
   const rows: { tbl: string; key: string; data: Row | null; deleted: boolean }[] = []
   for (const { name } of TABLES) {
     const all = (await db.table(name).toArray()) as Row[]
@@ -185,7 +190,6 @@ async function push(full: boolean) {
       if (key) rows.push({ tbl: name, key, data: toCloud(name, r, toUid), deleted: false })
     }
   }
-  const tomb = tombstones()
   for (const t of tomb) rows.push({ tbl: t.tbl, key: t.key, data: null, deleted: true })
   const batch = dedupeRows(rows)
   for (let i = 0; i < batch.length; i += 400) {
@@ -193,7 +197,9 @@ async function push(full: boolean) {
     if (error) throw error
   }
   // 推完才清掉，失敗下次會再推
-  const left = tombstones().slice(tomb.length)
+  // 只移除這次送出的（中間可能有被取消或新加的）
+  const sent = new Set(tomb.map(tombId))
+  const left = tombstones().filter((t) => !sent.has(tombId(t)))
   ls.set(LS.tomb, JSON.stringify(left))
   ls.set(LS.push, String(started))
   return batch.length

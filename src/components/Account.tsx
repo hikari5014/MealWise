@@ -219,8 +219,8 @@ function LeaveSheet({ mode, onClose }: { mode: 'out' | 'delete' | null; onClose:
         if (r?.error) throw new Error(r.error)
       } else await syncNow()
       await signOut()
-      if (wipe) await withoutTracking(() => Promise.all(db.tables.map((t) => t.clear())))
       resetSyncMarks()
+      if (wipe) await withoutTracking(() => Promise.all(db.tables.map((t) => t.clear())))
       toast(del ? '帳號和雲端資料已刪除' : '已登出')
       onClose()
     } catch (e) {
