@@ -83,8 +83,14 @@ export function parseMachineResult(text: string): MachineResult | null {
   }
 }
 
-/** 沒記過這台時猜是什麼器材：有步頻＝跑步機，有轉速＝飛輪，其他當滑步機 */
-export const guessExercise = (r: MachineResult) => (r.spm ? 'jogging-treadmill' : r.rpm ? 'bicycling-stationary' : 'elliptical-trainer')
+/** 已經確認過的機器種類代碼（使用者實際掃過、告訴我們是什麼） */
+const TYPE_CODES: Record<string, string> = {
+  '132': 'cx-stair-climber', // Life Fitness 登階機
+}
+
+/** 沒記過這台時猜是什麼器材：先看種類代碼；不認得的話，有步頻＝跑步機，有轉速＝飛輪，其他當滑步機 */
+export const guessExercise = (r: MachineResult) =>
+  (r.typeCode && TYPE_CODES[r.typeCode]) || (r.spm ? 'jogging-treadmill' : r.rpm ? 'bicycling-stationary' : 'elliptical-trainer')
 
 export const toSet = (r: MachineResult): WorkoutSet => ({
   w: 0,

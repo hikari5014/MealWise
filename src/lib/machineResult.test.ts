@@ -15,8 +15,11 @@ describe('Halo Fitness 運動結果 QR Code', () => {
     expect(r.rpm).toBeUndefined()
     expect(r.spm).toBeUndefined()
   })
-  it('沒有步頻、轉速時猜滑步機', () => {
-    expect(guessExercise(parseMachineResult(HALO)!)).toBe('elliptical-trainer')
+  it('種類代碼 132 是登階機', () => {
+    expect(guessExercise(parseMachineResult(HALO)!)).toBe('cx-stair-climber')
+  })
+  it('不認得的代碼：沒有步頻、轉速時猜滑步機', () => {
+    expect(guessExercise({ ...parseMachineResult(HALO)!, typeCode: '999' })).toBe('elliptical-trainer')
   })
   it('變成一段已完成的有氧', () => {
     expect(toSet(parseMachineResult(HALO)!)).toEqual({ w: 0, r: 30.1, done: true, km: 1.31, kcal: 259, hr: 155, lvl: 3.9 })

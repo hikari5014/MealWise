@@ -1,5 +1,13 @@
 [
   {
+    "version": "0.26.1",
+    "date": "2026-11-08",
+    "title": "認得 Life Fitness 登階機",
+    "notes": [
+      "掃 Life Fitness 登階機結束畫面的 QR Code，會自動選好「登階機」"
+    ]
+  },
+  {
     "version": "0.26.0",
     "date": "2026-11-08",
     "title": "掃器材結束畫面的 QR Code，直接記錄運動",
