@@ -307,6 +307,22 @@ export function DietPlanSheet({ open, onClose, profile }: { open: boolean; onClo
   return (
     <Sheet open={open} onClose={onClose} title="飲食計劃">
       <div className="space-y-6">
+        <DietPlanForm plan={plan} set={set} />
+        <Button className="w-full" onClick={save}>
+          儲存計劃
+        </Button>
+        <p className="pb-2 text-center text-[11px] text-muted">
+          斷食與禁食不適合每個人。懷孕、哺乳、糖尿病或有飲食疾患請先諮詢醫師。
+        </p>
+      </div>
+    </Sheet>
+  )
+}
+
+/** 飲食計劃的設定內容（「我的」頁的視窗和首次設定共用） */
+export function DietPlanForm({ plan, set, compact = false }: { plan: DietPlan; set: (patch: Partial<DietPlan>) => void; compact?: boolean }) {
+  return (
+    <div className="space-y-6">
         <Section icon="hourglass_top" title="間歇性斷食">
           <div className="flex flex-wrap gap-2">
             {FASTINGS.map((f) => (
@@ -451,14 +467,11 @@ export function DietPlanSheet({ open, onClose, profile }: { open: boolean; onClo
             <p className="mt-2 text-xs text-muted">例如晚餐大餐 + 16 小時：隔天 10:30 以後才吃第一餐。</p>
           </div>
         </Section>
-
-        <Button className="w-full" onClick={save}>
-          儲存計劃
-        </Button>
-        <p className="pb-2 text-center text-[11px] text-muted">
+      {compact && (
+        <p className="text-center text-[11px] text-muted">
           斷食與禁食不適合每個人。懷孕、哺乳、糖尿病或有飲食疾患請先諮詢醫師。
         </p>
-      </div>
-    </Sheet>
+      )}
+    </div>
   )
 }

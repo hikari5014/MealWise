@@ -9,6 +9,11 @@ import { haptic, spring } from '../lib/feedback'
 import { suggestKcal } from '../lib/meal'
 import { calcNeeds, defaultSpec, PACES, useNeeds, type BodySpec } from '../lib/nutrition'
 import { BodyInputs, NeedsMini } from '../components/Needs'
+import { DietPlanForm } from '../components/DietPlan'
+import { TastePicker } from '../components/Taste'
+import { getPlan, type DietPlan } from '../lib/dietPlan'
+import { getTaste } from '../lib/recipeStore'
+import type { Taste } from '../types'
 import type { IconName } from '../lib/icons'
 import { GOAL_LABEL, type Goal, type Profile } from '../types'
 import { Art } from '../components/Art'
@@ -43,6 +48,11 @@ export default function Onboarding({ initial, onDone }: { initial?: Profile; onD
   const [useBody, setUseBody] = useState(initial ? !!initial.body : true)
   const setBody = (patch: Partial<BodySpec>) => setSpec((x) => ({ ...x, ...patch }))
   const { needs, errors, ok } = useNeeds(spec)
+  // 飲食計劃、口味偏好：可以跳過，之後到「我的」再設定
+  const [plan, setPlan] = useState<DietPlan>(() => getPlan(initial))
+  const setPlanPart = (patch: Partial<DietPlan>) => setPlan((x) => ({ ...x, ...patch }))
+  const [taste, setTaste] = useState<Taste>(() => getTaste(initial))
+  const toggleIn = <T,>(list: T[], v: T) => (list.includes(v) ? list.filter((x) => x !== v) : [...list, v])
   /** 把算出來的目標帶進設定 */
   const applyBody = () =>
     set({ body: spec, goal: spec.goal, kcal: needs.kcal, waterMl: needs.water, macros: { protein: needs.protein, fat: needs.fat, fiber: needs.fiber } })
@@ -55,11 +65,13 @@ export default function Onboarding({ initial, onDone }: { initial?: Profile; onD
     }
     setDir(next > step ? 1 : -1)
     setStep(next)
+    // 換步驟時回到最上面（飲食計劃那一步很長）
+    if (!initial) window.scrollTo({ top: 0 })
   }
 
   const finish = async () => {
     haptic([10, 40, 10, 40, 20])
-    await db.profile.put(p)
+    await db.profile.put({ ...p, plan, taste })
     onDone?.()
   }
 
@@ -162,6 +174,26 @@ export default function Onboarding({ initial, onDone }: { initial?: Profile; onD
         <div className="mb-2 text-sm text-muted">過敏或不想吃的（點分類可以細選）</div>
         <AvoidPicker profile={p} onChange={(avoid) => set({ avoid })} />
       </div>
+    </div>,
+
+    <div key="plan" className="space-y-4">
+      <div>
+        <h2 className="text-xl font-bold">飲食計劃</h2>
+        <p className="text-sm text-muted">有沒有斷食、每餐想怎麼吃、哪幾天運動。不確定就直接下一步，之後在「我的」都能改。</p>
+      </div>
+      <DietPlanForm plan={plan} set={setPlanPart} compact />
+    </div>,
+
+    <div key="taste" className="space-y-4">
+      <div>
+        <h2 className="text-xl font-bold">喜歡吃什麼？</h2>
+        <p className="text-sm text-muted">選你喜歡的，排菜單和推薦會優先出現這些。可以都不選。</p>
+      </div>
+      <TastePicker
+        taste={taste}
+        onToggleCuisine={(c) => setTaste((t) => ({ ...t, cuisines: toggleIn(t.cuisines, c) }))}
+        onToggleKind={(k) => setTaste((t) => ({ ...t, kinds: toggleIn(t.kinds, k) }))}
+      />
     </div>,
 
     <div key="amount" className="space-y-4">

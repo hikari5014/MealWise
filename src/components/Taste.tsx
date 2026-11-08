@@ -4,7 +4,7 @@ import { RECIPE_MAP, RECIPES } from '../data/recipes'
 import { haptic } from '../lib/feedback'
 import { fitsProfile } from '../lib/meal'
 import { getTaste, toggleDislike, toggleFavorite, updateTaste } from '../lib/recipeStore'
-import type { Profile } from '../types'
+import type { Profile, Taste } from '../types'
 import { Food } from './Food'
 import { Icon } from './Icon'
 import { RecipePhoto } from './RecipePhoto'
@@ -87,23 +87,7 @@ export function TasteSheet({ open, onClose, profile }: { open: boolean; onClose:
       <div className="space-y-5">
         <p className="text-sm text-muted">選你喜歡的，快速挑選和推薦就會優先出現這些，不用每次自己想。</p>
 
-        <section>
-          <h3 className="mb-2 text-sm font-bold">喜歡哪些國家的料理？</h3>
-          <div className="grid grid-cols-3 gap-2">
-            {CUISINES.map((c) => (
-              <Tile key={c.id} on={t.cuisines.includes(c.id)} label={c.label} image={c.image} onClick={() => toggleCuisine(c.id)} />
-            ))}
-          </div>
-        </section>
-
-        <section>
-          <h3 className="mb-2 text-sm font-bold">喜歡哪種菜色？</h3>
-          <div className="grid grid-cols-4 gap-2">
-            {KINDS.map((k) => (
-              <Tile key={k.id} on={t.kinds.includes(k.id)} label={k.label} image={k.image} onClick={() => toggleKind(k.id)} />
-            ))}
-          </div>
-        </section>
+        <TastePicker taste={t} onToggleCuisine={toggleCuisine} onToggleKind={toggleKind} />
 
         {(t.cuisines.length > 0 || t.kinds.length > 0) && (
           <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="rounded-2xl bg-leaf-soft p-3 text-xs text-leaf-dark">
@@ -181,5 +165,37 @@ function RecipeList({
         </ul>
       )}
     </section>
+  )
+}
+
+/** 選喜歡的料理國家與菜色（「我的」頁的視窗和首次設定共用） */
+export function TastePicker({
+  taste,
+  onToggleCuisine,
+  onToggleKind,
+}: {
+  taste: Pick<Taste, 'cuisines' | 'kinds'>
+  onToggleCuisine: (c: Cuisine) => void
+  onToggleKind: (k: Kind) => void
+}) {
+  return (
+    <>
+      <section>
+        <h3 className="mb-2 text-sm font-bold">喜歡哪些國家的料理？</h3>
+        <div className="grid grid-cols-3 gap-2">
+          {CUISINES.map((c) => (
+            <Tile key={c.id} on={taste.cuisines.includes(c.id)} label={c.label} image={c.image} onClick={() => onToggleCuisine(c.id)} />
+          ))}
+        </div>
+      </section>
+      <section>
+        <h3 className="mb-2 text-sm font-bold">喜歡哪種菜色？</h3>
+        <div className="grid grid-cols-4 gap-2">
+          {KINDS.map((k) => (
+            <Tile key={k.id} on={taste.kinds.includes(k.id)} label={k.label} image={k.image} onClick={() => onToggleKind(k.id)} />
+          ))}
+        </div>
+      </section>
+    </>
   )
 }
