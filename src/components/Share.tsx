@@ -266,14 +266,34 @@ async function renderShareCard(title: string, url: string, count: number) {
 
 /* ───────────── 掃描：相機讀 QR Code ───────────── */
 
-const readQr = (source: CanvasImageSource, w: number, h: number, canvas: HTMLCanvasElement, thorough = false) => {
-  const scale = Math.min(1, (thorough ? 1024 : 520) / Math.max(w, h))
-  canvas.width = Math.round(w * scale)
-  canvas.height = Math.round(h * scale)
+/** crop＝只看中間這個比例的範圍（器材螢幕上的 QR Code 通常小又密，放大中間才讀得到） */
+const readQr = (source: CanvasImageSource, w: number, h: number, canvas: HTMLCanvasElement, thorough = false, max = thorough ? 1024 : 520, crop = 1) => {
+  const cw = w * crop
+  const ch = h * crop
+  const scale = Math.min(1, max / Math.max(cw, ch))
+  canvas.width = Math.round(cw * scale)
+  canvas.height = Math.round(ch * scale)
   const ctx = canvas.getContext('2d', { willReadFrequently: true })!
-  ctx.drawImage(source, 0, 0, canvas.width, canvas.height)
+  ctx.drawImage(source, (w - cw) / 2, (h - ch) / 2, cw, ch, 0, 0, canvas.width, canvas.height)
   const img = ctx.getImageData(0, 0, canvas.width, canvas.height)
   return jsQR(img.data, img.width, img.height, { inversionAttempts: thorough ? 'attemptBoth' : 'dontInvert' })?.data ?? null
+}
+
+/** 相簿照片：整張讀不到就放大、再只看中間 */
+const readQrPhoto = (img: HTMLImageElement, canvas: HTMLCanvasElement) => {
+  const w = img.naturalWidth
+  const h = img.naturalHeight
+  for (const [max, crop] of [
+    [1024, 1],
+    [2000, 1],
+    [1400, 0.6],
+    [1200, 0.4],
+    [1000, 0.25],
+  ] as const) {
+    const t = readQr(img, w, h, canvas, true, max, crop)
+    if (t) return t
+  }
+  return null
 }
 
 /**
@@ -313,6 +333,7 @@ export function QrScanner({ title, onClose, onText }: { title: string; onClose: 
     let stream: MediaStream | undefined
     let raf = 0
     let last = 0
+    let frame = 0
     let stopped = false
 
     const loop = (t: number) => {
@@ -320,7 +341,9 @@ export function QrScanner({ title, onClose, onText }: { title: string; onClose: 
       const v = video.current
       if (!v || v.readyState < 2 || busy.current || t - last < 110) return
       last = t
-      const text = readQr(v, v.videoWidth, v.videoHeight, canvas.current)
+      // 輪流看整個畫面和放大的中間（小又密的 QR Code 也讀得到）
+      frame++
+      const text = frame % 2 ? readQr(v, v.videoWidth, v.videoHeight, canvas.current) : readQr(v, v.videoWidth, v.videoHeight, canvas.current, false, 640, 0.5)
       if (text) handleText(text)
     }
 
@@ -353,7 +376,7 @@ export function QrScanner({ title, onClose, onText }: { title: string; onClose: 
     const img = new Image()
     img.src = URL.createObjectURL(file)
     await img.decode().catch(() => {})
-    const text = readQr(img, img.naturalWidth, img.naturalHeight, canvas.current, true)
+    const text = readQrPhoto(img, canvas.current)
     URL.revokeObjectURL(img.src)
     if (text) handleText(text)
     else {

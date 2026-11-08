@@ -7,6 +7,10 @@ import { Icon } from '../components/Icon'
 import { useWorkoutSession } from '../components/ActiveWorkout'
 import { WatchCard } from '../components/WatchSync'
 import { Tap } from '../components/ui'
+import { AnimatePresence } from 'framer-motion'
+import { QrScanner } from '../components/Share'
+import { MachineResultSheet } from '../components/MachineResult'
+import { parseMachineResult, type MachineResult } from '../lib/machineResult'
 import { EXERCISE_MAP } from '../data/exercises'
 import { db } from '../db'
 import { addDays, fromKey, monthDay, todayKey, weekdayLabel, weekStart } from '../lib/date'
@@ -22,6 +26,8 @@ export default function Train({ profile }: { profile: Profile }) {
   const workouts = useLiveQuery(() => db.workouts.orderBy('startedAt').reverse().toArray()) ?? []
   const { open: setOpenId } = useWorkoutSession()
   const [library, setLibrary] = useState(false)
+  const [scanResult, setScanResult] = useState(false)
+  const [result, setResult] = useState<MachineResult | null>(null)
   const next7 = useMemo(() => Array.from({ length: 7 }, (_, i) => addDays(today, i)), [today])
   const marks = useMarks(next7)
   const week = useMemo(() => weeklyMuscles(workouts, today), [workouts, today])
@@ -44,7 +50,32 @@ export default function Train({ profile }: { profile: Profile }) {
           <span className="text-xs text-muted">這週練了 {weekCount} 次</span>
         </div>
         <DayTraining date={today} mark={marks[today]} weeklyTraining={getPlan(profile).trainingDays.includes(fromKey(today).getDay())} />
+        <Tap press={0.98} onClick={() => setScanResult(true)} className="flex w-full items-center gap-3 rounded-2xl bg-card px-3 py-2.5 text-left shadow-card">
+          <Icon name="qr_code_scanner" size={22} className="text-leaf-dark" />
+          <span className="min-w-0 flex-1">
+            <span className="block text-sm font-medium">掃器材的運動結果</span>
+            <span className="block text-[11px] text-muted">跑步機、滑步機結束畫面的 QR Code，直接變成運動紀錄</span>
+          </span>
+          <Icon name="chevron_right" size={18} className="text-muted" />
+        </Tap>
       </div>
+      <AnimatePresence>
+        {scanResult && (
+          <QrScanner
+            title="掃描器材結束畫面的 QR Code"
+            onClose={() => setScanResult(false)}
+            onText={async (text) => {
+              const r = parseMachineResult(text)
+              if (!r) return '這不是運動結果的 QR Code（目前支援 Life Fitness / Halo Fitness 的器材）'
+              return () => {
+                setScanResult(false)
+                setResult(r)
+              }
+            }}
+          />
+        )}
+      </AnimatePresence>
+      <MachineResultSheet result={result} onClose={() => setResult(null)} />
 
       <section>
         <div className="mb-2 px-1 text-sm font-bold">接下來 7 天</div>

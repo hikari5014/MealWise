@@ -17,6 +17,8 @@ import { EQUIP_LABEL } from '../lib/workout'
 import { aiErrorText, identifyMachine } from '../lib/machineAi'
 import { identifyLocal, localModelCached, type LocalGuess } from '../lib/machineLocal'
 import { nfcSupported, readNfc, writeNfc } from '../lib/nfc'
+import { parseMachineResult, type MachineResult } from '../lib/machineResult'
+import { MachineResultSheet } from './MachineResult'
 import { appUrl, getSession } from '../lib/cloud'
 import { ExerciseAnim, ExerciseLibrary } from './ExerciseLibrary'
 import { Icon } from './Icon'
@@ -40,7 +42,7 @@ interface Found {
  * 掃器材 QR Code 加入動作：
  * 認得的直接列出這台能做的動作；沒看過的讓使用者選一次，之後就記住。
  */
-export function MachineScan({ open, onClose, onAdd }: { open: boolean; onClose: () => void; onAdd: (ex: Exercise) => void }) {
+export function MachineScan({ open, onClose, onAdd, workoutId }: { open: boolean; onClose: () => void; onAdd: (ex: Exercise) => void; workoutId?: number }) {
   const toast = useToast()
   const [mode, setMode] = useState<Mode>('menu')
   const scanning = mode === 'qr'
@@ -52,6 +54,8 @@ export function MachineScan({ open, onClose, onAdd }: { open: boolean; onClose: 
   const [guesses, setGuesses] = useState<LocalGuess[] | null>(null)
   const photo = useRef<File | null>(null)
   const [err, setErr] = useState('')
+  /** 掃到的是器材「運動結束畫面」的 QR Code */
+  const [result, setResult] = useState<MachineResult | null>(null)
   const fileRef = useRef<HTMLInputElement>(null)
   const nfcAbort = useRef<AbortController | null>(null)
 
@@ -147,6 +151,12 @@ export function MachineScan({ open, onClose, onAdd }: { open: boolean; onClose: 
 
   const onText = useCallback(
     async (text: string): Promise<(() => void) | string> => {
+      const res = parseMachineResult(text)
+      if (res)
+        return () => {
+          setScanning(false)
+          setResult(res)
+        }
       const own = ownExerciseCode(text)
       if (own && EXERCISE_MAP[own]) {
         const ex = EXERCISE_MAP[own]
@@ -185,7 +195,7 @@ export function MachineScan({ open, onClose, onAdd }: { open: boolean; onClose: 
     <>
       <AnimatePresence>{open && scanning && <QrScanner title="掃描器材上的 QR Code" onClose={close} onText={onText} />}</AnimatePresence>
 
-      <Sheet open={open && !found && mode !== 'qr'} onClose={close} title="辨識器材">
+      <Sheet open={open && !found && !result && mode !== 'qr'} onClose={close} title="辨識器材">
         <div className="space-y-2 pb-6">
           <input ref={fileRef} type="file" accept="image/*" capture="environment" className="hidden" onChange={(e) => onPhoto(e.target.files?.[0] ?? undefined)} />
           {busy || mode === 'nfc' ? (
@@ -241,7 +251,7 @@ export function MachineScan({ open, onClose, onAdd }: { open: boolean; onClose: 
             </div>
           ) : (
             <>
-              <MethodButton icon="qr_code_scanner" title="掃 QR Code" sub="器材上有 QR Code 就用這個" onClick={() => setMode('qr')} />
+              <MethodButton icon="qr_code_scanner" title="掃 QR Code" sub="器材上的 QR Code；運動結束畫面的 QR Code 也能掃，直接記錄數據" onClick={() => setMode('qr')} />
               <MethodButton
                 icon="nfc"
                 title="感應 NFC 貼紙"
@@ -358,6 +368,15 @@ export function MachineScan({ open, onClose, onAdd }: { open: boolean; onClose: 
           </div>
         )}
       </Sheet>
+
+      <MachineResultSheet
+        result={open ? result : null}
+        workoutId={workoutId}
+        onClose={() => {
+          setResult(null)
+          close()
+        }}
+      />
 
       <ExerciseLibrary open={picking} onClose={() => setPicking(false)} onPick={choose} pickLabel="就是這台" />
     </>

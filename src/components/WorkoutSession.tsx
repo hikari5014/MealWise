@@ -538,7 +538,7 @@ export function WorkoutSession({ id, onClose }: { id: number | null; onClose: ()
         }} onPick={addExercise} defaultMove={addingTo ? 'cardio' : moveFor(w?.type)} />
       <ExerciseDetail ex={detail} onClose={() => setDetail(null)} />
       <ComboPicker open={combo} onClose={() => setCombo(false)} onPick={addCombo} />
-      <MachineScan open={scan} onClose={() => setScan(false)} onAdd={addExercise} />
+      <MachineScan open={scan} onClose={() => setScan(false)} onAdd={addExercise} workoutId={w?.id} />
     </>
   )
 }
