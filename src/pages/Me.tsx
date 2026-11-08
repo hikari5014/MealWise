@@ -10,6 +10,8 @@ import { AboutCard } from '../components/Update'
 import { ThemeCard } from '../components/ThemeCard'
 import { Button, Card, Sheet, Tap, useToast } from '../components/ui'
 import { db } from '../db'
+import { getSession } from '../lib/cloud'
+import { resetSyncMarks, withoutTracking } from '../lib/sync'
 import { addDays, todayKey, weekdayLabel } from '../lib/date'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { useLogs } from '../lib/hooks'
@@ -178,7 +180,13 @@ export default function Me({ profile }: { profile: Profile }) {
           <Button
             className="flex-1 !bg-tomato"
             onClick={async () => {
-              await Promise.all(db.tables.map((t) => t.clear()))
+              const clear = () => Promise.all(db.tables.map((t) => t.clear()))
+              // 沒登入時只清這台；登入中照常同步刪除
+              if (getSession()) await clear()
+              else {
+                await withoutTracking(clear)
+                resetSyncMarks()
+              }
               setConfirmReset(false)
             }}
           >

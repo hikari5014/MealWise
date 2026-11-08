@@ -83,12 +83,17 @@ export function MachineScan({ open, onClose, onAdd }: { open: boolean; onClose: 
       haptic([8, 30, 8])
       const r = await onText(text)
       ac.abort()
-      if (typeof r === 'string') setErr(r)
-      else r()
+      if (typeof r === 'string') {
+        setErr(r)
+        setMode('menu')
+      } else r()
       setFound((f) => (f ? { ...f, via: 'nfc' } : f))
     } catch (e) {
       if (ac.signal.aborted) return
-      setErr(/NotAllowed|permission/i.test(String(e)) ? '要允許使用 NFC 才能讀貼紙' : '讀不到貼紙，再靠近一點試試')
+      ac.abort()
+      // 回到選單，再按一次就能重新感應
+      setMode('menu')
+      setErr(/NotAllowed|permission/i.test(String(e)) ? '要允許使用 NFC 才能讀貼紙' : '讀不到貼紙，再按一次「感應 NFC 貼紙」並靠近一點')
     }
   }
 

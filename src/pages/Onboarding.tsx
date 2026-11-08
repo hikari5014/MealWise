@@ -71,7 +71,8 @@ export default function Onboarding({ initial, onDone }: { initial?: Profile; onD
 
   const finish = async () => {
     haptic([10, 40, 10, 40, 20])
-    await db.profile.put({ ...p, plan, taste })
+    // 選了「先跳過」身體數據：不要留下舊的身體數據和算好的營養素
+    await db.profile.put({ ...p, plan, taste, ...(useBody ? {} : { body: undefined, macros: undefined }) })
     onDone?.()
   }
 
@@ -94,7 +95,7 @@ export default function Onboarding({ initial, onDone }: { initial?: Profile; onD
               haptic(8)
               // 有填過身體數據就用它重算，沒有才用預設熱量
               setBody({ goal: g.value, proteinPerKg: undefined, ...(spec.preset !== 'custom' ? { preset: 'custom' } : {}) })
-              if (p.body) {
+              if (p.body && useBody) {
                 const body = { ...p.body, goal: g.value, proteinPerKg: undefined, preset: 'custom' as const }
                 const n = calcNeeds(body)
                 set({ goal: g.value, body, kcal: n.kcal, macros: { protein: n.protein, fat: n.fat, fiber: n.fiber } })
@@ -138,7 +139,7 @@ export default function Onboarding({ initial, onDone }: { initial?: Profile; onD
           {spec.goal !== 'maintain' && (
             <div className="grid grid-cols-3 gap-1.5">
               {PACES[spec.goal].map((x) => (
-                <Tap key={x.id} onClick={() => setBody({ pace: x.id })} className={`rounded-2xl px-2 py-2 text-center transition-colors ${spec.pace === x.id ? 'bg-leaf text-on-leaf' : 'bg-card shadow-card'}`}>
+                <Tap key={x.id} onClick={() => setBody({ pace: x.id, preset: 'custom' })} className={`rounded-2xl px-2 py-2 text-center transition-colors ${spec.pace === x.id ? 'bg-leaf text-on-leaf' : 'bg-card shadow-card'}`}>
                   <div className="text-sm font-medium">{x.label}</div>
                   <div className={`text-[10px] ${spec.pace === x.id ? 'opacity-80' : 'text-muted'}`}>{x.hint}</div>
                 </Tap>

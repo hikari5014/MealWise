@@ -44,6 +44,21 @@ const ls = {
 
 /** 正在套用雲端資料時不要再記成「本機有改」 */
 let applyingRemote = false
+/** 只清這台裝置的資料：不要留下刪除記號，免得下次登入把雲端也刪掉 */
+let localOnly = false
+export async function withoutTracking<T>(fn: () => Promise<T>): Promise<T> {
+  localOnly = true
+  try {
+    return await fn()
+  } finally {
+    localOnly = false
+  }
+}
+const dropTomb = (tbl: string, key: string) => {
+  const list = tombstones()
+  const next = list.filter((t) => !(t.tbl === tbl && t.key === key))
+  if (next.length !== list.length) ls.set(LS.tomb, JSON.stringify(next))
+}
 
 const cloudKey = (tbl: string, r: Row) => (AUTO.has(tbl) ? String(r.uid ?? '') : String(r[db.table(tbl).schema.primKey.name as string] ?? ''))
 
@@ -63,20 +78,26 @@ export function installSyncHooks() {
   installed = true
   for (const { name, auto } of TABLES) {
     const t = db.table(name)
-    t.hook('creating', (_pk, obj: Row) => {
+    t.hook('creating', (pk, obj: Row) => {
       if (auto && !obj.uid) obj.uid = crypto.randomUUID()
+      if (localOnly) return
       if (!applyingRemote) {
+        // 刪掉又加回同一筆：取消先前的刪除記號
+        if (!auto) {
+          const key = String(pk ?? obj[t.schema.primKey.name as string] ?? '')
+          if (key) dropTomb(name, key)
+        }
         obj._m = Date.now()
         scheduleSync()
       }
     })
     t.hook('updating', () => {
-      if (applyingRemote) return undefined
+      if (applyingRemote || localOnly) return undefined
       scheduleSync()
       return { _m: Date.now() }
     })
     t.hook('deleting', (pk, obj: Row) => {
-      if (applyingRemote || !obj) return
+      if (applyingRemote || localOnly || !obj) return
       const key = auto ? String(obj.uid ?? '') : String(pk)
       if (!key) return
       ls.set(LS.tomb, JSON.stringify([...tombstones(), { tbl: name, key }].slice(-2000)))
@@ -138,6 +159,17 @@ function toCloud(tbl: string, r: Row, toUid: Map<number, string>): Row {
   return d
 }
 
+/** 同一筆只能送一次（資料庫不允許一次改同一列兩次）；還在的資料優先於刪除記號 */
+export function dedupeRows<T extends { tbl: string; key: string; deleted: boolean }>(rows: T[]): T[] {
+  const unique = new Map<string, T>()
+  for (const r of rows) {
+    const k = `${r.tbl}|${r.key}`
+    const prev = unique.get(k)
+    if (!prev || (prev.deleted && !r.deleted)) unique.set(k, r)
+  }
+  return [...unique.values()]
+}
+
 async function push(full: boolean) {
   const since = full ? 0 : Number(ls.get(LS.push)) || 0
   const started = Date.now()
@@ -155,15 +187,16 @@ async function push(full: boolean) {
   }
   const tomb = tombstones()
   for (const t of tomb) rows.push({ tbl: t.tbl, key: t.key, data: null, deleted: true })
-  for (let i = 0; i < rows.length; i += 400) {
-    const { error } = await supabase.from('user_records').upsert(rows.slice(i, i + 400), { onConflict: 'user_id,tbl,key' })
+  const batch = dedupeRows(rows)
+  for (let i = 0; i < batch.length; i += 400) {
+    const { error } = await supabase.from('user_records').upsert(batch.slice(i, i + 400), { onConflict: 'user_id,tbl,key' })
     if (error) throw error
   }
   // 推完才清掉，失敗下次會再推
   const left = tombstones().slice(tomb.length)
   ls.set(LS.tomb, JSON.stringify(left))
   ls.set(LS.push, String(started))
-  return rows.length
+  return batch.length
 }
 
 /* ───────── 拉下來 ───────── */

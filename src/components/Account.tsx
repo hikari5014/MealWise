@@ -2,7 +2,7 @@
 import { useState } from 'react'
 import { db } from '../db'
 import { accountAction, authErrorText, sendEmailCode, signInWith, signOut, useMember, useProviders, useSession, verifyEmailCode } from '../lib/cloud'
-import { resetSyncMarks, syncNow, useSyncState } from '../lib/sync'
+import { resetSyncMarks, syncNow, useSyncState, withoutTracking } from '../lib/sync'
 import { AdminSheet } from './Admin'
 import { Icon } from './Icon'
 import { Button, Card, Sheet, Tap, useToast } from './ui'
@@ -219,8 +219,8 @@ function LeaveSheet({ mode, onClose }: { mode: 'out' | 'delete' | null; onClose:
         if (r?.error) throw new Error(r.error)
       } else await syncNow()
       await signOut()
+      if (wipe) await withoutTracking(() => Promise.all(db.tables.map((t) => t.clear())))
       resetSyncMarks()
-      if (wipe) await Promise.all(db.tables.map((t) => t.clear()))
       toast(del ? '帳號和雲端資料已刪除' : '已登出')
       onClose()
     } catch (e) {

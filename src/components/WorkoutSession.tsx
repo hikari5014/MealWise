@@ -586,7 +586,11 @@ function SortList({ w, onSave }: { w: Workout; onSave: (entries: Workout['entrie
   useEffect(() => setOrder(units.map((u) => u.key)), [sig])
   const byKey = new Map(units.map((u) => [u.key, u]))
   const commit = (keys: string[]) => {
-    if (keys.join() !== sig) onSave(reorderEntries(w, keys))
+    if (keys.join() === sig) return
+    const entries = reorderEntries(w, keys)
+    onSave(entries)
+    // 同一個動作出現兩次時鑰匙跟著位置，存完要換成新順序的鑰匙
+    setOrder(workoutUnits({ ...w, entries }).map((u) => u.key))
   }
   const move = (i: number, d: number) => {
     const j = i + d
