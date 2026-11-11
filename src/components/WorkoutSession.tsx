@@ -161,6 +161,22 @@ export function WorkoutSession({ id, onClose }: { id: number | null; onClose: ()
     } else toast(`已加入 ${c.name}，按「開始」計時`)
   }
 
+  const [sharing, setSharing] = useState(false)
+  const shareCard = async (target: Workout | undefined = w ?? undefined) => {
+    if (!target || sharing) return
+    setSharing(true)
+    haptic(8)
+    try {
+      const { renderWorkoutCard, shareImage } = await import('../lib/shareCard')
+      const r = await shareImage(await renderWorkoutCard(target, weight), `好食光-訓練-${target.date}`, '我的訓練成果')
+      if (r === 'saved') toast('圖片已下載')
+    } catch {
+      toast('圖片做不出來，再試一次')
+    } finally {
+      setSharing(false)
+    }
+  }
+
   /** 按「完成訓練」：還有沒打勾的組就先問，不直接結束 */
   const [confirmEnd, setConfirmEnd] = useState(false)
   const finish = () => {
@@ -182,7 +198,9 @@ export function WorkoutSession({ id, onClose }: { id: number | null; onClose: ()
     await saveMark(w.date, { training: true })
     haptic([10, 40, 10, 40, 20])
     onClose()
-    toast(`辛苦了！完成 ${n} 組・已標記為運動日`)
+    // 完成後可以直接把成果做成圖卡分享
+    if (n) toast(`辛苦了！完成 ${n} 組・已標記為運動日`, () => void shareCard(done), '分享', 8000)
+    else toast('已結束這次訓練')
   }
   const pause = async () => {
     if (!w) return
@@ -506,10 +524,16 @@ export function WorkoutSession({ id, onClose }: { id: number | null; onClose: ()
                   完成修改
                 </Button>
               ) : (
-                <Button variant="soft" className="flex w-full items-center justify-center gap-1.5" onClick={() => setEditing(true)}>
-                  <Icon name="edit" size={18} />
-                  修改紀錄
-                </Button>
+                <div className="flex gap-2">
+                  <Button variant="soft" className="flex flex-1 items-center justify-center gap-1.5" onClick={() => setEditing(true)}>
+                    <Icon name="edit" size={18} />
+                    修改紀錄
+                  </Button>
+                  <Button className="flex flex-1 items-center justify-center gap-1.5" disabled={sharing || !doneSets(w)} onClick={() => shareCard()}>
+                    <Icon name={sharing ? 'hourglass_top' : 'share'} size={18} />
+                    {sharing ? '製作中…' : '分享成果'}
+                  </Button>
+                </div>
               )}
             </div>
           </div>

@@ -102,6 +102,21 @@ function Detail({ recipe, layoutId, onClose }: Opened & { onClose: () => void })
   const disliked = taste.dislikes.includes(recipe.id)
   const openEditor = useRecipeEditor()
   const toast = useToast()
+  const [sharing, setSharing] = useState(false)
+  const share = async () => {
+    if (sharing) return
+    setSharing(true)
+    haptic(8)
+    try {
+      const { renderRecipeCard, shareImage } = await import('../lib/shareCard')
+      const r = await shareImage(await renderRecipeCard(recipe), `好食光-${recipe.name}`, recipe.name)
+      if (r === 'saved') toast('圖片已下載')
+    } catch {
+      toast('圖片做不出來，再試一次')
+    } finally {
+      setSharing(false)
+    }
+  }
   const [confirmDelete, setConfirmDelete] = useState(false)
   const openBatch = useContext(BatchCtx)
   return (
@@ -153,6 +168,15 @@ function Detail({ recipe, layoutId, onClose }: Opened & { onClose: () => void })
             }`}
           >
             <Icon name="favorite" size={22} fill={fav} />
+          </motion.button>
+          <motion.button
+            whileTap={{ scale: 0.8 }}
+            aria-label="分享這道食譜的圖卡"
+            disabled={sharing}
+            onClick={share}
+            className="absolute right-16 top-[calc(16px+env(safe-area-inset-top))] grid h-10 w-10 place-items-center rounded-full bg-card/85 text-ink shadow-card backdrop-blur"
+          >
+            <Icon name={sharing ? 'hourglass_top' : 'share'} size={20} />
           </motion.button>
           <motion.div
             className="absolute inset-x-5 bottom-5 text-white"
