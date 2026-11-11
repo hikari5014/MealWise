@@ -2,6 +2,7 @@
 // 中文名稱、器材分類、動作要點由好食光整理；照片在 public/exercises/<id>-0.webp、-1.webp
 import type { Equip, FxMuscle } from '../lib/workout'
 import { CARDIO_EXERCISES, CARDIO_EXTRA, type CardioMetric } from './cardio'
+import { MACHINE_EXERCISES } from './machineExercises'
 import type { FoodImage } from './foodImages'
 
 export interface Exercise {
@@ -6181,7 +6182,7 @@ export const EXERCISES: Exercise[] = [
 ] as Exercise[]
 
 for (const ex of EXERCISES) Object.assign(ex, CARDIO_EXTRA[ex.id])
-EXERCISES.push(...CARDIO_EXERCISES)
+EXERCISES.push(...CARDIO_EXERCISES, ...MACHINE_EXERCISES)
 
 export const EXERCISE_MAP: Record<string, Exercise> = Object.fromEntries(EXERCISES.map((x) => [x.id, x]))
 

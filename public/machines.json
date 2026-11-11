@@ -38,7 +38,7 @@
     { "id": "pec-fly", "name": "蝴蝶機／反向飛鳥", "match": "pec ?deck|pec ?fly|pectoral|butterfly|rear ?delt|reverse ?fly|蝴蝶|夾胸|飛鳥", "exercises": ["butterfly", "reverse-machine-flyes"] },
     { "id": "chest-press", "name": "推胸機", "match": "chest ?press|bench ?press|incline ?press|decline ?press|推胸|胸推", "exercises": ["machine-bench-press", "leverage-chest-press", "leverage-incline-chest-press", "leverage-decline-chest-press"] },
     { "id": "shoulder-press", "name": "肩推機", "match": "shoulder ?press|overhead ?press|military|肩推|推肩", "exercises": ["machine-shoulder-military-press", "leverage-shoulder-press"] },
-    { "id": "lateral-raise", "name": "側平舉機", "match": "lateral ?raise|delt ?raise|delts ?machine|側平舉", "exercises": ["cable-seated-lateral-raise"] },
+    { "id": "lateral-raise", "name": "側平舉機", "match": "lateral ?raise|delt ?raise|delts ?machine|側平舉|(^| )sslr( |$)", "exercises": ["mx-lateral-raise", "side-lateral-raise", "cable-seated-lateral-raise"] },
     { "id": "assisted", "name": "輔助引體／撐體機", "match": "assist|gravitron|chin ?dip|輔助", "exercises": ["pullups", "chin-up", "dip-machine"] },
     { "id": "lat-pulldown", "name": "滑輪下拉機", "match": "lat ?pull|lat ?machine|vertical ?traction|pull ?down|pulldown|下拉|高拉", "exercises": ["wide-grip-lat-pulldown", "close-grip-front-lat-pulldown", "underhand-cable-pulldowns", "v-bar-pulldown", "one-arm-lat-pulldown"] },
     { "id": "t-bar", "name": "T 槓划船", "match": "t ?bar|t槓", "exercises": ["lying-t-bar-row"] },

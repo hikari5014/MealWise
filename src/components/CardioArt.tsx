@@ -98,9 +98,47 @@ function SledPull({ play }: { play: boolean }) {
   )
 }
 
+/** 機械側平舉：坐著，手臂靠在護墊上往兩側舉 */
+function MachineLateralRaise({ play }: { play: boolean }) {
+  const t = { duration: 1.1, repeat: Infinity, repeatType: 'mirror' as const, ease: 'easeInOut' as const }
+  const arm = (side: 1 | -1) => ({
+    d: [`M60 34 L${60 + side * 9} 52 L${60 + side * 12} 60`, `M60 34 L${60 + side * 22} 34 L${60 + side * 30} 32`],
+  })
+  return (
+    <svg viewBox="0 0 120 90" className="h-full w-full" aria-hidden>
+      {/* 機台：座椅、靠墊、底座 */}
+      <path d="M44 66 L76 66 M60 66 L60 82 M46 82 L74 82" {...line} />
+      <path d="M68 22 L68 64" {...thin} strokeWidth={3} opacity={0.5} />
+      {/* 兩側的手臂護墊會跟著轉 */}
+      {([1, -1] as const).map((side) => (
+        <motion.rect
+          key={side}
+          width="14"
+          height="6"
+          rx="3"
+          fill="currentColor"
+          opacity={0.35}
+          animate={play ? { x: [60 + side * 10 - 7, 60 + side * 24 - 7], y: [53, 29] } : undefined}
+          x={60 + side * 10 - 7}
+          y={53}
+          transition={t}
+        />
+      ))}
+      {/* 小人：頭、身體、坐姿的腿 */}
+      <circle cx="60" cy="20" r="5" fill="currentColor" />
+      <path d="M60 26 L60 62" {...line} />
+      <path d="M60 62 L48 63 L48 80 M60 62 L72 63 L72 80" {...line} />
+      {([1, -1] as const).map((side) => (
+        <motion.path key={side} {...line} animate={play ? arm(side) : undefined} d={arm(side).d[0]} transition={t} />
+      ))}
+    </svg>
+  )
+}
+
 /** 有插畫的動作 */
 export const CARDIO_ART: Record<string, (p: { play: boolean }) => JSX.Element> = {
   'cx-stair-climber': StairClimber,
   'cx-incline-walk': InclineWalk,
   'cx-sled-pull': SledPull,
+  'mx-lateral-raise': MachineLateralRaise,
 }
