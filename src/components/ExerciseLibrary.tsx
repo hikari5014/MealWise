@@ -28,6 +28,14 @@ import { Icon } from './Icon'
 import { Button, Sheet, Tap } from './ui'
 
 const fieldCache = new Map<string, Prepared>()
+/** 器材的其他叫法：搜「機械」「機器」也找得到固定器械的動作 */
+const EQUIP_ALIAS: Partial<Record<Exercise['equip'], string>> = {
+  machine: '機械 機器 器械 機台 machine',
+  cable: '繩索 拉力器 cable',
+  smith: '史密斯 smith',
+  body: '自體重量 徒手 bodyweight',
+  cardio: '有氧 cardio',
+}
 /** 動作搜尋看中文名、英文名、器材、練到的肌群 */
 const searchFields = (ex: Exercise) => {
   let f = fieldCache.get(ex.id)
@@ -35,7 +43,7 @@ const searchFields = (ex: Exercise) => {
     f = prepare([
       [ex.zh, 1],
       [ex.en, 0.9],
-      [EQUIP_LABEL[ex.equip], 0.8],
+      [`${EQUIP_LABEL[ex.equip]} ${EQUIP_ALIAS[ex.equip] ?? ''}`, 0.8],
       [[...ex.primary, ...ex.secondary].map((m) => MUSCLE_ZH[m]).join(' '), 0.7],
     ])
     fieldCache.set(ex.id, f)
