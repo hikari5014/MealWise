@@ -29,6 +29,7 @@ import Today from './pages/Today'
 import { PantryPlanProvider } from './components/PantryPlan'
 import { EatOutPickerProvider } from './components/EatOut'
 import { WorkoutSessionProvider } from './components/ActiveWorkout'
+import { ShareCeremonyProvider } from './components/ShareCeremony'
 import Train from './pages/Train'
 
 const TABS = [
@@ -83,6 +84,7 @@ export default function App() {
     <MotionConfig reducedMotion="user">
       <ToastProvider>
         <UpdateProvider>
+          <ShareCeremonyProvider>
           <HealthSyncProvider>
             <ShareProvider onImported={() => go('plan')}>
               <RecipeEditorProvider>
@@ -125,6 +127,7 @@ export default function App() {
 </RecipeEditorProvider>
             </ShareProvider>
           </HealthSyncProvider>
+          </ShareCeremonyProvider>
         </UpdateProvider>
       </ToastProvider>
     </MotionConfig>

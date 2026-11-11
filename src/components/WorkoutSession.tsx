@@ -34,6 +34,7 @@ import {
 import { ExerciseAnim, ExerciseDetail, ExerciseLibrary } from './ExerciseLibrary'
 import { BlockCard, CardioSegments, ComboPicker } from './CardioViews'
 import { MachineScan } from './MachineScan'
+import { useShareCeremony } from './ShareCeremony'
 import type { ComboTemplate } from '../data/cardio'
 import { Icon } from './Icon'
 import { Button, CheckButton, Sheet, Tap, useToast } from './ui'
@@ -161,20 +162,17 @@ export function WorkoutSession({ id, onClose }: { id: number | null; onClose: ()
     } else toast(`已加入 ${c.name}，按「開始」計時`)
   }
 
-  const [sharing, setSharing] = useState(false)
-  const shareCard = async (target: Workout | undefined = w ?? undefined) => {
-    if (!target || sharing) return
-    setSharing(true)
-    haptic(8)
-    try {
-      const { renderWorkoutCard, shareImage } = await import('../lib/shareCard')
-      const r = await shareImage(await renderWorkoutCard(target, weight), `好食光-訓練-${target.date}`, '我的訓練成果')
-      if (r === 'saved') toast('圖片已下載')
-    } catch {
-      toast('圖片做不出來，再試一次')
-    } finally {
-      setSharing(false)
-    }
+  const present = useShareCeremony()
+  const shareCard = (target: Workout | undefined = w ?? undefined) => {
+    if (!target) return
+    const n = doneSets(target)
+    present({
+      make: async () => (await import('../lib/shareCard')).renderWorkoutCard(target, weight),
+      name: `好食光-訓練-${target.date}`,
+      title: '我的訓練成果',
+      headline: '訓練成果出爐！',
+      sub: `完成 ${n} 組，辛苦了`,
+    })
   }
 
   /** 按「完成訓練」：還有沒打勾的組就先問，不直接結束 */
@@ -529,9 +527,9 @@ export function WorkoutSession({ id, onClose }: { id: number | null; onClose: ()
                     <Icon name="edit" size={18} />
                     修改紀錄
                   </Button>
-                  <Button className="flex flex-1 items-center justify-center gap-1.5" disabled={sharing || !doneSets(w)} onClick={() => shareCard()}>
-                    <Icon name={sharing ? 'hourglass_top' : 'share'} size={18} />
-                    {sharing ? '製作中…' : '分享成果'}
+                  <Button className="flex flex-1 items-center justify-center gap-1.5" disabled={!doneSets(w)} onClick={() => shareCard()}>
+                    <Icon name="share" size={18} />
+                    分享成果
                   </Button>
                 </div>
               )}
