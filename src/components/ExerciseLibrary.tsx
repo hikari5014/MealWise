@@ -3,7 +3,7 @@ import exerciseCredits from '../data/exerciseCredits.json'
 import { CARDIO_ART } from './CardioArt'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { useDeferredValue, useEffect, useMemo, useState } from 'react'
-import { EXERCISES, type Exercise } from '../data/exercises'
+import { EXERCISE_MAP, EXERCISES, type Exercise } from '../data/exercises'
 import { db } from '../db'
 import { haptic, spring } from '../lib/feedback'
 import {
@@ -142,6 +142,7 @@ export function ExerciseLibrary({
   open,
   onClose,
   onPick,
+  onPickMany,
   pickLabel,
   defaultMove = null,
 }: {
@@ -151,8 +152,36 @@ export function ExerciseLibrary({
   defaultMove?: Exercise['move'] | null
   /** 有給就是「挑動作」模式 */
   onPick?: (ex: Exercise) => void
+  /** 有提供就能切換「多選」：勾好幾個動作再一次加入 */
+  onPickMany?: (list: Exercise[]) => void
   pickLabel?: string
 }) {
+  const [multi, setMultiState] = useState(() => {
+    try {
+      return localStorage.getItem('mw-ex-multi') === '1'
+    } catch {
+      return false
+    }
+  })
+  const [picked, setPicked] = useState<string[]>([])
+  const isMulti = multi && !!onPickMany
+  const setMulti = (v: boolean) => {
+    haptic(6)
+    setMultiState(v)
+    if (!v) setPicked([])
+    try {
+      localStorage.setItem('mw-ex-multi', v ? '1' : '0')
+    } catch {
+      /* 記不住也沒關係 */
+    }
+  }
+  useEffect(() => {
+    if (open) setPicked([])
+  }, [open])
+  const toggle = (ex: Exercise) => {
+    haptic(6)
+    setPicked((p) => (p.includes(ex.id) ? p.filter((x) => x !== ex.id) : [...p, ex.id]))
+  }
   const [part, setPart] = useState<string | null>(null)
   const [move, setMove] = useState<Exercise['move'] | null>(defaultMove)
   useEffect(() => {
@@ -229,12 +258,48 @@ export function ExerciseLibrary({
               </Tap>
             ))}
           </div>
-          <p className="px-1 text-[11px] text-muted">共 {list.length} 個動作・點開可以看動作示範和受力肌群</p>
+          <div className="flex items-center gap-2 px-1">
+            <p className="min-w-0 flex-1 text-[11px] text-muted">
+              共 {list.length} 個動作・{isMulti ? '點一下勾選，點 ⓘ 看示範' : '點開可以看動作示範和受力肌群'}
+            </p>
+            {onPickMany && (
+              <Tap
+                onClick={() => setMulti(!multi)}
+                aria-pressed={multi}
+                className={`flex shrink-0 items-center gap-1 rounded-full px-3 py-1.5 text-xs transition-colors ${multi ? 'bg-leaf text-on-leaf' : 'bg-card text-ink shadow-card'}`}
+              >
+                <Icon name={multi ? 'check_box' : 'playlist_add'} size={16} />
+                多選
+              </Tap>
+            )}
+          </div>
           <ul className="grid grid-cols-2 gap-2">
             {list.map((ex, i) => (
               <motion.li key={ex.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ ...spring, delay: Math.min(i, 10) * 0.02 }}>
-                <Tap press={0.96} onClick={() => setDetail(ex)} className="block w-full overflow-hidden rounded-2xl bg-card text-left shadow-card">
+                <Tap
+                  press={0.96}
+                  onClick={() => (isMulti ? toggle(ex) : setDetail(ex))}
+                  className={`relative block w-full overflow-hidden rounded-2xl text-left shadow-card transition-colors ${picked.includes(ex.id) ? 'bg-leaf-soft ring-2 ring-leaf' : 'bg-card'}`}
+                >
                   <ExerciseAnim ex={ex} play={false} className="aspect-[3/2]" />
+                  {isMulti && (
+                    <>
+                      <span className={`absolute left-1.5 top-1.5 grid h-7 w-7 place-items-center rounded-full text-xs font-bold shadow-card ${picked.includes(ex.id) ? 'bg-leaf text-on-leaf' : 'bg-card/90 text-muted'}`}>
+                        {picked.includes(ex.id) ? picked.indexOf(ex.id) + 1 : <Icon name="add" size={18} />}
+                      </span>
+                      <span
+                        role="button"
+                        aria-label={`看${ex.zh}示範`}
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          setDetail(ex)
+                        }}
+                        className="absolute right-1.5 top-1.5 grid h-7 w-7 place-items-center rounded-full bg-card/90 text-muted shadow-card"
+                      >
+                        <Icon name="info" size={18} />
+                      </span>
+                    </>
+                  )}
                   <span className="block px-2.5 py-2">
                     <span className="block truncate text-sm font-medium">{ex.zh}</span>
                     <span className="block truncate text-[11px] text-muted">
@@ -245,18 +310,35 @@ export function ExerciseLibrary({
               </motion.li>
             ))}
           </ul>
+          {isMulti && (
+            <div className="sticky bottom-0 -mx-5 space-y-1.5 border-t border-ink/10 bg-cream px-5 pb-1 pt-2">
+              {picked.length > 0 && <p className="truncate px-1 text-[11px] text-muted">{picked.map((id) => EXERCISE_MAP[id]?.zh).join('、')}</p>}
+              <Button
+                className="w-full"
+                disabled={!picked.length}
+                onClick={() => {
+                  haptic([8, 24, 8])
+                  onPickMany!(picked.map((id) => EXERCISE_MAP[id]).filter(Boolean))
+                  setPicked([])
+                }}
+              >
+                {picked.length ? `加入 ${picked.length} 個動作` : '點選要加入的動作'}
+              </Button>
+            </div>
+          )}
         </div>
       </Sheet>
       <ExerciseDetail
         ex={detail}
         onClose={() => setDetail(null)}
-        actionLabel={onPick ? (pickLabel ?? '加入這次訓練') : undefined}
+        actionLabel={onPick ? (isMulti ? (detail && picked.includes(detail.id) ? '取消勾選' : '勾選這個動作') : (pickLabel ?? '加入這次訓練')) : undefined}
         onAction={
           onPick
             ? (ex) => {
                 haptic([8, 24, 8])
                 setDetail(null)
-                onPick(ex)
+                if (isMulti) toggle(ex)
+                else onPick(ex)
               }
             : undefined
         }

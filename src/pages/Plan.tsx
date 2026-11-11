@@ -319,6 +319,11 @@ function Week({ profile, focus }: { profile: Profile; focus: string | null }) {
           haptic([8, 24, 8])
           await db.plans.add({ date: day, meal: picking, recipeId: r.id })
         }}
+        onPickMany={async (list) => {
+          if (!picking || !list.length) return
+          haptic([8, 24, 8])
+          await db.plans.bulkAdd(list.map((r) => ({ date: day, meal: picking, recipeId: r.id })))
+        }}
       />
       <DietPlanSheet open={planSheet} onClose={() => setPlanSheet(false)} profile={profile} />
       <QuickPickSheet open={quick} onClose={() => setQuick(false)} days={quickTargets} plans={plans} profile={profile} marks={marks} />

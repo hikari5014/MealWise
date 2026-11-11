@@ -124,6 +124,25 @@ export function WorkoutSession({ id, onClose }: { id: number | null; onClose: ()
     toast(last ? `已加入 ${ex.zh}，帶入上次的重量` : `已加入 ${ex.zh}`)
   }
 
+  /** 多選：一次加入好幾個動作（各自帶入上次的重量） */
+  const addExercises = async (list: Exercise[]) => {
+    if (!w || !list.length) return
+    const block = addingTo
+    const entries = await Promise.all(
+      list.map(async (ex) => {
+        if (block) return { exerciseId: ex.id, sets: [{ w: 0, r: 0, done: false }], block }
+        const last = await lastSetsOf(ex.id, w.id)
+        const sets: WorkoutSet[] =
+          last?.sets ?? (isCardio(ex) ? [{ w: 0, r: 20, done: false }] : Array.from({ length: 3 }, () => ({ w: isBodyweight(ex) ? 0 : 20, r: 10, done: false })))
+        return { exerciseId: ex.id, sets, ...(last?.grip ? { grip: last.grip } : {}) }
+      }),
+    )
+    update((x) => x.entries.push(...entries))
+    setAdding(false)
+    setAddingTo(null)
+    toast(block ? `已加入 ${list.length} 站` : `已加入 ${list.length} 個動作`)
+  }
+
   const addCombo = (c: ComboTemplate) => {
     const id = `b${Date.now().toString(36)}`
     const stations = c.stations(profile?.body?.sex ?? 'female')
@@ -535,7 +554,7 @@ export function WorkoutSession({ id, onClose }: { id: number | null; onClose: ()
           setAdding(false)
           setSwapIdx(null)
           setAddingTo(null)
-        }} onPick={addExercise} defaultMove={addingTo ? 'cardio' : moveFor(w?.type)} />
+        }} onPick={addExercise} onPickMany={swapIdx === null ? addExercises : undefined} defaultMove={addingTo ? 'cardio' : moveFor(w?.type)} />
       <ExerciseDetail ex={detail} onClose={() => setDetail(null)} />
       <ComboPicker open={combo} onClose={() => setCombo(false)} onPick={addCombo} />
       <MachineScan open={scan} onClose={() => setScan(false)} onAdd={addExercise} workoutId={w?.id} />

@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion'
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { RECIPE_MAP } from '../data/recipes'
 import { fitsRule, MEAL_RULE_ICON, MEAL_RULE_LABEL, type MealDecision } from '../lib/dietPlan'
 import { recipesFor, tasteScore } from '../lib/meal'
@@ -9,7 +9,17 @@ import { Food } from './Food'
 import { Icon } from './Icon'
 import { RecipeThumb, useRecipeDetail } from './RecipeDetail'
 import { RecipePhoto } from './RecipePhoto'
-import { listContainer, listItem, Sheet, Tap } from './ui'
+import { haptic } from '../lib/feedback'
+import { Button, listContainer, listItem, Sheet, Tap } from './ui'
+
+const MULTI_KEY = 'mw-pick-multi'
+const readMulti = () => {
+  try {
+    return localStorage.getItem(MULTI_KEY) === '1'
+  } catch {
+    return false
+  }
+}
 
 /** 挑選食譜的底部視窗（含「最近吃過」快速選） */
 export function RecipePicker({
@@ -19,6 +29,7 @@ export function RecipePicker({
   profile,
   recent = [],
   onPick,
+  onPickMany,
   title,
   rule,
   onEatOut,
@@ -30,6 +41,8 @@ export function RecipePicker({
   profile?: Profile
   recent?: string[]
   onPick: (recipe: Recipe) => void
+  /** 有提供就能切換「多選」：勾好幾樣再一次加入 */
+  onPickMany?: (recipes: Recipe[]) => void
   title?: string
   /** 這一餐的飲食規則；有的話只列出符合的食譜 */
   rule?: MealDecision['rule']
@@ -40,6 +53,33 @@ export function RecipePicker({
 }) {
   const [query, setQuery] = useState('')
   const [allMeals, setAllMeals] = useState(false)
+  // 多選模式：記住上次的選擇
+  const [multi, setMultiState] = useState(readMulti)
+  const [picked, setPicked] = useState<string[]>([])
+  const isMulti = multi && !!onPickMany
+  const setMulti = (v: boolean) => {
+    haptic(6)
+    setMultiState(v)
+    if (!v) setPicked([])
+    try {
+      localStorage.setItem(MULTI_KEY, v ? '1' : '0')
+    } catch {
+      /* 記不住也沒關係 */
+    }
+  }
+  useEffect(() => {
+    if (open) setPicked([])
+  }, [open])
+  const toggle = (r: Recipe) => {
+    haptic(6)
+    setPicked((p) => (p.includes(r.id) ? p.filter((x) => x !== r.id) : [...p, r.id]))
+  }
+  const choose = (r: Recipe) => {
+    if (isMulti) return toggle(r)
+    onPick(r)
+    close()
+  }
+  const pickedRecipes = picked.map((id) => RECIPE_MAP[id]).filter(Boolean)
   const version = useRecipesVersion()
   const list = useMemo(() => {
     let base = recipesFor(allMeals ? null : meal, profile)
@@ -116,11 +156,8 @@ export function RecipePicker({
               <motion.button
                 key={r.id}
                 whileTap={{ scale: 0.94 }}
-                onClick={() => {
-                  onPick(r)
-                  close()
-                }}
-                className="flex shrink-0 items-center gap-2 rounded-2xl bg-card py-2 pl-2 pr-3 text-sm shadow-card"
+                onClick={() => choose(r)}
+                className={`flex shrink-0 items-center gap-2 rounded-2xl py-2 pl-2 pr-3 text-sm shadow-card transition-colors ${picked.includes(r.id) ? 'bg-leaf text-on-leaf' : 'bg-card'}`}
               >
                 <span className="relative h-8 w-8 overflow-hidden rounded-xl">
                   <RecipePhoto recipe={r} />
@@ -139,36 +176,60 @@ export function RecipePicker({
           placeholder="搜尋食譜或標籤，例如：高蛋白"
           className="w-full rounded-2xl bg-card px-4 py-3 text-sm shadow-card outline-none ring-leaf/40 focus:ring-2"
         />
-        {meal && (
-          <label className="mt-2 flex items-center gap-2 text-xs text-muted">
-            <input type="checkbox" checked={allMeals} onChange={(e) => setAllMeals(e.target.checked)} className="accent-leaf" />
-            顯示所有食譜
-          </label>
-        )}
+        <div className="mt-2 flex items-center gap-2">
+          {meal && (
+            <label className="flex items-center gap-2 text-xs text-muted">
+              <input type="checkbox" checked={allMeals} onChange={(e) => setAllMeals(e.target.checked)} className="accent-leaf" />
+              顯示所有食譜
+            </label>
+          )}
+          {onPickMany && (
+            <Tap
+              onClick={() => setMulti(!multi)}
+              aria-pressed={multi}
+              className={`ml-auto flex items-center gap-1 rounded-full px-3 py-1.5 text-xs transition-colors ${multi ? 'bg-leaf text-on-leaf' : 'bg-card text-ink shadow-card'}`}
+            >
+              <Icon name={multi ? 'check_box' : 'playlist_add'} size={16} />
+              多選
+            </Tap>
+          )}
+        </div>
       </div>
 
       <motion.ul variants={listContainer} initial="hidden" animate="show" className="space-y-2">
         {list.map((r) => (
-          <PickerRow
-            key={r.id}
-            recipe={r}
-            onPick={() => {
-              onPick(r)
-              close()
-            }}
-          />
+          <PickerRow key={r.id} recipe={r} onPick={() => choose(r)} multi={isMulti} checked={picked.includes(r.id)} />
         ))}
         {list.length === 0 && <li className="py-10 text-center text-sm text-muted">找不到符合的食譜</li>}
       </motion.ul>
+      {isMulti && (
+        <div className="sticky bottom-0 -mx-5 mt-3 space-y-1.5 border-t border-ink/10 bg-cream px-5 pb-1 pt-2">
+          {pickedRecipes.length > 0 && (
+            <p className="truncate px-1 text-[11px] text-muted">
+              {pickedRecipes.map((r) => r.name).join('、')}・共 {Math.round(pickedRecipes.reduce((t, r) => t + r.nutrition.kcal, 0))} kcal
+            </p>
+          )}
+          <Button
+            className="w-full"
+            disabled={!pickedRecipes.length}
+            onClick={() => {
+              onPickMany!(pickedRecipes)
+              close()
+            }}
+          >
+            {pickedRecipes.length ? `加入 ${pickedRecipes.length} 樣` : '點選要加入的食物'}
+          </Button>
+        </div>
+      )}
     </Sheet>
   )
 }
 
-function PickerRow({ recipe, onPick }: { recipe: Recipe; onPick: () => void }) {
+function PickerRow({ recipe, onPick, multi = false, checked = false }: { recipe: Recipe; onPick: () => void; multi?: boolean; checked?: boolean }) {
   const openDetail = useRecipeDetail()
   const layoutId = `picker-${recipe.id}`
   return (
-    <motion.li variants={listItem} className="flex items-center gap-3 rounded-2xl bg-card p-2 pr-3 shadow-card">
+    <motion.li variants={listItem} className={`flex items-center gap-3 rounded-2xl p-2 pr-3 shadow-card transition-colors ${checked ? 'bg-leaf-soft ring-2 ring-leaf' : 'bg-card'}`}>
       <Tap onClick={() => openDetail(recipe.id, layoutId)} aria-label={`查看${recipe.name}`}>
         <RecipeThumb recipe={recipe} layoutId={layoutId} size={52} />
       </Tap>
@@ -181,10 +242,10 @@ function PickerRow({ recipe, onPick }: { recipe: Recipe; onPick: () => void }) {
       <motion.button
         whileTap={{ scale: 0.85 }}
         onClick={onPick}
-        aria-label={`加入${recipe.name}`}
-        className="grid h-9 w-9 place-items-center rounded-full bg-leaf-soft text-leaf-dark"
+        aria-label={`${checked ? '取消' : '加入'}${recipe.name}`}
+        className={`grid h-9 w-9 place-items-center rounded-full ${checked ? 'bg-leaf text-on-leaf' : 'bg-leaf-soft text-leaf-dark'}`}
       >
-        <Icon name="add" size={22} weight={600} />
+        <Icon name={checked ? 'check' : multi ? 'radio_button_unchecked' : 'add'} size={22} weight={600} />
       </motion.button>
     </motion.li>
   )

@@ -260,6 +260,16 @@ export default function Today({ profile, onGoPlan }: { profile: Profile; onGoPla
           const id = await actions.log(date, picking, r.id)
           toast(`已記錄 ${r.name}`, () => db.logs.delete(id))
         }}
+        onPickMany={async (list) => {
+          if (!picking || !list.length) return
+          haptic([10, 30, 14])
+          const now = Date.now()
+          const ids = (await db.logs.bulkAdd(
+            list.map((r, i) => ({ date, meal: picking, recipeId: r.id, portion: 1, createdAt: now + i })),
+            { allKeys: true },
+          )) as number[]
+          toast(`已記錄 ${list.length} 樣`, () => db.logs.bulkDelete(ids))
+        }}
       />
       <AiEstimateSheet open={eatOut !== null} meal={eatOut} date={date} preCopied={aiCopied} onClose={() => setEatOut(null)} />
       <DietPlanSheet open={planSheet} onClose={() => setPlanSheet(false)} profile={profile} />
