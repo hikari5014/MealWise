@@ -12,6 +12,10 @@ describe('器材 QR Code 比對', () => {
     expect(m.rule?.id).toBe('lateral-raise')
     expect(m.rule?.exercises[0]).toBe('mx-lateral-raise')
   })
+  it('Life Fitness 髖內收／外展兩用機（ophaa）：同一台機器，e=ad 內收、e=ab 外展', () => {
+    expect(matchMachine('https://halo.fitness/q?t=s&m=ophaa&e=ad', data).rule?.exercises[0]).toBe('thigh-adductor')
+    expect(matchMachine('https://halo.fitness/q?t=s&m=ophaa&e=ab', data).rule?.exercises[0]).toBe('thigh-abductor')
+  })
   it('規則裡的每個動作都存在', () => {
     for (const r of data.rules) for (const id of r.exercises) expect(EXERCISE_MAP[id], `${r.id} → ${id}`).toBeTruthy()
   })

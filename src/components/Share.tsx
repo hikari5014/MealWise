@@ -279,7 +279,7 @@ const readQr = (source: CanvasImageSource, w: number, h: number, canvas: HTMLCan
   return jsQR(img.data, img.width, img.height, { inversionAttempts: thorough ? 'attemptBoth' : 'dontInvert' })?.data ?? null
 }
 
-/** 相簿照片：整張讀不到就放大、再只看中間 */
+/** 相簿照片：整張讀不到就放大、看中間，最後切成小塊逐塊找（QR Code 在角落、很小也找得到） */
 const readQrPhoto = (img: HTMLImageElement, canvas: HTMLCanvasElement) => {
   const w = img.naturalWidth
   const h = img.naturalHeight
@@ -288,10 +288,26 @@ const readQrPhoto = (img: HTMLImageElement, canvas: HTMLCanvasElement) => {
     [2000, 1],
     [1400, 0.6],
     [1200, 0.4],
-    [1000, 0.25],
   ] as const) {
     const t = readQr(img, w, h, canvas, true, max, crop)
     if (t) return t
+  }
+  const ctx = canvas.getContext('2d', { willReadFrequently: true })!
+  for (const f of [0.5, 0.34, 0.25]) {
+    const tw = w * f
+    const th = h * f
+    const scale = Math.min(2, 900 / Math.max(tw, th))
+    canvas.width = Math.round(tw * scale)
+    canvas.height = Math.round(th * scale)
+    // 每次移動半格，跨在格線上的 QR Code 也不會漏掉
+    for (let y = 0; y <= h - th + 1; y += th / 2) {
+      for (let x = 0; x <= w - tw + 1; x += tw / 2) {
+        ctx.drawImage(img, x, y, tw, th, 0, 0, canvas.width, canvas.height)
+        const d = ctx.getImageData(0, 0, canvas.width, canvas.height)
+        const t = jsQR(d.data, d.width, d.height, { inversionAttempts: 'dontInvert' })?.data
+        if (t) return t
+      }
+    }
   }
   return null
 }

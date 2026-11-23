@@ -1,5 +1,14 @@
 [
   {
+    "version": "0.28.3",
+    "date": "2026-11-23",
+    "title": "認得髖內收／外展機",
+    "notes": [
+      "掃 Life Fitness 髖內收／外展兩用機上的 QR Code：HIP ADDUCTION 那面會認成「大腿內收機」，HIP ABDUCTION 那面會認成「大腿外展機」",
+      "從相簿選照片掃 QR Code 時，QR Code 在照片角落或比較小也找得到了"
+    ]
+  },
+  {
     "version": "0.28.2",
     "date": "2026-11-23",
     "title": "登階機 QR Code 讀得更正確",
