@@ -21,9 +21,15 @@ export interface MachineResult {
   watts?: number
   level?: number
   km?: number
+  /** 登階機：踩了幾步、大約爬了幾層樓 */
+  steps?: number
+  floors?: number
   rpm?: number
   spm?: number
 }
+
+/** Life Fitness 登階機：螢幕上 1,060 步＝62 層樓 */
+const STEPS_PER_FLOOR = 17.1
 
 const n = (v: unknown) => {
   const x = typeof v === 'number' ? v : parseFloat(String(v ?? ''))
@@ -58,17 +64,23 @@ export function parseMachineResult(text: string): MachineResult | null {
   }
   const sec = pos(j.et)
   if (!sec || sec > 24 * 3600) return null
-  const start = j.dt ? Date.parse(String(j.dt)) : NaN
-  const dist = j.dc as { v?: unknown } | undefined
-  // 距離的數字是公尺（30 分鐘、平均每分鐘 43.6 公尺 ≈ 1313 公尺，兩個數字對得上）
-  const meters = pos(dist?.v)
+  // dt 是機器上「運動結束」的當地時間（雖然寫 +00:00，其實不是 UTC：螢幕 10:27 下午 → dt 22:27），開始時間要往前推
+  const m = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})/.exec(String(j.dt ?? ''))
+  const end = m ? new Date(+m[1], +m[2] - 1, +m[3], +m[4], +m[5], +m[6]).getTime() : NaN
+  const start = end - sec * 1000
+  const typeCode = j.t ? String(j.t) : undefined
+  const dist = pos((j.dc as { v?: unknown } | undefined)?.v)
+  // 登階機（132）的 dc 是「步數」（螢幕：步進 1,060、62 層 → 約 17.1 步一層）；其他機器先當成公尺
+  const stair = typeCode === '132'
+  const meters = stair ? undefined : dist
+  const steps = stair && dist ? Math.round(dist) : undefined
   const hr = pos(j.ahr)
   const mets = pos(j.am)
   return {
     id: String(j.id ?? r.slice(0, 40)),
     brand: 'Life Fitness（Halo）',
     serial: j.bs ? String(j.bs) : undefined,
-    typeCode: j.t ? String(j.t) : undefined,
+    typeCode,
     start: Number.isFinite(start) ? start : undefined,
     min: Math.round((sec / 60) * 10) / 10,
     kcal: pos(j.c) ? Math.round(pos(j.c)!) : undefined,
@@ -78,6 +90,8 @@ export function parseMachineResult(text: string): MachineResult | null {
     watts: pos(j.aw),
     level: pos(j.al) ? Math.round(pos(j.al)! * 10) / 10 : undefined,
     km: meters ? Math.round(meters / 10) / 100 : undefined,
+    steps,
+    floors: steps ? Math.round(steps / STEPS_PER_FLOOR) : undefined,
     rpm: pos(j.ar),
     spm: pos(j.aspm),
   }
@@ -97,6 +111,7 @@ export const toSet = (r: MachineResult): WorkoutSet => ({
   r: r.min,
   done: true,
   ...(r.km ? { km: r.km } : {}),
+  ...(r.floors ? { floors: r.floors } : {}),
   ...(r.kcal ? { kcal: r.kcal } : {}),
   ...(r.hr ? { hr: r.hr } : {}),
   ...(r.level ? { lvl: r.level } : {}),
@@ -105,6 +120,27 @@ export const toSet = (r: MachineResult): WorkoutSet => ({
 })
 
 const SEEN = 'machineResultSeen'
+const FIXED = 'machineResultFix1'
+
+/**
+ * 舊版把登階機的步數當成公里、把結束時間（當地）當成開始時間（UTC）。
+ * 這裡把舊版掃進來的登階機紀錄修正一次：公里 → 樓層，時間改對。
+ */
+export async function fixOldMachineImports() {
+  if ((await db.prefs.get(FIXED))?.value) return
+  const list = await db.workouts.filter((w) => !!w.importKey?.startsWith('machine:')).toArray()
+  for (const w of list) {
+    const e = w.entries[0]
+    const s = e?.sets[0]
+    if (!e || !s || e.exerciseId !== 'cx-stair-climber' || !s.km || s.floors) continue
+    const ms = (w.endedAt ?? w.startedAt) - w.startedAt
+    // 舊的開始時間＝把當地時間當 UTC 解讀；換回當地時間後那其實是結束時間
+    const end = w.startedAt + new Date(w.startedAt).getTimezoneOffset() * 60000
+    const { km, ...rest } = s
+    await db.workouts.put({ ...w, date: dateOf(end - ms), startedAt: end - ms, endedAt: end, entries: [{ ...e, sets: [{ ...rest, floors: Math.round((km * 1000) / STEPS_PER_FLOOR) }] }] })
+  }
+  await db.prefs.put({ key: FIXED, value: true })
+}
 export async function alreadyRecorded(r: MachineResult) {
   const list = ((await db.prefs.get(SEEN))?.value as string[] | undefined) ?? []
   return list.includes(r.id)

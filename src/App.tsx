@@ -54,6 +54,8 @@ export default function App() {
   // 舊的「只有熱量」外食紀錄，補上估算的三大營養素（沒有要補的就不下載資料）
   useEffect(() => {
     fixZeroMacros().catch(() => {})
+    // 舊版掃進來的登階機紀錄（步數被當成公里、時間差 8 小時）修正一次
+    import('./lib/machineResult').then((m) => m.fixOldMachineImports()).catch(() => {})
   }, [])
   const recipesVersion = useMemo(() => {
     // 外食品項的圖示一律照品名重新對應（舊版存的是別的圖）

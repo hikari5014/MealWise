@@ -41,6 +41,8 @@ export function MachineResultSheet({ result, workoutId, onClose }: { result: Mac
     ['消耗', result.kcal ? `${result.kcal} kcal` : undefined],
     ['平均心率', result.hr ? `${result.hr} bpm` : undefined],
     ['距離', result.km ? `${result.km} km` : undefined],
+    ['爬升', result.floors ? `約 ${result.floors} 層` : undefined],
+    ['步數', result.steps ? `${result.steps.toLocaleString()} 步` : undefined],
     ['阻力等級', result.level ? String(result.level) : undefined],
     ['平均功率', result.watts ? `${Math.round(result.watts)} W` : undefined],
     ['強度', result.mets ? `${result.mets} MET` : undefined],
